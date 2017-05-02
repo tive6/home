@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<div id="box">{{msg}}</div>
+
+
+<script src="../js/vue.min.js"></script>
+<script>
+
+    window.onload = function(){
+        var v = new Vue({
+            el:'#box',
+            data:{
+                msg:'welcome vue'
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

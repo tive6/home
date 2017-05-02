@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<div id="box">
+    <input type="button" value="按钮" v-on:mouseover="show()"/>
+</div>
+
+
+<script src="../js/vue.min.js"></script>
+<script>
+
+    window.onload = function(){
+        new Vue({
+            el:'#box',
+            data:{//数据
+                arr:['apple','banana','orange','lemon'],
+                json:{a:'apple',b:'banana',c:'orange'}
+            },
+            methods:{
+                show:function(){
+                    alert(1);
+                },
+                add:function(){
+                    this.arr.push('pear');
+                }
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

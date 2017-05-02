@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<div id="box">
+    <!--数据双向绑定-->
+    <input type="text" v-model="msg"/>
+    <input type="text" v-model="msg"/>
+    <br/>
+    <p>{{msg}}</p>
+    <p>{{msg2}}</p>
+    <p>{{msg3}}</p>
+    <p>{{arr}}</p>
+    <p>{{json}}</p>
+</div>
+<script src="../js/vue.min.js"></script>
+<script>
+
+    window.onload = function(){
+        new Vue({
+            el:'#box',
+            data:{
+                msg:'welcome vue',
+                msg2:12,
+                msg3:true,
+                arr:['apple','banana','orange','lemon'],
+                json:{a:'apple',b:'banana'}
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

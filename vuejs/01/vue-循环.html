@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<div id="box">
+    <ul>
+        <li v-for="value in arr">{{value}}</li>
+    </ul>
+</div>
+
+
+<script src="../js/vue.min.js"></script>
+<script>
+
+    window.onload = function(){
+        new Vue({
+            el:'#box',
+            data:{
+                arr:['apple','banana','orange','lemon'],
+                json:{a:'apple',b:'banana'}
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

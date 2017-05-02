@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<div id="box">
+    <ul>
+        <li v-for="(value,index) in arr">{{value}} {{index}}</li>
+        <!--
+            vue 2.0以后 $index方法废除
+            索引值 发生变化
+            (value,index)变量、索引
+        -->
+    </ul>
+</div>
+
+
+<script src="../js/vue.min.js"></script>
+<script>
+
+    window.onload = function(){
+        new Vue({
+            el:'#box',
+            data:{
+                arr:['apple','banana','orange','lemon'],
+                json:{a:'apple',b:'banana'}
+            }
+        });
+    }
+
+</script>
+</body>
+</html>
