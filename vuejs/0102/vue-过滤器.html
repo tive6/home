@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<div id="box">
+</div>
+
+
+<div id="app">
+    {{ msg| lowercase | capitalize }}<!-- 直接插值法 -->
+    <p :title=" msg | lowercase ">555具有title属性</p><!-- bind绑定法 -->
+</div>
+
+
+<script src="../js/vue.min.js"></script>
+<script>
+
+    window.onload = function(){
+
+        var str = 'zmnaer';
+
+        console.log(str.replace('z','ss'));
+
+        var vm = new Vue({
+            el:'#app',
+            data: {
+                msg: 'WELCOME'
+            },
+            /*
+            * vue 2.x 版本
+            * 原有过滤器废除
+            * 需要自定义过滤器方法
+            * */
+            filters: {  // 过滤器对象
+                uppercase: function (value) {   // 过滤器名：uppercase、lowercase、
+                    if (!value) return '';
+                    value = value.toString();
+                    return value.toUpperCase();
+                },
+                lowercase: function (value) {   // 过滤器名：uppercase、lowercase、
+                    if (!value) return '';
+                    value = value.toString();
+                    return value.toLowerCase();
+                },
+                capitalize: function (value) {  // 首字母大写
+                    if (!value) return '';
+                    value = value.toString();
+                    return value.charAt(0).toUpperCase() + value.slice(1)
+                }
+            }
+        })
+    }
+
+</script>
+</body>
+</html>

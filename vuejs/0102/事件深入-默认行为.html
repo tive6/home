@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<div id="box">
+    <!--阻止右键菜单-->
+    <button @contextmenu="show($event)">按钮</button>
+</div>
+
+
+<script src="../js/vue.min.js"></script>
+<script>
+
+    window.onload = function(){
+        new Vue({
+            el:'#box',
+            data:{//数据
+            },
+            methods:{
+                show:function(e){
+                    alert(1);
+                    e.preventDefault();
+                }
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

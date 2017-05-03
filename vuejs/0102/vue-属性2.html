@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<div id="box">
+    <!--<img :src="url" width="100px"/>-->
+    <img :src="url" :width="w"/><!-- 推荐 -->
+</div>
+
+
+<script src="../js/vue.min.js"></script>
+<script>
+
+    window.onload = function(){
+        new Vue({
+            el:'#box',
+            data:{//数据
+                url:'../img/yasuo.gif',
+                w:'100px'
+            },
+            methods:{
+
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

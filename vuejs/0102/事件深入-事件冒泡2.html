@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<div id="box">
+    <div @click="show2()">
+        <!--阻止冒泡 @click.stop-->
+        <button @click.stop="show()">按钮</button>
+    </div>
+</div>
+
+
+<script src="../js/vue.min.js"></script>
+<script>
+
+    window.onload = function(){
+        new Vue({
+            el:'#box',
+            data:{//数据
+            },
+            methods:{
+                show:function(){
+                    alert(1);
+                },
+                show2:function(){
+                    alert(2);
+                }
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

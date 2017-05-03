@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+    </style>
+</head>
+<body>
+
+<div id="box">
+    <input type="button" value="按钮" @click="get()"/>
+    <p>{{msg}}</p>
+</div>
+
+<script src="../js/vue.min.js"></script>
+<script src="../js/vue-resource.min.js"></script>
+<script>
+
+    window.onload = function(){
+        new Vue({
+            el:'#box',
+            data:{//数据
+                msg:''
+            },
+            methods:{
+                /*
+                 * 外部接口
+                 * https://sug.so.360.cn/suggest?callback=suggest_so&encodein=utf-8&encodeout=utf-8&format=json&fields=word,obdata&word=a&sid=bd7661b4016034aeec0bb6a177773250&pq=
+                 * */
+                get:function(){
+                    this.$http.jsonp('https://sug.so.360.cn/suggest?word=a',{
+                        word:'a'
+                    },{
+                        jsonp:'cb'
+                    }).then(function(res){
+                        this.msg = (res.data.s);
+                    },function(res){
+                        alert(res.status);
+                    });
+                }
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

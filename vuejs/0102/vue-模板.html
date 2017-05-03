@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<div id="box">
+    <input type="text" v-model="msg"/>
+    <br/>
+    <p>{{msg}}</p>
+    <p>{{msg}}</p>
+</div>
+
+
+<script src="../js/vue.min.js"></script>
+<script>
+
+    window.onload = function(){
+        new Vue({
+            el:'#box',
+            data:{//数据
+                msg:'abc'
+                },
+            methods:{
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

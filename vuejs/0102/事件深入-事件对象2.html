@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<div id="box">
+    <!--<button v-on:click="show">按钮</button>-->
+  <!--简写 推荐-->
+    <button @click="show($event,12)">按钮</button>
+</div>
+
+
+<script src="../js/vue.min.js"></script>
+<script>
+
+    window.onload = function(){
+        new Vue({
+            el:'#box',
+            data:{//数据
+                },
+            methods:{
+                show:function(e,b){
+                    alert(e.clientX);
+                    alert(b);
+                }
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

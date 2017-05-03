@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<div id="box">
+    <!--<img src="{{url}}" alt=""/>-->
+    <!--会报404 请求-->
+    <!--<img v-bind:src="url" alt=""/>-->
+    <img :src="url" alt=""/>
+    <!-- 推荐 简写 -->
+</div>
+
+
+<script src="../js/vue.min.js"></script>
+<script>
+
+    window.onload = function(){
+        new Vue({
+            el:'#box',
+            data:{//数据
+                url:'../img/yasuo.gif'
+            },
+            methods:{
+
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+    </style>
+</head>
+<body>
+
+<div id="box">
+    <input type="button" value="按钮" @click="get()"/>
+</div>
+
+
+<script src="../js/vue.min.js"></script>
+<script src="../js/vue-resource.min.js"></script>
+<script>
+
+    window.onload = function(){
+        new Vue({
+            el:'#box',
+            data:{//数据
+            },
+            methods:{
+                get:function(){
+                    this.$http.get('aa.txt').then(function(res){
+                        //alert('OK');
+                        alert(res.data);
+                    },function(res){
+                        alert(res.status);
+                    });
+                }
+            }
+        });
+    }
+
+</script>
+</body>
+</html>
