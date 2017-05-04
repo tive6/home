@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../bower_components/animate.css/animate.min.css"/>
+    <style>
+
+
+    </style>
+</head>
+<body>
+
+<div id="box">
+
+    <aa></aa>
+
+</div>
+
+
+<script src="../bower_components/vue/dist/vue.min.js"></script>
+<script>
+
+    window.onload = function(){
+
+        let Aa = Vue.extend({
+            template:'<h1>{{msg}}</h1>',
+            data(){
+            return {
+                msg:'come on'
+            }
+        }
+        });
+
+        let vm = new Vue({
+            el:'#box',
+            data:{},
+            methods:{
+            },
+            components:{//局部组件
+                'aa':Aa
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

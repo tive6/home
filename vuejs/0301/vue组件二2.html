@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../bower_components/animate.css/animate.min.css"/>
+    <style>
+
+    </style>
+</head>
+<body>
+
+<div id="box">
+
+    <my-aa></my-aa>
+
+</div>
+
+
+<script src="../bower_components/vue/dist/vue.min.js"></script>
+<script>
+
+    window.onload = function(){
+
+        let vm = new Vue({
+            el:'#box',
+            components: {//局部
+                'my-aa': {
+                    template: '<h2 @click="change">{{msg}}</h2>',
+                    data:function(){
+                        return {
+                            msg:'hello word'
+                        }
+                    },
+                    methods:{
+                        change:function(){
+                            this.msg = 'change';
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

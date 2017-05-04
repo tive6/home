@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<div id="box">
+    <aaa></aaa>
+    <hr/>
+    <aaa>
+        <ul slot="ul-slot">
+            <li>ul 有内容的情况</li>
+            <li>222</li>
+            <li>333</li>
+        </ul>
+        <ol slot="ol-slot">
+            <li>ol 有内容的情况</li>
+            <li>222</li>
+            <li>333</li>
+        </ol>
+    </aaa>
+    <template id="aaa">
+        <!-- slot 槽口 位置随意，不固定 -->
+        <h1>come on</h1>
+        <slot name="ul-slot">这是默认的情况-ul。</slot>
+        <p>welcome you!</p>
+        <slot name="ol-slot">这是默认的情况-ol。</slot>
+    </template>
+</div>
+
+<script src="../bower_components/vue/dist/vue.min.js"></script>
+<script>
+
+    window.onload = function(){
+
+        let vm = new Vue({
+            el:'#box',
+            data:{
+                a:'aaa'
+            },
+            components:{
+                'aaa':{
+                    template:'#aaa'
+                }
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

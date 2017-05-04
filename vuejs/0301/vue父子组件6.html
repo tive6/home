@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="javascript"></script>
+</head>
+<body>
+
+<div id="box">
+    <aaa></aaa>
+</div>
+
+<template id="aaa">
+    <span>父级组件——{{msg}}</span>
+    <bbb @child-msg="get"></bbb>
+</template>
+
+<template id="bbb">
+    <h3>子组件</h3>
+    <input type="button" value="send" @click="send"/>
+</template>
+
+<script src="../bower_components/vue/dist/vue.min.js"></script>
+<script>
+
+    window.onload = function(){
+
+        let vm = new Vue({
+            el:'#box',
+            data:{
+            },
+            components:{
+                'aaa':{
+                    data:function(){
+                        return {
+                            msg:111,
+                            msg2:'父组件的数据'
+                            /*
+                            * 父组件数据子组件不能直接使用
+                            * 需要借助 props 方法
+                            * 父组件获取子组件数据，只能子组件主动触发（发送）
+                            * 通过 $emit 方法 发送
+                            * */
+                        }
+                    },
+                    methods:{
+                        get:function(msg){
+                            //alert(msg);
+                            this.msg = msg;
+                        }
+                    },
+                    template:'#aaa',
+                    components:{
+                        'bbb':{
+                            data:function(){
+                                return {
+                                    a:'子组件数据'
+                                }
+                            },
+                            template:'#bbb',
+                            methods:{
+                                send:function(){
+                                    this.$emit('child-msg',this.a);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

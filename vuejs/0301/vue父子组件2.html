@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="javascript"></script>
+</head>
+<body>
+
+<div id="box">
+    <aaa></aaa>
+</div>
+
+<script src="../bower_components/vue/dist/vue.min.js"></script>
+<script>
+
+    window.onload = function(){
+
+        let vm = new Vue({
+            el:'#box',
+            data:{
+                a:'aaa'
+            },
+            components:{
+                'aaa':{
+                    data:function(){
+                        return {
+                            msg:'message-父组件的数据'
+                            /*
+                            * 父组件数据子组件不能直接使用
+                            * */
+                        }
+                    },
+                    template:'<h2>AAA组件（父组件）-{{msg}}</h2>' +
+                    '<bbb></bbb>',
+                    components:{
+                        'bbb':{
+                            template:'<h2>BBB组件（子组件）</h2>'
+                        }
+                    }
+                }
+            }
+
+        });
+    }
+
+</script>
+</body>
+</html>

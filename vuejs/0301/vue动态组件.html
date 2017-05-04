@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../bower_components/animate.css/animate.min.css"/>
+    <script type="javascript"></script>
+</head>
+<body>
+
+<div id="box">
+    <input type="button" value="A组件" @click="a='aaa'"/>
+    <input type="button" value="B组件" @click="a='bbb'"/>
+    <component :is="a"></component>
+</div>
+
+<script src="../bower_components/vue/dist/vue.min.js"></script>
+<script>
+
+    window.onload = function(){
+
+        let vm = new Vue({
+            el:'#box',
+            data:{
+                a:'aaa'
+            },
+            components:{
+                'aaa':{
+                    template:'<h2>AAA组件</h2>'
+                },
+                'bbb':{
+                    template:'<h2>BBB组件</h2>'
+                }
+            }
+
+        });
+    }
+
+</script>
+</body>
+</html>

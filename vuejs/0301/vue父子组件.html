@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="javascript"></script>
+</head>
+<body>
+
+<div id="box">
+    <aaa></aaa>
+</div>
+
+<script src="../bower_components/vue/dist/vue.min.js"></script>
+<script>
+
+    window.onload = function(){
+
+        let vm = new Vue({
+            el:'#box',
+            data:{
+                a:'aaa'
+            },
+            components:{
+                'aaa':{
+                    template:'<h2>AAA组件</h2>' +
+                    '<bbb></bbb>',
+                    components:{
+                        'bbb':{
+                            template:'<h2>BBB组件</h2>'
+                        }
+                    }
+                }
+            }
+
+        });
+    }
+
+</script>
+</body>
+</html>

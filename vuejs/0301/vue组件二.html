@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../bower_components/animate.css/animate.min.css"/>
+    <style>
+
+    </style>
+</head>
+<body>
+
+<div id="box">
+
+    <my-aa></my-aa>
+
+</div>
+
+
+<script src="../bower_components/vue/dist/vue.min.js"></script>
+<script>
+
+    window.onload = function(){
+
+        Vue.component('my-aa',{//全局
+           template:'<b>hello</b>'
+        });
+
+        let vm = new Vue({
+            el:'#box',
+        });
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../bower_components/animate.css/animate.min.css"/>
+    <script type="javascript"></script>
+</head>
+<body>
+
+<div id="box">
+
+</div>
+
+<template id="bbb">
+    <h1 @click="change">一级标题——{{msg}}</h1>
+    <ul>
+        <li v-for="val in arr" v-text="val"></li>
+    </ul>
+</template>
+
+<script src="../bower_components/vue/dist/vue.min.js"></script>
+<script>
+
+    window.onload = function(){
+
+        let vm = new Vue({
+            el:'#box',
+            components: {//局部
+                'my-aa': {
+                    template: '#bbb',// 模板 id
+                    data:function(){
+                        return {
+                            msg:'hello word',
+                            arr:['hello','word','hi','boy']
+                        }
+                    },
+                    methods:{
+                        change:function(){
+                            this.msg = 'change';
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+</script>
+</body>
+</html>
