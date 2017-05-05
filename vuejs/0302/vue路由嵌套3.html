@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        .v-link-active{
+            color: #d9534f;
+        }
+    </style>
+</head>
+<body>
+
+<div id="box">
+    <ul>
+        <li>
+            <a v-link="{path:'/home'}">主页</a>
+        </li>
+        <li>
+            <a v-link="{path:'/news'}">新闻</a>
+        </li>
+    </ul>
+
+    <div>
+        <router-view></router-view>
+    </div>
+</div>
+
+<template id="home">
+    <h3>这是主页</h3>
+    <div>
+        <ul>
+            <li><a v-link="{path:'/home/login'}">登录</a></li>
+            <li><a v-link="{path:'/home/reg'}">注册</a></li>
+        </ul>
+        <div>
+            <router-view></router-view>
+        </div>
+    </div>
+</template>
+<template id="news">
+    <h3>这是新闻页</h3>
+    <div>
+        <ul>
+            <li><a v-link="{path:'/news/detail/001'}">头条1</a></li>
+            <li><a v-link="{path:'/news/detail/002'}">头条2</a></li>
+        </ul>
+    </div>
+    <router-view></router-view>
+</template>
+
+<template id="detail">
+    {{$route.params | json}}
+</template>
+
+<script src="../bower_components/vue/dist/vue.min.js"></script>
+<script src="../bower_components/vue-router/dist/vue-router.min.js"></script>
+<script>
+
+    window.onload = function(){
+
+        /*
+        * 路由准备：
+        * 1. 准备一个根组件
+        * */
+        let App = Vue.extend({});
+
+        /*
+        * 2. home news 组件准备
+        * */
+        let Home = Vue.extend({
+            template:'#home'
+        });
+        let News = Vue.extend({
+            template:'#news'
+        });
+
+        let Detail = Vue.extend({
+            template:'#detail'
+        });
+
+        /*
+        * 3. 准备路由
+        * */
+        let router = new VueRouter();
+
+        /*
+        * 4. 关联
+        * */
+        router.map({
+            'home':{
+                component:Home,
+                subRoutes:{// 子路由配置
+                    'login':{
+                        component:{
+                            template:'<h4>登录页面</h4>'
+                        }
+                    },
+                    'reg':{
+                        component:{
+                            template:'<h4>注册页面</h4>'
+                        }
+                    }
+                }
+            },
+            'news':{
+                component:News,
+                subRoutes:{
+                    '/detail/:id':{
+                        component:Detail
+                    }
+                }
+            }
+        });
+
+        /*
+        * 5. 启动路由
+        * */
+        router.start(App,'#box');
+
+        /*
+         * 5.1. 跳转(默认页面)
+         * */
+        router.redirect({
+            '/':'home/login'
+        });
+
+
+    }
+
+</script>
+</body>
+</html>
