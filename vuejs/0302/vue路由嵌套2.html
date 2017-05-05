@@ -40,6 +40,17 @@
 </template>
 <template id="news">
     <h3>这是新闻页</h3>
+    <div>
+        <ul>
+            <li><a v-link="{path:'/news/detail/001'}">头条1</a></li>
+            <li><a v-link="{path:'/news/detail/002'}">头条2</a></li>
+        </ul>
+    </div>
+    <router-view></router-view>
+</template>
+
+<template id="detail">
+    {{$route.params | json}}
 </template>
 
 <script src="../bower_components/vue/dist/vue.min.js"></script>
@@ -62,6 +73,10 @@
         });
         let News = Vue.extend({
             template:'#news'
+        });
+
+        let Detail = Vue.extend({
+            template:'#detail'
         });
 
         /*
@@ -89,7 +104,12 @@
                 }
             },
             'news':{
-                component:News
+                component:News,
+                subRoutes:{
+                    '/detail/:id':{
+                        component:Detail
+                    }
+                }
             }
         });
 

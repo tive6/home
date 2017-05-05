@@ -51,6 +51,13 @@
 
 <template id="detail">
     {{$route.params | json}}
+    <br/>
+    {{$route.path}}
+    <br/>
+    {{$route.query | json}}
+    <!-- query 参数值：url传参值 （?name=zm&age=20）
+        解析完之后变为 {"name":"zm","age":20}
+    -->
 </template>
 
 <script src="../bower_components/vue/dist/vue.min.js"></script>

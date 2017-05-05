@@ -30,8 +30,8 @@
     <h3>这是主页</h3>
     <div>
         <ul>
-            <li><a v-link="{path:'/home/login'}">登录</a></li>
-            <li><a v-link="{path:'/home/reg'}">注册</a></li>
+            <li><a v-link="{path:'/home/login/aaa'}">登录</a></li>
+            <li><a v-link="{path:'/home/reg/ccc'}">注册</a></li>
         </ul>
         <div>
             <router-view></router-view>
@@ -98,9 +98,9 @@
             'home':{
                 component:Home,
                 subRoutes:{// 子路由配置
-                    'login':{
+                    'login/:name':{
                         component:{
-                            template:'<h4>登录页面</h4>'
+                            template:'<h4>登录页面{{$route.params | json}}</h4>'
                         }
                     },
                     'reg':{
@@ -129,7 +129,7 @@
          * 5.1. 跳转(默认页面)
          * */
         router.redirect({
-            '/':'home/login'
+            '/':'home/'
         });
 
 
