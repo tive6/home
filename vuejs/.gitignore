@@ -1,0 +1,9 @@
+# Created by .ignore support plugin (hsz.mobi)
+/bower_components/
+/node_modules/
+.DS_Store
+dist/
+npm-debug.log
+yarn-error.log
+.idea
+/0302/vueLoader/node_modules/
