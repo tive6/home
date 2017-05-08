@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style></style>
+</head>
+<body>
+
+<div id="box">
+
+    <h3 v-text="msg"></h3>
+    <my-aaa></my-aaa>
+
+
+</div>
+<!--
+    使用 template 内部内容需要有一个跟标签包裹
+-->
+<template id="aaa">
+    <!-- 根标签 -->
+    <div>
+        <h4>全局组件</h4>
+        <h5>这是vue2.0新规范</h5>
+    </div>
+</template>
+
+<script src="../js/vue2.0.js"></script>
+<script>
+    /*
+    * 会出现语法错误
+    * */
+    Vue.component('my-aaa',{
+        template:'#aaa'
+    });
+
+    window.onload = function(){
+        new Vue({
+            el:'#box',
+            data:{
+                msg:'welcome Vue2.0'
+            }
+        });
+    }
+</script>
+</body>
+</html>

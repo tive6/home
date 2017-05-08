@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style></style>
+</head>
+<body>
+
+<div id="box">
+    <ul>
+        <li v-for="(val,kay,index) in list">{{kay}}—{{val}}—{{index}}</li>
+    </ul>
+</div>
+
+<script src="../js/vue2.0.js"></script>
+<script>
+    window.onload = function(){
+        new Vue({
+            el:'#box',
+            data:{
+                list:{
+                    width:'200px',height:'250px',color:'red'
+                }
+            },
+            methods:{
+            }
+        });
+    }
+</script>
+</body>
+</html>

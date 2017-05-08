@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style></style>
+</head>
+<body>
+
+<div id="box">
+    <p v-text="msg"></p>
+    <button @click="update">更新数据</button>
+</div>
+
+<script src="../js/vue2.0.js"></script>
+<script>
+    window.onload = function(){
+        new Vue({
+            el:'#box',
+            data:{
+                msg:'welcome Vue2.0'
+            },
+            methods:{
+                update(){
+            this.msg = 'Hello'
+        }
+    },
+            beforeCreate(){
+        console.log('组件实例刚刚被创建：beforeCreate');
+    },
+    created(){
+        console.log('组件实例已经被创建：created');
+    },
+    beforeMount(){
+        console.log('模板编译之前：beforeMount');
+    },
+    mounted(){/*代替之前：ready z状态*/
+        console.log('模板编译之后：mounted');
+    },
+    beforeUpdate(){
+        console.log('组件更新之前');
+    },
+    updated(){
+        console.log('组件更新完毕');
+    },
+
+    });
+    }
+</script>
+</body>
+</html>

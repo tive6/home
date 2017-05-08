@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style></style>
+</head>
+<body>
+
+<div id="box">
+
+    <h3 v-text="msg"></h3>
+    <aaa></aaa>
+
+
+</div>
+
+<template id="aaa">
+    <!-- 根标签 -->
+    <div>
+        <h4>全局组件</h4>
+        <h5>这是vue2.0新规范</h5>
+    </div>
+</template>
+
+
+<script src="../js/vue2.0.js"></script>
+<script>
+
+    var Home = {
+        template:'#aaa'
+    };
+
+    /*
+    * vue 2.0中
+    * Vue.extend({}); 被
+    * var Home = {}；代替
+    * */
+
+    window.onload = function(){
+        new Vue({
+            el:'#box',
+            data:{
+                msg:'welcome Vue2.0'
+            },
+            components:{
+                'aaa':Home
+            }
+        });
+    }
+</script>
+</body>
+</html>

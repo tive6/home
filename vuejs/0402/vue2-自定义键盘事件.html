@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style></style>
+</head>
+<body>
+
+<div id="box">
+
+    <input type="text" @keyup.ctrl="change"/>
+
+</div>
+
+<script src="../js/vue2.0.js"></script>
+<script>
+
+    Vue.config.keyCodes.ctrl=17;
+    window.onload = function(){
+        new Vue({
+            el:'#box',
+            data:{
+                list:['width','height','border']
+            },
+            methods:{
+                change(){
+            alert('changed')
+        }
+            }
+        });
+    }
+</script>
+</body>
+</html>

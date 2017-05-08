@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style></style>
+</head>
+<body>
+
+<div id="box">
+    <button @click="add">添加</button>
+    <ul>
+        <li v-for="(val,index) in list">{{val}}——{{index}}</li>
+        <!--
+            vue2.0 for 循环默认可以添加重复的数据
+            vue1.0 中 循环想要添加重复的数据必须在循环内设置 ：track-by="$index"
+
+        -->
+    </ul>
+</div>
+
+<script src="../js/vue2.0.js"></script>
+<script>
+    window.onload = function(){
+        new Vue({
+            el:'#box',
+            data:{
+                list:['width','height','border']
+            },
+            methods:{
+                add(){
+            this.list.push('color');
+        }
+            }
+        });
+    }
+</script>
+</body>
+</html>
