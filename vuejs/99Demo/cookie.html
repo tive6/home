@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        .inner{
+            border: 1px solid #00b3ee;
+            min-height: 100px;
+            margin: 10px 0;
+            padding: 10px;
+        }
+    </style>
+    <script src="../js/jquery.js"></script>
+</head>
+<body>
+
+
+<input type="text" class="int"/>
+<button class="btn">保存</button>
+<button class="btnLook">查看</button>
+<button class="del">删除</button>
+<div class="inner"></div>
+<div class="box"></div>
+
+
+
+<script>
+
+    // 设置cookie
+    function setCookie ( name, value, expdays ){
+        var expdate = new Date();
+        //设置Cookie过期日期
+        expdate.setDate(expdate.getDate() + expdays) ;
+        //添加Cookie
+        document.cookie = name + "=" + escape(value) + ";expires=" + expdate.toUTCString();
+    }
+    // 获取Cookie
+    function getCookie ( name ){
+        //获取name在Cookie中起止位置
+        var start = document.cookie.indexOf(name+"=") ;
+
+        if ( start != -1 ){
+            start = start + name.length + 1 ;
+            //获取value的终止位置
+            var end = document.cookie.indexOf(";", start) ;
+            if ( end == -1 )
+                end = document.cookie.length ;
+            //截获cookie的value值,并返回
+            return unescape(document.cookie.substring(start,end)) ;
+        }
+        return "" ;
+    }
+    // 删除cookie
+    function delCookie ( name ){
+        setCookie ( name, "", -1 ) ;
+    }
+
+    window.onload = function(){
+        var name = 'er';
+        $('.btn').on('click',function(){
+            var _i = 0;
+            var val = $('.int').val();
+            if(val){
+                setCookie(val,val,1)
+            }
+        });
+        $('.btnLook').on('click',function(){
+            $('.inner').html(getCookie(name));
+        });
+        $('.del').on('click',function(){
+            delCookie(name);
+        });
+        //$('.box').html(document.cookie);
+        console.log(document.cookie.lastIndexOf(';'));
+        console.log(document.cookie.slice(0,document.cookie.lastIndexOf(';')));
+        var str = document.cookie.slice(0,document.cookie.lastIndexOf(';'))
+        var newStr = str.split(';');
+        console.log(newStr);
+        var arr = [];
+        var ar = [];
+        for(var i=0;i<newStr.length;i++){
+            var s = newStr[i].split('=');
+            arr.push(s);
+        }
+        console.log(arr);
+        for(var j=0;j<arr.length;j++){
+            var r = arr[j][0];
+            ar.push(r);
+        }
+        console.log(ar);
+        $('.box').html(ar.toString());
+
+    }
+
+</script>
+</body>
+</html>
