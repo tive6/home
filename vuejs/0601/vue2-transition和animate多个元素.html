@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../bower_components/animate.css/animate.min.css"/>
+    <style>
+        p{
+            width: 200px;
+            height: 200px;
+            background: #d9534f;
+            margin: 10px auto;
+        }
+    </style>
+</head>
+<body>
+
+<div id="box">
+
+    <button @click="show=!show">点击显示隐藏</button>
+
+    <transition-group enter-active-class="zoomInLeft" leave-active-class="zoomOutRight">
+        <p v-show="show" class="animated" :key="1"></p>
+        <p v-show="show" class="animated" :key="2"></p>
+    </transition-group>
+
+</div>
+
+<script src="../js/vue2.0.js"></script>
+<script>
+    window.onload = function(){
+        var vm = new Vue({
+            el:'#box',
+            data:{
+                show:false
+            }
+        });
+    }
+</script>
+</body>
+</html>

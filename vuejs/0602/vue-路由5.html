@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        .router-link-active{
+            color: #00b3ee;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="box">
+
+    <div class="">
+        <button @click="push">添加一个路由</button>
+        <button @click="replace">替换一个路由</button><br/>
+        <router-link to="/home">主页</router-link>
+        <router-link to="/user">用户</router-link>
+    </div>
+    <div class="">
+        <router-view></router-view>
+    </div>
+
+</div>
+
+<script src="../js/vue2.0.js"></script>
+<script src="../bower_components/vue-router2/dist/vue-router.js"></script>
+<script>
+    alert(1);
+
+    window.onload = function(){
+        var Home = {
+            template:'<h3>这是主页</h3>'
+        };
+
+        var User = {
+            template:`
+                <div>
+                    <h3>用户中心</h3>
+                    <ul>
+                        <li><router-link to="/user/list">用户列表</router-link></li>
+                        <li><router-link to="/user/detail">用户详情</router-link></li>
+                    </ul>
+                    <div>
+                        <router-view></router-view>
+                    </div>
+                </div>
+            `
+        };
+        var UserList = {
+            template:`
+               <div>
+                    <h3>这是用户列表</h3>
+                    <ul>
+                      <li><router-link to="/user/tom/age/15">Tom</router-link></li>
+                      <li><router-link to="/user/Jim/age/20">Jim</router-link></li>
+                      <li><router-link to="/user/Zmer/age/24">Zmer</router-link></li>
+                   </ul>
+                   <div><router-view></router-view></div>
+               </div>
+            `
+        };
+        var UserInfo = {
+          template:'<div>{{$route.params}}</div>'
+        };
+        var routes = [
+            {path:'/home',component:Home},
+            {
+                path:'/user',
+                component:UserList,
+                children:[
+                    {path:':username/age/:age',component:UserInfo}
+                ]
+            },
+            {path:'*',redirect:'/home'}//404
+        ];
+        // 生成路由实例
+        var router= new VueRouter({
+            routes
+        });
+
+        new Vue({
+            router,
+            methods:{
+                push(){
+            router.push({path:'home'});// 直接添加一个路由，表现切换路由，本质是往历史记录里边添加一条记录
+        },
+        replace(){
+            router.replace({path:'UserList'})
+        }
+            }
+        }).$mount('#box');// 相当于el:'#box'
+    }
+
+</script>
+</body>
+</html>

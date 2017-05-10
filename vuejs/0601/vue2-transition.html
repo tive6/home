@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        .div{
+            width: 100px;
+            height: 100px;
+            background: #d9534f;
+        }
+    </style>
+</head>
+<body>
+
+<div id="box">
+
+    <button @click="change">点击显示隐藏</button>
+
+    <transition name="fade">
+        <div class="div" v-show="show"></div>
+    </transition>
+
+</div>
+
+<script src="../js/vue2.0.js"></script>
+<script>
+    window.onload = function(){
+        var vm = new Vue({
+            el:'#box',
+            data:{
+                show:false
+            },
+            methods:{
+                change:function(){
+                    this.show = !this.show
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>
