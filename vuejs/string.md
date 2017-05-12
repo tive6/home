@@ -1,9 +1,34 @@
 # 字符串
 
-* charCodeAt()——unicode编码值
+* length——长度
+
+```
+var str='zmnaer';
+console.log(str.length);// 6
+/*引号中间的空格也算长度*/
+```
+
+* charAt()
+
+```
+var str='zmnaer';
+console.log(str.charAt());// z
+console.log(str.charAt(0));// z
+console.log(str.charAt(11));// (空)
+console.log(str.charAt(-1));// (空)
+/*不写值，默认为0，大于字符串最大长度和取负数都返回值为空*/
+```
+
+* charCodeAt()——Unicode编码值
 
 ```
 alert('周'.charCodeAt());// 21608
+```
+
+* fromCharCode()——反译Unicode码
+
+```
+console.log(String.fromCharCode(21608,22937));// 周妙
 ```
 
 * substring
@@ -56,6 +81,7 @@ console.log('zmnaer'.split());// ['zmnaer']
 console.log('zmnaer'.split(''));// ['z','m','n','a','e','r']
 console.log('zmnaer'.split('m'));// ['z','naer']
 ```
+
 
 
 
