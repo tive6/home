@@ -1,9 +1,13 @@
 <template>
     <div id="app">
 
-        <NavView></NavView>
-        <router-view></router-view>
-        <FooterView></FooterView>
+        <loading v-show="loading"></loading>
+        <NavView v-show="headerShow"></NavView>
+        <!-- keep-alive 避免二次加载 -->
+        <keep-alive>
+            <router-view></router-view>
+        </keep-alive>
+        <FooterView v-show="hideFooter"></FooterView>
 
 
     </div>
@@ -14,7 +18,23 @@
     import NavView from './components/Nav.vue'
     import FooterView from './components/Footer.vue'
 
+    import {mapGetters,mapActions} from 'Vuex'
+
     export default {
+        computed:mapGetters([
+            'headerShow',
+            'loading',
+            'hideFooter'
+        ]),
+        watch:{// 监听路由变化
+            $route:function(to,from){
+                if(to.path=='/user'){
+                    this.$store.dispatch('hideHeader')
+                }else{
+                    this.$store.dispatch('showHeader')
+                }
+            }
+        },
         components:{
             NavView,
             FooterView
