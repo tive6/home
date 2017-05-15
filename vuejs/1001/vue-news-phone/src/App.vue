@@ -4,11 +4,12 @@
         <loading v-show="loading"></loading>
         <NavView v-show="headerShow"></NavView>
         <!-- keep-alive 避免二次加载 -->
-        <keep-alive>
-            <router-view></router-view>
-        </keep-alive>
+        <transition name="sileDown">
+            <keep-alive>
+                <router-view></router-view>
+            </keep-alive>
+        </transition>
         <FooterView v-show="hideFooter"></FooterView>
-
 
     </div>
 </template>
@@ -50,5 +51,16 @@
 </script>
 
 <style>
+    .sileDown-enter-active,
+    .sileDown-leave-active{
+        transition: .4s all ease;
+        opacity: 0.4;
+        transform: translate3d(0,6em,0);
+    }
+    .sileDown-enter,
+    .sileDown-enter{
+        opacity: 1;
+        transform: translate3d(0,6em,0);
+    }
 
 </style>
