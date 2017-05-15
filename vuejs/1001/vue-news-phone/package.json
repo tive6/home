@@ -5,7 +5,7 @@
   "author": "zmer <1099653545@qq.com>",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot --port 8087",
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot --port 8089",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {

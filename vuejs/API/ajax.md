@@ -6,7 +6,7 @@
 
 ### get 请求
 
-```
+```javascript
 /*获取一个普通文本数据:*/
 this.$http.get('aa.txt').then(function(res){
     alert(res.data);
@@ -26,7 +26,7 @@ this.$http.get('get.php',{
 
 ### post 请求
 
-```
+```javascript
 this.$http.post('post.php',{
     a:1,
     b:20
@@ -41,7 +41,7 @@ this.$http.post('post.php',{
 
 ### jsonp 请求
 
-```
+```javascript
 /*
 https://sug.so.360.cn/suggest?callback=suggest_so&word=a
 https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd=a&cb=jshow
@@ -65,7 +65,7 @@ this.$http.jsonp('https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su',{
 
 ### 配置参数
 
-```
+```javascript
 /*
 * 关于 axios 配置
 axios.defaults.baseURL = 'http://localhost:8080/'; // 配置请求根路径

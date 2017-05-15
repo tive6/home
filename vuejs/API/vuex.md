@@ -11,7 +11,7 @@ npm i vuex -D
 * 引用
 
 ```
-import 
+import Vuex from 'vuex'
 ```
 
 * 创建规范的目录和文件
@@ -37,7 +37,7 @@ src/
 
 * index.js
 
-```
+```javascript
 import Vue from 'vue'
 import Vuex from 'vuex'
 Vue.use(Vuex);
@@ -53,7 +53,7 @@ export default new Vuex.Store({
 
 * actions.js
 
-```
+```javascript
 import * as types from './types.js'
 export default {
     add:({commit})=>{
@@ -79,7 +79,7 @@ export default {
 
 * types.js
 
-```
+```javascript
 export const ADD = 'ADD'
 export const DECREMENT = 'DECREMENT'
 export const ODD = 'ODD';
@@ -87,7 +87,7 @@ export const ODD = 'ODD';
 
 * mutations.js
 
-```
+```javascript
 import { ADD, DECREMENT } from './types.js';
 import getters from './getters.js'
 const state = {
@@ -110,7 +110,7 @@ export default {
 
 * getters.js
 
-```
+```javascript
 export default {
     count:(state)=>{
         return state.count;
@@ -123,7 +123,7 @@ export default {
 
 * main.js
 
-```
+```javascript
 import Vue from 'vue'
 import App from './App.vue'
 import store from './store/index.js'
@@ -136,7 +136,7 @@ new Vue({
 
 * App.vue
 
-```
+```javascript
 <template>
     <div id="app">
         <h3>welcome Vuex</h3>
