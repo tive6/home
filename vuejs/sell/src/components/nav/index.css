@@ -1,0 +1,15 @@
+.nav ul {
+  display: flex;
+  width: 100%;
+  line-height: 40px;
+}
+.nav ul li {
+  flex: 1;
+  text-align: center;
+  color: #4d585d;
+  cursor: pointer;
+  border-1px: #07111b;
+}
+.nav ul li.active {
+  color: #f01414;
+}
