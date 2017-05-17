@@ -54,7 +54,7 @@
     .sileDown-enter-active,
     .sileDown-leave-active{
         transition: .4s all ease;
-        opacity: 0.4;
+        opacity: 0.5;
         transform: translate3d(0,6em,0);
     }
     .sileDown-enter,

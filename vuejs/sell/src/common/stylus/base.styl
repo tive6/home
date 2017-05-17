@@ -4,6 +4,16 @@ body,html
   font-weight 200
   font-family "PingFang Sc","STHeitiSC-Light","Helvetica-Light","冬青黑体简体中文", "微软雅黑", "宋体", Arial, sans-serif
 
+.clearfix
+  display inline-block
+  &:after
+    display block
+    content ''
+    height 0
+    line-height 0
+    clear both
+    visibility hidden
+
 @media (-webkit-min-device-pixel-ratio: 1.5),(min-device-pixel-ratio: 1.5)
   .border-1px
     &::after
