@@ -2,7 +2,8 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import VueResource from 'vue-resource'
+//import VueResource from 'vue-resource'
+import axios from 'axios'
 
 import routes from './router.config.js'
 import App from './App.vue'
@@ -10,7 +11,9 @@ import App from './App.vue'
 import './common/stylus/index.styl'
 
 Vue.use(VueRouter);
-Vue.use(VueResource);
+//Vue.use(VueResource);
+
+Vue.prototype.$http = axios;// 将 axios对象 挂在到 Vue 原型上
 
 const router = new VueRouter({
     mode:'history',
