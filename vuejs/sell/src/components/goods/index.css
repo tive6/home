@@ -21,6 +21,13 @@ border-none:after {
   line-height: 14px;
   padding: 0 12px;
 }
+.goods .menu-wrapper .menu-item.current {
+  position: relative;
+  z-index: 10;
+  margin-top: -1px;
+  background-color: #fff;
+  font-weight: 700;
+}
 .goods .menu-wrapper .menu-item .icon {
   display: inline-block;
   vertical-align: top;
@@ -138,8 +145,9 @@ border-none:after {
 }
 .goods .foods-wrapper .food-item .content .desc {
   margin-bottom: 8px;
+  line-height: 12px;
 }
-.goods .foods-wrapper .food-item .content .extra.count {
+.goods .foods-wrapper .food-item .content .extra .count {
   font-size: 12px;
 }
 .goods .foods-wrapper .food-item .content .price {

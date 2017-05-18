@@ -16,6 +16,14 @@
       width 56px
       line-height 14px
       padding 0 12px
+      &.current
+        position relative
+        z-index 10
+        margin-top -1px
+        background-color #fff
+        font-weight 700
+        .text
+          border-none()
       .icon
         display inline-block
         vertical-align top
@@ -75,8 +83,9 @@
           color rgb(147,153,159)
         .desc
           margin-bottom 8px
+          line-height 12px
         .extra
-          &.count
+          .count
             font-size 12px
         .price
           font-weight 700
