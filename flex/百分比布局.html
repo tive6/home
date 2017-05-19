@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <style>
+
+    .Grid {
+      display: flex;
+      background: steelblue;
+    }
+
+    .Grid-cell {
+      flex: 1;
+    }
+
+    .Grid-cell.u-full {
+      flex: 0 0 100%;
+    }
+
+    .Grid-cell.u-1of2 {
+      flex: 0 0 50%;
+    }
+
+    .Grid-cell.u-1of3 {
+      flex: 0 0 33.3333%;
+      background: yellowgreen;
+    }
+
+    .Grid-cell.u-1of4 {
+      flex: 0 0 25%;
+      background: turquoise;
+    }
+
+  </style>
+</head>
+<body>
+
+
+
+<div class="Grid">
+  <div class="Grid-cell u-1of4">u-lof4</div>
+  <div class="Grid-cell">u-lof</div>
+  <div class="Grid-cell u-1of3">u-lof3</div>
+</div>
+
+
+<script></script>
+</body>
+</html>
