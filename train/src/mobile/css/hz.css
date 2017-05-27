@@ -1,0 +1,227 @@
+.sr-only {
+  display: none;
+}
+
+.reset-password-container,
+.change-password-container,
+.user-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  z-index: 998
+}
+
+.reset-password-container,
+.change-password-container {
+  top: 0;
+  left: 100%;
+  background-color: #f3f8f9;
+  z-index: 999
+}
+
+.login-container,
+.register-container {
+  width: 100%;
+  height: 100%;
+}
+
+.login-toolbar,
+.register-toolbar {
+  height: 48px;
+  padding: 0 15px;
+  background-color: transparent
+}
+
+.toolbar-button {
+  display: inline-block;
+  height: 100%;
+  color: #fff
+}
+
+.toolbar-left-icon {
+  display: block;
+  width: 18px;
+  height: 100%;
+  background: transparent url(../images/icon/close-white.png) no-repeat left center;
+  background-size: 18px;
+}
+
+.login-toolbar .toolbar-left-icon {
+  background-image: url(../images/icon/close-gray.png);
+}
+
+.toolbar-right-icon {
+  display: block;
+  width: 50px;
+  height: 100%;
+  background: transparent url(../images/icon/login-button.png) no-repeat left center;
+  background-size: 50px auto;
+}
+
+.login-toolbar .toolbar-right-icon {
+  background-image: url(../images/icon/register-button.png);
+}
+
+.right-button {
+  float: right;
+}
+
+.register-header {
+  background-color: #0cb
+}
+
+.logo {
+  display: block;
+  width: 375px;
+  max-width: 100%;
+  margin: 24px auto 45px;
+}
+
+.register-tabs {
+  background-color: #0cb
+}
+
+.register-tab-item {
+  position: relative;
+  float: left;
+  width: 50%;
+  padding-bottom: 18px;
+  font-size: 16px;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+}
+
+.register-tab-item:first-child:after {
+  position: absolute;
+  top: 0;
+  right: -1px;
+  content: '';
+  width: 1px;
+  height: 16px;
+  background-color: rgba(255, 255, 255, .6)
+}
+
+.register-tab-item.active:before {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  content: '';
+  width: 0;
+  height: 0;
+  margin: auto;
+  border-top: 0;
+  border-left: solid 6px transparent;
+  border-right: solid 6px transparent;
+  border-bottom: solid 7px #fff;
+}
+
+.login-form-container,
+.register-form-container {
+  padding: 15px 0;
+}
+
+.login-input-group,
+.register-input-group {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 78%;
+  padding: 13px 20px;
+  margin: 15px auto;
+  border: 1px solid #dadada;
+  border-radius: 27px;
+}
+
+.login-input-group .input-control,
+.register-input-group .input-control {
+  display: block;
+  width: 100%;
+  height: 16px;
+  font-size: 14px;
+  color: #232428;
+  line-height: 16px;
+  background: transparent;
+}
+
+.input-control::-webkit-input-placeholder {
+  color: #dadada;
+  opacity: 1
+}
+
+.login-input-group.get-phone-code,
+.register-input-group.get-phone-code {
+  padding-right: 102px
+}
+
+.get-code-button {
+  display: block;
+  float: right;
+  height: 16px;
+  width: 90px;
+  padding-left: 10px;
+  margin-right: -102px;
+  font-size: 14px;
+  line-height: 16px;
+  color: #0cb;
+  border-left: 1px solid #0cb
+}
+
+.get-code-button.orange {
+  color: #ff7f66;
+  border-color: #ff7f66
+}
+
+.login-button,
+.register-button {
+  clear: both;
+  display: block;
+  width: 78%;
+  margin: 25px auto 0;
+  letter-spacing: 2px;
+  background-color: #0cb;
+  box-shadow: 1px 1px 1px;
+}
+
+.primary-button {
+  height: 44px;
+  background-color: #0cb;
+  box-shadow: 0 0 8px #0cb;
+  border-radius: 22px;
+  font-size: 16px;
+  color: #fff;
+  text-align: center;
+}
+
+.protocol-container {
+  margin-top: 35px;
+  color: #999;
+  text-align: center;
+}
+
+.protocol-container a {
+  font-size: 13px;
+  color: #0cb
+}
+
+.forget-password {
+  float: right;
+  margin: -5px 14% 40px 0;
+  font-size: 13px;
+  color: #0cb;
+  text-align: right;
+}
+
+.password-login,
+.cellphone-fast-login {
+  margin: 25px auto;
+  text-align: center
+}
+
+.password-login a,
+.cellphone-fast-login a {
+  color: #0cb
+}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <title>汇智方略</title>
+  <meta charset="utf-8" />
+  <meta name="keywords" content="汇智方略">
+  <meta name="description" content="汇智方略">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+  <link href="mobile/css/style.css" rel="stylesheet">
+  <script src="mobile/js/lib/jquery/1.12.4/jquery.min.js"></script>
+  <script src="mobile/js/lib/swiper/3.4.2/swiper.min.js"></script>
+  <script src="mobile/js/lib/cookie/1.1.0/cookie.min.js"></script>
+  <script src="mobile/js/common/common.js"></script>
+  <script src="mobile/js/service/appService.js"></script>
+  <script src="mobile/js/service/userService.js"></script>
+  <script src="mobile/js/main.js"></script>
+  <script>
+    jQuery(function ($) {
+      var config = HL.config;
+      if (!cookie.get(config.LOGIN_COOKIE_NAME)) {
+        HL._shouldLogin();
+      }
+    });
+  </script>
+</head>
+
+<body>
+  <div id="pageContainer" class="page-container">
+    <div onclick="HL._shouldLogin();">
+      登录
+    </div>
+  </div>
+</body>
+
+</html>

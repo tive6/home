@@ -1,0 +1,139 @@
+* {
+    padding: 0;
+    margin: 0;
+    outline: 0;
+    list-style: none;
+}
+
+body,
+html {
+    font-size: 14px;
+    color: #232428;
+    height: 100%;
+    overflow: hidden;
+}
+
+
+/*
+* 内盒模型
+body {
+     -moz-box-sizing: border-box;  
+     -webkit-box-sizing: border-box; 
+     -o-box-sizing: border-box; 
+     -ms-box-sizing: border-box; 
+     box-sizing: border-box; 
+}
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-size: 14px;
+    font-weight: normal;
+    padding: 0;
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    color: #232428;
+}
+
+i {
+    font-style: normal;
+}
+
+b {
+    font-weight: normal;
+}
+
+img {
+    border: 0;
+    border-style: none;
+    line-height: 1;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+th,
+td {
+    text-align: center;
+    font-weight: normal;
+}
+
+input {
+    border: none;
+    /* 去除ios input框点击时的灰色背景 */
+    -webkit-tap-highlight-color:rgba(0,0,0,0);
+}
+
+button,
+input[type="button"] {
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    padding: 0;
+}
+
+button:hover,
+input[type="button"]:hover {
+    cursor: pointer;
+    text-align: center;
+}
+
+button,
+input[type="button"],
+button:hover,
+input[type="button"]:hover{
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+    -webkit-user-select: none;
+    -moz-user-focus: none;
+    -moz-user-select: none;
+}
+
+/*清除浮动*/
+.login-input-group:before,
+.login-input-group:after,
+.register-input-group:before,
+.register-input-group:after,
+.clear:before,
+.clear:after {
+    content: '';
+    display: block;
+    clear: both;
+    height: 0;
+}
+
+.prevent-callout {
+    /* 禁用长触弹出的下载图片菜单 */
+    -webkit-touch-callout: none;
+    /* 禁用长触选择文字等功能 */
+    -webkit-user-select: none;
+}
+
+.prevent-tap-highlight {
+    /* 取消可点击区域视觉反馈效果 */
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+/* 使用图片作为a标签的点击按钮时，当触发touchstart的时候，灰色的背景 */
+a,a:hover,
+a:active,
+a:visited,
+a:link,
+a:focus{
+    -webkit-tap-highlight-color: transparent;
+    outline:none;
+    background: none;
+    text-decoration: none;
+    /*-webkit-tap-highlight-color: rgba(255, 255, 255, 0);*/
+    -webkit-user-select: none;
+    -moz-user-focus: none;
+    -moz-user-select: none;
+}
