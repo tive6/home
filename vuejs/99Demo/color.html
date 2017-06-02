@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src=""></script>
+    <style>
+        a,a:visited{
+            text-decoration: none;
+            color: #00f;
+        }
+        #list a:hover{
+            text-decoration: underline;
+            color: #00f;
+        }
+    </style>
+</head>
+<body>
+
+<ul id="list">
+    <li><a href="javascript:" target="_blank">百度</a></li>
+    <li><a href="javascript:" target="_blank">好123</a></li>
+    <li><a href="javascript:" target="_blank">QQ</a></li>
+</ul>
+
+<script src="jquery.js"></script>
+<script>
+    $(function(){
+        $('ul li a').click(function(){
+            $(this).css('color','#f00');
+            $(this).parent('li').siblings().children().css('color','#00f');
+        });
+    })
+</script>
+</body>
+</html>
