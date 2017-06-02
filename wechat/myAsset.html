@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="keywords" content="八斗金服">
+  <meta name="description" content="八斗金服">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+  <title>我的资产</title>
+  <link rel="stylesheet" type="text/css" href="weixin/css/wechat.css" />
+  <script src="weixin/js/require.js" data-main="weixin/js/main" defer="defer" async="async" type="text/javascript" charset="utf-8"></script>
+  <script>
+    window.onload = function() {
+      require.config({
+        baseUrl: 'weixin/js',
+        paths: {
+          // 外部库／插件
+          'jquery': [
+            '//cdn.bootcss.com/jquery/1.12.4/jquery.min',
+            'lib/jquery/1.12.4/jquery.min'
+          ],
+          'config': 'settings',
+          'swipeLoader': 'common/swipeLoader',
+          'appController': 'controller/appController'
+        }
+      });
+      require([
+        'jquery', 'config', 'swipeLoader', 'appController'
+      ], function($, config, swipeLoader, appController) {
+
+        var dataCount = 0,
+          currentPage = 0,
+          noMoreData = false;
+
+        function loadMore(callback, swiper) {
+          if (noMoreData) {
+            return;
+          }
+          var options = {
+            currentPage: currentPage++,
+            pageSize: 10
+          };
+          appController.getMyAssetsMessage(options, function(result) {
+            var list = result.list;
+            if (list && list.length > 0) {
+              dataCount += list;
+              var html = '';
+              $.each(list, function(index, message) {
+
+                html +=
+                  '<div class="myAsset-list" data-id="' + message.getId() + '" >' +
+                  '<div class="myAsset-list-time">' + message.getCreateDate() + '</div>' +
+                  '<div class="myAsset-list-cont">' +
+                  '<h2>' + message.getTitle() + '</h2>' +
+                  '<p>' + message.getContent() + '</p>' +
+                  '<div class="viewDetails">' +
+                  '<span>查看详情</span>' +
+                  '<a class="read-more" href="capital-flow.html"></a>' +
+                  '</div>' +
+                  '</div>' +
+                  '</div>';
+              });
+              $('#myAssetsMessage-wrapper').append(html);
+              $('#loadMore').one('click', loadMore).fadeIn(600);
+            } else {
+              noMoreData = true;
+              $('#loadMore').html('没有更多消息啦～');
+            }
+            if (dataCount <= 0) {
+              $('body').addClass('no-message');
+            }
+          });
+        };
+        loadMore();
+
+      });
+    };
+  </script>
+</head>
+
+<body class="myAsset-page gray-bg">
+  <div class="myAsset-wrapper">
+
+    <!--<div class="myAsset-list">
+				<div class="myAsset-list-time">2016.03.03</div>
+				<div class="myAsset-list-cont">
+					<h2>理财收益提醒</h2>
+					<p>您有一笔智享计划理财收益90.38元已到账，感谢您对八斗金服的信任与支持！</p>
+					<div class="viewDetails">
+						<span>查看详情</span>
+						<a class="read-more" href="javascript:void(0);"></a>
+					</div>
+				</div>
+			</div>-->
+
+    <div id="myAssetsMessage-wrapper"></div>
+    <div id="loadMore" class="load-more">加载更多</div>
+  </div>
+  <div class="no-data-msg">暂时还没有消息</div>
+</body>
+
+</html>

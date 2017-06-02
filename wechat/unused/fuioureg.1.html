@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="keywords" content="八斗金服">
+  <meta name="description" content="八斗金服">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+  <title>开通富友金账户</title>
+  <link rel="stylesheet" type="text/css" href="weixin/css/wechat.css" />
+  <script src="weixin/js/require.js" data-main="weixin/js/main" defer="defer" async="async" type="text/javascript" charset="utf-8"></script>
+  <script>
+    window.onload = function () {
+      require.config({
+        baseUrl: 'weixin/js',
+        paths: {
+          // 外部库／插件
+          'jquery': [
+            '//cdn.bootcss.com/jquery/1.12.4/jquery.min',
+            'lib/jquery/1.12.4/jquery.min'
+          ],
+          'config': 'settings',
+          'util': 'common/util',
+          'User': 'model/user',
+          'userController': 'controller/userController',
+          'appController': 'controller/appController'
+        }
+      });
+      require([
+        'jquery', 'config', 'util', 'User', 'userController', 'appController'
+      ], function ($, config, util, User, userController, appController) {
+        var username = util.getSearchField('name'),
+          cardnum = util.getSearchField('cardnum'),
+          backUrl = util.getSearchField('backUrl'),
+          user = userController.getLoginUserFromLocalStorage();
+
+        if (user) {
+          var telphone = user.getTelphone();
+          if (telphone) {
+            $('[name="mobile_no"]').val(telphone);
+            $('[name="telphone"]').val(util.replacePhoneNumberUseAsterisk(telphone));
+            $('[name="loginpwd"]').val(telphone.slice(5, 11));
+            $('[name="paypwd"]').val(telphone.slice(5, 11));
+          }
+        }
+
+        $('[name="telphone"]').on('input', function () {
+          $('[name="mobile_no"]').val($(this).val());
+        });
+
+        $('[name="cust_nm"]').val(username);
+        $('[name="certif_id"]').val(cardnum);
+        //  加载渲染省份列表
+        renderProvinces();
+
+        $('#districtList').on('click', function (e) {
+          e.stopPropagation();
+          var $province = $(e.target).closest('li.province-item'),
+            pCode = $province.data('provincecode');
+
+          if ($province.length > 0 && !$province.data('childSuccess')) {
+            renderCities(pCode, $province);
+          } else {
+            $province.find('ul').slideDown();
+          }
+        });
+
+        function renderProvinces() {
+          appController.getProvinces(function (list) {
+            var pWrapper = $('<ul class="province-list"></ul>'),
+              pl = '',
+              cl = '';
+            $.each(list, function (index, item) {
+              pl += '<li class="province-item" data-provincecode="' + item.getCode() + '" data-child-success="false">' + item
+                .getName() +
+                '</li>';
+            });
+            pWrapper.append(pl)
+            $('#districtList').append(pWrapper);
+          });
+        }
+
+        function renderCities(pCode, context) {
+          var $C = $('<ul class="city-list"></ul>'),
+            cl = '';
+          appController.getCities(pCode, function (cities) {
+            $.each(cities, function (index, city) {
+              cl += '<li class="city-item" data-citycode="' + city.getCode() + '">' + city.getName() + '</li>';
+            });
+            $C.append(cl);
+            $C.appendTo(context);
+            context.data('childSuccess', true);
+            $C.slideDown();
+          });
+
+          $C.on('click', function (e) {
+            e.stopPropagation();
+            var $city = $(e.target).closest('li.city-item');
+            if ($city.length > 0) {
+              $('[name="city_id"]').val($city.data('citycode'));
+              $('[name="city_name"]').val($city.html());
+              $('#districtList').fadeOut(300);
+              $('#fuiouWrapper').fadeIn(300);
+              $('.city-list').slideUp();
+            }
+          });
+        }
+
+        appController.getSupportedBanks(function (banks) {
+          var html = '<ul>';
+          $.each(banks, function (index, bank) {
+            html += '<li class="bank-list-item" data-bank-code="' + bank.getCode() + '">' + bank.getName() + '</li>'
+          });
+          html += '</ul>';
+          $('#bankList').append(html);
+          $('#bankList').on('click', function (e) {
+            e.stopPropagation();
+            var $target = $(e.target).closest('li');
+            if ($target.length > 0) {
+              $('[name="parent_bank_id"]').val($target.data('bankCode'));
+              $('[name="bank_name"]').val($target.html());
+              $('#fuiouWrapper').fadeIn(300);
+              $('#bankList').fadeOut(300);
+            }
+          });
+        });
+
+        $('[name="bankNo"]').on('input', function () {
+          var _self = $(this);
+          $('[name="capAcntNo"]').val(_self.val());
+        });
+
+        userController.loadOldCustomerInfo(function (user) {
+          if (user) {
+            $('[name="city_name"]').val(user.getCityName());
+            $('[name="bank_name"]').val(user.getBankName());
+            $('[name="bankNo"]').val(user.getBankCardNum());
+          }
+          $('#chooseD').on('click', function () {
+            $('#districtList').fadeIn(300);
+            $('#fuiouWrapper').fadeOut(300);
+          });
+          $('#chooseB').on('click', function () {
+            $('#bankList').fadeIn(300);
+            $('#fuiouWrapper').fadeOut(300);
+          });
+        });
+        
+        $('#fuiouRegForm').attr('action', config.SERVICE_URI_MAP.FUIOU_WEB_REG);
+        $('#confirm').on('click', function () {
+          var options = {
+            city_id: $('[name="city_id"]').val(),
+            parent_bank_id: $('[name="parent_bank_id"]').val(),
+            mobile_no: $('[name="mobile_no"]').val(),
+            cust_nm: $('[name="cust_nm"]').val(),
+            certif_id: $('[name="certif_id"]').val(),
+            capAcntNo: $('[name="capAcntNo"]').val(),
+            password: $('[name="paypwd"]').val(),
+            lpassword: $('[name="loginpwd"]').val()
+          };
+          userController.fuiouWebRegData(options, function (fuiou) {
+            // $('[name="mchnt_cd"]').val(fuiou.getMchntCd());
+            // $('[name="mchnt_txn_ssn"]').val(fuiou.getMchntTxnSsn());
+            // $('[name="certif_tp"]').val(fuiou.getCertifType());
+            // $('[name="city_id"]').val(fuiou.getCityId());
+            // $('[name="parent_bank_id"]').val(fuiou.getParentBankId());
+            // $('[name="mobile_no"]').val(fuiou.getMobileNo());
+            // $('[name="cust_nm"]').val(fuiou.getCustomName());
+            // $('[name="certif_id"]').val(fuiou.getCertifId());
+            // $('[name="capAcntNo"]').val(fuiou.getCapAcntNo());
+            // $('[name="signature"]').val(fuiou.getSignature());
+            // $('#fuiouRegForm').submit();
+          });
+        });
+      });
+    };
+  </script>
+</head>
+
+<body class="fuyou-page open-f">
+  <!--富有表单数据 开始-->
+  <form id="fuiouRegForm" method="POST">
+    <!--商户代码-->
+    <input type="hidden" name="mchnt_cd" value="">
+    <!--流水号-->
+    <input type="hidden" name="mchnt_txn_ssn" value="">
+    <!--证件类型-->
+    <input type="hidden" name="certif_tp" value="0">
+    <!--开户行地区代码-->
+    <input type="hidden" name="city_id" value="">
+    <!--开户行行别-->
+    <input type="hidden" name="parent_bank_id" value="">
+    <!--手机号码-->
+    <input type="hidden" name="mobile_no" value="">
+    <!--客户姓名-->
+    <input type="hidden" name="cust_nm" value="">
+    <!--身份证号码/证件-->
+    <input type="hidden" name="certif_id" value="">
+    <!--帐号-->
+    <input type="hidden" name="capAcntNo" value="">
+    <!--签名信息-->
+    <input type="hidden" name="signature" value="">
+    <!--户名（ 留空 ）-->
+    <input type="hidden" name="capAcntNm" value="">
+  </form>
+  <!--富有表单数据 结束-->
+  <div id="fuiouWrapper" class="f-realName-cont">
+    <div class="f-realName-header clear">
+      <div class="f-real-step">
+        <span class="circle-outer outer-pass"><span class="circle-inner inner-pass">1</span></span>
+        <p class="f-is-realed">实名认证</p>
+      </div>
+      <div class="f-real-step">
+        <hr class="line-left real-pass" />
+        <span class="circle-outer outer-pass"><span class="circle-inner inner-pass">2</span></span>
+        <p class="f-is-realed">开通富友金账户</p>
+        <hr class="line-right" />
+      </div>
+      <div class="f-real-step">
+        <span class="circle-outer"><span class="circle-inner">3</span></span>
+        <p>开通安心签</p><hr class="line-right" />
+      </div>
+      <div class="f-real-step">
+        <span class="circle-outer"><span class="circle-inner">4</span></span>
+        <p>完成认证</p>
+      </div>
+    </div>
+    <div class="f-realName-body">
+      <!--<div class="per-msg-list">
+            <span class="f-list-left">姓名</span>
+            <a href="" class="f-list-right f-list-link"></a>
+        </div>
+        <div class="per-msg-list">
+            <span class="f-list-left">身份证号</span>
+            <a href="" class="f-list-right f-list-link"></a>
+        </div>-->
+      <div class="cashed-group">
+        <span>开户所在地</span>
+        <input type="text" name="city_name" value="" readonly="readonly">
+        <a id="chooseD" class="read-more-arrow" href="javascript:void(0);"></a>
+      </div>
+      <div class="cashed-group">
+        <span>银行开户行</span>
+        <input type="text" name="bank_name" value="" readonly="readonly">
+        <a id="chooseB" class="read-more-arrow" href="javascript:void(0);"></a>
+      </div>
+      <div class="per-msg-list">
+        <span class="f-list-left">银行卡号</span>
+        <input class="f-list-input" name="bankNo" type="text" placeholder="请输入借记卡卡号" />
+      </div>
+      <div class="per-msg-list f-tips">富友登录密码与支付密码皆默认为手机号未6位</div>
+      <div class="per-msg-list">
+        <span class="f-list-left">手机号</span>
+        <input name="telphone" class="f-list-input" type="text" placeholder="请输入手机号" />
+        <span class="f-list-right f-list-clean"></span>
+      </div>
+      <div class="per-msg-list">
+        <span class="f-list-left">登录密码</span>
+        <input name="loginpwd" class="f-list-input" type="password" placeholder="请输入登录密码" />
+        <span class="f-list-right f-list-clean"></span>
+      </div>
+      <div class="per-msg-list">
+        <span class="f-list-left">支付密码</span>
+        <input name="paypwd" class="f-list-input" type="password" placeholder="请输入支付密码" />
+        <span class="f-list-right f-list-clean"></span>
+      </div>
+      <div class="per-msg-list f-checkbox">
+        <input type="checkbox" id="fuyou-xieyi" checked="" />
+        <!-- 选中状态 span  addClass('f-checked-img')-->
+        <span class="f-checkbox-img"></span>
+        <label for="fuyou-xieyi" class="xieyi-check-label">我已阅读并同意<a class="xieyiShow" href="javascript:">《开通富友专属账户》</a></label>
+      </div>
+    </div>
+  </div>
+  <div class="f-footer">
+    <a id="confirm" class="f-real-next" href="javascript:void(0);">确认开通</a>
+  </div>
+  <div id="districtList" class="district-list"></div>
+  <div id="bankList" class="bank-list"></div>
+</body>
+
+</html>

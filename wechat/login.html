@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="keywords" content="八斗金服">
+  <meta name="description" content="八斗金服">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+  <!--<base href="http://192.168.0.220:8022/" />-->
+  <title>登录</title>
+  <link rel="stylesheet" type="text/css" href="weixin/css/swiper/3.4.2/swiper.min.css" />
+  <link rel="stylesheet" type="text/css" href="weixin/css/wechat.css" />
+  <script src="weixin/js/require.js" data-main="weixin/js/main" defer="defer" async="async" type="text/javascript" charset="utf-8"></script>
+  <script>
+    window.onload = function () {
+      require.config({
+        baseUrl: 'weixin/js',
+        paths: {
+          'jquery': [
+            '//cdn.bootcss.com/jquery/1.12.4/jquery.min',
+            'lib/jquery/1.12.4/jquery.min'
+          ],
+          'swiper': [
+            '//cdn.bootcss.com/Swiper/3.4.2/js/swiper.min',
+            'lib/swiper/3.4.2/swiper.min'
+          ],
+          'config': 'settings',
+          'util': 'common/util',
+          'WebView': 'common/webView',
+          'User': 'model/user',
+          'appController': 'controller/appController',
+          'userController': 'controller/userController'
+        }
+      });
+      require([
+        'jquery', 'swiper', 'config', 'util', 'WebView', 'User', 'appController', 'userController'
+      ], function ($, Swiper, config, util, WebView, User, appController, userController) {
+        // appController.getH5Urls(function (urls) {
+        //   $('#iframeBridge').attr('src', urls.getRegistrationUrl());
+        // });
+        var swiper = new Swiper('.swiper-container', {
+          resistanceRatio: 0, //第一个最后一个禁止拖动
+          onInit: function () { }
+        });
+        var _count = 3;
+        // 注册
+        function doRegister(e) {
+          e.stopPropagation();
+          var user = new User();
+          user.setTelphone($('#registerTelphone').val());
+          user.setPassword($('#registerPassword').val());
+          user.setLoginCode($('#registerCode').val());
+          user.setByinvitecode($('#byinvitecode').val());
+          if (!validateRegisterUserInfo(user)) {
+            $('#register_1').one('click', doRegister);
+            return;
+          }
+          $('#indicator_1').show(0);
+          userController.register(user, function (res) {
+            // 注册
+            if (res.getStatus()) {
+              $('#indicatorTitle_1').html('注册成功，正在尝试自动登录...');
+            } else {
+              $('#indicator_1').hide(0);
+              $('#indicatorTitle_1').html(res.getMsg());
+              $('#register_1').one('click', doRegister);
+            }
+          }, function (res) {
+            // 登录
+            if (res.getStatus()) {
+              userController.saveAutoLoginUser2Local(res.getData());
+              $('#loading_1').hide(0);
+              $('#loaded_1').show(0);
+              var _timer = setTimeout(function () {
+                clearTimeout(_timer);
+                $('#indicatorTitle_1').html('登录成功，即将进入首页');
+                $('#register_1').one('click', function () {
+                  window.location = config.BASE_URL + config.PAGE_URI_MAP.HOME_PAGE;
+                });
+                var timer = setTimeout(function () {
+                  clearTimeout(timer);
+                  window.location = config.BASE_URL + config.PAGE_URI_MAP.HOME_PAGE;
+                }, 1500);
+              }, 1400);
+            } else {
+              $('#indicator_1').hide(0);
+              $('#indicatorTitle_1').html('注册成功，前往登录');
+              $('#register_1').one('click', $('#loadRegister').trigger('click'));
+            }
+          }, function (res) {
+            $('#indicator_1').hide(0);
+            $('#indicatorTitle_1').html(res.getMsg());
+            $('#register_1').one('click', doRegister);
+          }, function (res) {
+            $('#indicator_1').hide(0);
+            $('#indicatorTitle_1').html(res.getMsg());
+            $('#register_1').one('click', doRegister);
+          });
+        }
+
+        var count = 3,
+          backUrl = util.getSearchField('backUrl'),
+          b = util.getSearchField('__b__'),
+          msg = '跳转至首页';
+        // 登录
+        function doLogin(e) {
+          e.stopPropagation();
+          var _self = $(this),
+            user = new User();
+          user.setTelphone($('#loginTelphone').val());
+          user.setPassword($('#loginPassword').val());
+          user.setLoginCode($('#loginCode').val());
+          if (!validateLoginUserInfo(user, _self.data('type') === 1)) {
+            $('#login').one('click', doLogin);
+            return;
+          }
+          $('#indicator').show(0);
+          $('#indicatorTitle').html('正在登录...');
+          if (_self.data('type') === 0) {
+            userController.password2login(user, function (res) {
+              if (res.getStatus()) {
+                $('#loading').hide(0);
+                $('#loaded').show(0);
+                userController.saveAutoLoginUser2Local(res.getData());
+                var _timer = setTimeout(function () {
+                  clearTimeout(_timer);
+                  if (backUrl || b) {
+                    msg = '返回'
+                  }
+                  $('#login').one('click', function () {
+                    if (b) {
+                      window.history.go(-b);
+                    } else if (backUrl) {
+                      window.location = backUrl;
+                    } else {
+                      window.location = config.BASE_URL + config.PAGE_URI_MAP.HOME_PAGE;
+                    }
+                  });
+                  // 登录成功3秒计数自动跳转至首页
+                  $('#indicatorTitle').html('登录成功，' + count-- + '秒后' + msg);
+                  var timer = setInterval(function () {
+                    $('#indicatorTitle').html('登录成功，' + count-- + '秒后' + msg);
+                    if (count < 0) {
+                      clearInterval(timer);
+                      if (b) {
+                        window.history.go(-b);
+                      } else if (backUrl) {
+                        window.location = backUrl;
+                      } else {
+                        window.location = config.BASE_URL + config.PAGE_URI_MAP.HOME_PAGE;
+                      }
+                    }
+                  }, 1000);
+                }, 1400);
+              } else {
+                $('#indicator').hide(0);
+                $('#indicatorTitle').html(res.getMsg());
+                $('#login').one('click', doLogin);
+              }
+            }, function (res) {
+              $('#indicator').hide(0);
+              $('#indicatorTitle').html(res.getMsg());
+              $('#login').one('click', doLogin);
+            });
+          } else if (_self.data('type') === 1) {
+            userController.loginCode2Login(user, function (res) {
+              if (res.getStatus()) {
+                $('#loading').hide(0);
+                $('#loaded').show(0);
+                userController.saveAutoLoginUser2Local(res.getData());
+                var _timer = setTimeout(function () {
+                  clearTimeout(_timer);
+                  if (backUrl || b) {
+                    msg = '返回'
+                  }
+                  $('#login').one('click', function () {
+                    if (b) {
+                      window.history.go(-b);
+                    } else
+                      if (backUrl) {
+                        window.location = backUrl;
+                      } else {
+                        window.location = config.BASE_URL + config.PAGE_URI_MAP.HOME_PAGE;
+                      }
+                  });
+                  // 登录成功3秒计数自动跳转至首页
+                  $('#indicatorTitle').html('登录成功，' + count-- + '秒后' + msg);
+                  var timer = setInterval(function () {
+                    $('#indicatorTitle').html('登录成功，' + count-- + '秒后' + msg);
+                    if (count < 0) {
+                      clearInterval(timer);
+                      if (b) {
+                        window.history.go(-b);
+                      } else if (backUrl) {
+                        window.location = backUrl;
+                      } else {
+                        window.location = config.BASE_URL + config.PAGE_URI_MAP.HOME_PAGE;
+                      }
+                    }
+                  }, 1000);
+                }, 1400);
+              } else {
+                $('#indicator').hide(0);
+                $('#indicatorTitle').html(res.getMsg());
+                $('#login').one('click', doLogin);
+              }
+            }, function (res) {
+              $('#indicator').hide(0);
+              $('#indicatorTitle').html(res.getMsg());
+              $('#login').one('click', doLogin);
+            });
+          }
+        }
+        // 获取手机验证码
+        function getPhoneCode(e) {
+          e.stopPropagation();
+          var codeTag = e.data.codeTag,
+            data = {
+              codeTag: codeTag
+            }
+          $btn = $(this),
+            callback = null;
+          if ('codelogin' === codeTag) {
+            data.telphone = $('#loginTelphone').val();
+            callback = function () {
+              $('#getLoginCode').one('click', {
+                codeTag: "codelogin"
+              }, getPhoneCode)
+            }
+          } else if ('register' === codeTag) {
+            data.telphone = $('#registerTelphone').val();
+            callback = function () {
+              $('#getPhoneCode').one('click', {
+                codeTag: "register"
+              }, getPhoneCode);
+            }
+          }
+          appController.getPhoneCode(data, $btn, callback);
+        }
+        /**
+         * 验证登录用户数据合法性
+         * @param {User} user 登录用户
+         * @return {boolean} 数据合法返回true，否则返回false
+         */
+        function validateLoginUserInfo(user, isCode) {
+          if (!util.checkTelphone(user.getTelphone())) {
+            WebView
+              .msgAlert({
+                msg: '手机号不合法'
+              })
+              .show();
+            return false;
+          }
+          if (isCode) {
+            // 手机验证码不合法
+            if (!util.checkLoginCode(user.getLoginCode())) {
+              WebView
+                .msgAlert({
+                  msg: '验证码不合法'
+                })
+                .show();
+              return false;
+            }
+          } else {
+            if ('' === user.getPassword()) {
+              WebView
+                .msgAlert({
+                  msg: '请输入密码'
+                })
+                .show();
+              return false;
+            }
+          }
+          return true;
+        }
+        /**
+         * 验证注册用户数据合法性
+         * @param {User} user 注册用户
+         * @return {boolean} 数据合法返回true，否则返回false
+         */
+        function validateRegisterUserInfo(user) {
+          // 手机号不合法
+          if (!util.checkTelphone(user.getTelphone())) {
+            WebView
+              .msgAlert({
+                msg: '请输入有效的手机号。'
+              })
+              .show();
+            return false;
+          }
+          // 手机验证码不合法
+          if (!util.checkLoginCode(user.getLoginCode())) {
+            WebView
+              .msgAlert({
+                msg: '验证码不正确。'
+              })
+              .show();
+            return false;
+          }
+          // 密码不合法
+          if (!util.checkPassword(user.getPassword())) {
+            WebView
+              .msgAlert({
+                msg: '请输入8-16位数字、字母组合的密码。'
+              })
+              .show();
+            return false;
+          }
+          // 填写邀请码不合法
+          if (!util.checkInviteCode(user.getByinvitecode())) {
+            WebView
+              .msgAlert({
+                msg: '请输入合法的邀请码。'
+              })
+              .show();
+            return false;
+          }
+          return true;
+        }
+
+        $('.login-tabs').on('click', function (e) {
+          var $target = $(e.target).closest('h3'),
+            idx = $target.index();
+          $target.addClass('login-tabs-active');
+          $target.siblings().removeClass('login-tabs-active');
+          if (idx === 0) {
+            $('.passwordLogin').show();
+            $('.yzm-Login').hide();
+          } else if (idx === 1) {
+            $('.passwordLogin').hide();
+            $('.yzm-Login').show();
+          }
+          $('#login').data('type', idx);
+        });
+
+        $('.read-agreement').on('click', function () {
+          $('#iframeBridge').fadeIn();
+          $('.login-page-wrapper').fadeOut();
+        });
+
+        $('#register_1').one('click', doRegister);
+        $('#login').one('click', doLogin);
+        $('#getPhoneCode').one('click', {
+          codeTag: "register"
+        }, getPhoneCode);
+        $('#getLoginCode').one('click', {
+          codeTag: "codelogin"
+        }, getPhoneCode)
+        $('#loadLogin').on('click', function () {
+          swiper.slideTo(0)
+        });
+        $('#loadRegister').on('click', function () {
+          swiper.slideTo(1)
+        });
+        $('#loaded')[0].addEventListener("webkitAnimationEnd", function () {
+          $('#loadedMark').show(0);
+        }, false);
+        $('#loaded_1')[0].addEventListener("webkitAnimationEnd", function () {
+          $('#loadedMark_1').show(0);
+        }, false);
+      });
+    };
+  </script>
+</head>
+
+<body class="login-page">
+  <div class="login-page-wrapper">
+    <div class="swiper-container">
+      <div class="swiper-wrapper">
+        <div class="scroll-content swiper-slide">
+          <header class="page-header">
+            <h1 class="login-icon"></h1>
+          </header>
+          <section class="login-form">
+            <div class="login-tabs">
+              <h3 class="login-pwd login-tabs-active"><a href="javascript:">密码登录</a></h3>
+              <h3 class="login-code"><a href="javascript:">短信登录</a></h3>
+            </div>
+            <div class="input-group">
+              <label for="loginTelphone" class="sr-only" title="请输入手机号">请输入手机号</label>
+              <input type="tel" id="loginTelphone" maxlength="11" class="form-control" name="login_telphone" placeholder="请输入手机号" value=""
+              />
+            </div>
+            <!--<div class="verification-code">-->
+            <div class="passwordLogin">
+              <div id="passwordInput" class="input-group">
+                <label for="loginPassword" class="sr-only" title="请输入密码">请输入密码</label>
+                <input type="password" id="loginPassword" class="form-control" name="login_password" placeholder="请输入密码" value="" />
+              </div>
+              <div class="verification-notice">
+                <a class="btn-secondary prevent-callout" href="/mondify-password.html">忘记密码？</a>
+              </div>
+            </div>
+            <div class="yzm-Login" style="display:none;">
+              <div id="codeInput" class="verification-code">
+                <div class="input-group">
+                  <label for="loginCode" class="sr-only" title="请输入验证码">请输入验证码</label>
+                  <input type="tel" id="loginCode" class="form-control" name="login_code" placeholder="请输入验证码" value="" />
+                </div>
+                <a id="getLoginCode" class="btn-secondary prevent-callout" href="javascript:void(0);">获取验证码</a>
+              </div>
+              <div style="font-size: 12px;">
+                温馨提示：未注册八斗金服账号的手机号，登录时将自动注册八斗金服账号，且代表您已同意<a class="read-agreement prevent-callout color-red" href="javascript:void(0);">《八斗金服用户注册协议》</a>，您可通过安全中心-密码管理修改登录密码。
+              </div>
+            </div>
+            <div class="login-btn">
+              <button id="login" data-type="0" class="btn btn-primary">
+          <svg id="indicator" class="indicator-wrapper" style="display:none" viewbox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <circle id="loading" class="indicator-animate" cx="10" cy="10" r="8" fill="transparent" stroke="#fff" stroke-width="1" class="frozeed-assets-circle"
+              stroke-dashoffset="7.7654816" stroke-dasharray="42.5 7.7654816"></circle>
+            <circle id="loaded" class="indicator-animate-loaded" cx="10" cy="10" r="8" fill="transparent" stroke="#fff" stroke-width="1" class="frozeed-assets-circle"
+              stroke-linecap="round" stroke-dashoffset="0" stroke-dasharray="42.5 7.7654816">
+            </circle>
+            <polyline id="loadedMark" class="indicator-animate-loaded-mark" points="5.8,8.8 10,13.5 18,5" stroke-linecap="round" fill="transparent" stroke="#fff"
+              stroke-width="1" stroke-dasharray="0 17.9979633" />
+          </svg>
+          <span id="indicatorTitle" class="indicator-title">登录</span></button>
+              <a id="loadRegister" class="load-register prevent-callout" href="javascript:void(0);">注册</a>
+            </div>
+            <!--<footer class="agreement">
+              登录即同意
+              <a class="read-agreement prevent-callout" href="javascript:void(0);">《八斗金服用户注册协议》</a>
+            </footer>-->
+          </section>
+        </div>
+        <div class="scroll-content swiper-slide">
+          <header class="page-header">
+            <h1 class="register-icon"></h1>
+          </header>
+          <section class="register-form">
+            <div class="input-group">
+              <label for="registerTelphone" class="sr-only" title="请输入您的手机号">请输入您的手机号</label>
+              <input type="tel" id="registerTelphone" maxlength="11" class="form-control" name="register_telphone" placeholder="请输入您的手机号"
+                value="" />
+            </div>
+            <div class="verification-code">
+              <div class="input-group">
+                <label for="registerCode" class="sr-only" title="请输入验证码">请输入验证码</label>
+                <input type="tel" id="registerCode" class="form-control" name="register_code" placeholder="请输入验证码" value="" />
+              </div>
+              <a id="getPhoneCode" class="btn-secondary prevent-callout" href="javascript:void(0);">获取验证码</a>
+            </div>
+            <div class="input-group">
+              <label for="registerPassword" class="sr-only" title="请输入验证码">请输入密码</label>
+              <input type="password" id="registerPassword" class="form-control" name="register_password" placeholder="请输入密码" value="" />
+            </div>
+            <div class="input-group">
+              <label for="byinvitecode" class="sr-only" title="推荐码">推荐码</label>
+              <input type="text" id="byinvitecode" class="form-control" name="register_byinvitecode" placeholder="推荐码" value="" />
+            </div>
+            <div class="register-btn">
+              <button id="register_1" class="btn btn-primary"><svg id="indicator_1" class="indicator-wrapper" style="display:none" viewbox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <circle id="loading_1" class="indicator-animate" cx="10" cy="10" r="8" fill="transparent" stroke="#fff" stroke-width="1" class="frozeed-assets-circle"
+              stroke-dashoffset="7.7654816" stroke-dasharray="42.5 7.7654816"></circle>
+            <circle id="loaded_1" class="indicator-animate-loaded" cx="10" cy="10" r="8" fill="transparent" stroke="#fff" stroke-width="1" class="frozeed-assets-circle"
+              stroke-linecap="round" stroke-dashoffset="0" stroke-dasharray="42.5 7.7654816">
+            </circle>
+            <polyline id="loadedMark_1" class="indicator-animate-loaded-mark" points="5.8,8.8 10,13.5 18,5" stroke-linecap="round" fill="transparent" stroke="#fff"
+              stroke-width="1" stroke-dasharray="0 17.9979633" />
+          </svg>
+          <span id="indicatorTitle_1" class="indicator-title">注册</span></button>
+              <a id="loadLogin" class="load-register prevent-callout" href="javascript:void(0);">登录</a>
+            </div>
+            <footer class="agreement">
+              注册即同意
+              <a class="read-agreement prevent-callout" href="javascript:void(0);">《八斗金服用户服务协议》</a>
+            </footer>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+  <iframe id="iframeBridge" src="/registration-agreement.html" style="position:absolute;top:0;left:0;display:none;width:100%;height:100%;"
+    frameborder="0"></iframe>
+</body>
+
+</html>

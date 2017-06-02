@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="keywords" content="八斗金服">
+  <meta name="description" content="八斗金服">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+  <title>焦点</title>
+  <link rel="stylesheet" type="text/css" href="weixin/css/wechat.css" />
+  <script src="weixin/js/require.js" data-main="weixin/js/main" defer="defer" async="async" type="text/javascript" charset="utf-8"></script>
+  <script>
+    window.onload = function() {
+      require.config({
+        baseUrl: 'weixin/js',
+        paths: {
+          'jquery': [
+            '//cdn.bootcss.com/jquery/1.12.4/jquery.min',
+            'lib/jquery/1.12.4/jquery.min'
+          ],
+          'util': 'common/util',
+          'swipeLoader': 'common/swipeLoader',
+          'appController': 'controller/appController'
+        }
+      });
+      require([
+        'jquery', 'util', 'swipeLoader', 'appController'
+      ], function($, util, swipeLoader, appController) {
+
+        window.imgLoadFailed = util.imgLoadFailed;
+
+        var dataCount = 0,
+          currentPage = 0,
+          noMoreData = false;
+
+        loadMore();
+
+        function loadMore(callback, swiper) {
+          if (noMoreData) {
+            return;
+          }
+          options = {
+            currentPage: currentPage++
+          }
+          appController.getFocusList(options, function(focusList) {
+            if (focusList.length > 0) {
+              dataCount += focusList.length;
+              var html = '';
+              $.each(focusList, function(index, focus) {
+                var dateText = '活动日期';
+                if (focus.getTitle() === '安全保障') {
+                  dateText = '有效日期';
+                  focus.setCreateTime('2017年01月01日—2018年01月01日');
+                }
+                html += '<article data-focusid="' + focus.getId() + '" class="focus-item focus-item-' + focus.getId() +
+                  '"><div class="focus-thumb">' +
+                  (focus.getIsValid() ? ('<a href="/focus-detail.html?dp=' + encodeURIComponent(focus.getAimUrl()) +
+                    '" class="read-more prevent-callout"><img onerror="imgLoadFailed(this);" src="' +
+                    util.replaceResUrlOrigin(focus.getImage()) +
+                    '" width="100%"></a>') : ('<a href="javascript:void(0);" class="read-more prevent-callout focus-end"><span class="focus-end-text">— 已结束 —</span><img style="opacity:.3" onerror="imgLoadFailed(this);" src="' +
+                    util.replaceResUrlOrigin(focus.getImage()) +
+                    '" width="100%"></a>')) + '</div><footer class="focus-info"><span class="focus-icon" style="background-image:url(' +
+                  util.replaceResUrlOrigin(focus.getTypeIcon()) + ')"></span><span class="focus-text">' + dateText + '：' + focus.getCreateTime() +
+                  '</span></footer></article>';
+              });
+              $('#focusListContainer').append(html);
+              $('#loadMore').one('click', loadMore).fadeIn(600);
+            } else {
+              $('#loadMore').html('没有更多内容啦～');
+            }
+            if (dataCount <= 0) {
+              $('body').addClass('no-message');
+            }
+          });
+        };
+      });
+    };
+  </script>
+</head>
+
+<body class="focus-page gray-bg">
+  <div class="focus-page-wrapper scroll-wrapper">
+    <div class="scroll-content">
+      <div id="focusListContainer"></div>
+      <div id="loadMore" class="load-more">加载更多</div>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <nav id="navigation" class="footer-nav">
+      <div class="footer-nav-item">
+        <a href="/"><span class="footer-nav-icon nav-icon-01"></span></a>
+      </div>
+      <div class="footer-nav-item curr-item">
+        <a href="/focus.html"><span class="footer-nav-icon nav-icon-02"></span></a>
+      </div>
+      <div class="footer-nav-item">
+        <a href="/account-center.html"><span class="footer-nav-icon nav-icon-03"></span></a>
+      </div>
+    </nav>
+  </div>
+  <div class="no-data-msg">暂时还没有焦点消息</div>
+</body>
+
+</html>

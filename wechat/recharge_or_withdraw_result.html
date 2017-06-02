@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="keywords" content="八斗金服">
+  <meta name="description" content="八斗金服">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+  <title>请求成功</title>
+  <link rel="stylesheet" type="text/css" href="weixin/css/wechat.css" />
+  <script src="weixin/js/require.js" data-main="weixin/js/main" defer="defer" async="async" type="text/javascript" charset="utf-8"></script>
+  <script>
+    window.onload = function() {
+      require.config({
+        baseUrl: 'weixin/js',
+        paths: {
+          'jquery': [
+            '//cdn.bootcss.com/jquery/1.12.4/jquery.min',
+            'lib/jquery/1.12.4/jquery.min'
+          ],
+          'util': 'common/util'
+        }
+      });
+      require([
+        'jquery', 'util'
+      ], function($, util) {
+        var pt = util.getSearchField('source'),
+          at = util.getSearchField('at'),
+          icons = $('.result-content > img'),
+          r_msg = '充值请求已发送至第三方支付平台富友，实际到账时间以账户可用余额为准。',
+          c_msg = '提现请求已发送到第三方支付平台富友，实际到账时间以提现银行卡资金记录为准。',
+          r_title = '充值请求成功',
+          c_title = '提现请求成功';
+
+        if (at == 'RECHARGE') {
+          $('#resultTitle').html(r_title);
+          $('#resultMsg').html(r_msg);
+          icons.eq(0).show();
+        } else if (at == 'WITHDRAW') {
+          $('#resultTitle').html(c_title);
+          $('#resultMsg').html(c_msg);
+          icons.eq(1).show();
+        }
+
+        $('.result-container').fadeIn(600);
+
+        $('#resultClose').on('click', function() {
+          if (/^android$/.test(pt)) {
+            badoufax.showSuccess();
+          } else {
+            window.location = pt;
+          }
+        });
+      });
+    };
+  </script>
+</head>
+
+<body style="background-color: #666666">
+  <div class="result-container">
+    <h3 id="resultTitle" class="result-title">提现请求成功</h3>
+    <div class="result-content">
+      <img width="50" src="./weixin/images/icons/recharge@3x.png" alt="">
+      <img width="50" src="./weixin/images/icons/cashed@3x.png" alt="">
+      <div id="resultMsg" class="result-msg"></div>
+    </div>
+    <a id="resultClose" href="javascript:void(0);" class="result-close"><img width="46" src="weixin/images/close@2x.png" alt=""></a>
+  </div>
+</body>
+
+</html>

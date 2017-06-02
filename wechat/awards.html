@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="keywords" content="八斗金服">
+  <meta name="description" content="八斗金服">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+  <title>我的奖励</title>
+  <link rel="stylesheet" type="text/css" href="weixin/css/swiper/3.4.2/swiper.min.css" />
+  <link rel="stylesheet" type="text/css" href="weixin/css/wechat.css" />
+  <style type="text/css">
+    .swiper-slide {
+      padding: 0 15px;
+      height: 100%;
+      padding: 0 15px;
+      overflow-y: auto;
+    }
+  </style>
+  <script src="weixin/js/require.js" data-main="weixin/js/main" defer="defer" async="async" type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript">
+    window.onload = function() {
+      require.config({
+        baseUrl: 'weixin/js',
+        paths: {
+          'jquery': [
+            '//cdn.bootcss.com/jquery/1.12.4/jquery.min',
+            'lib/jquery/1.12.4/jquery.min'
+          ],
+          'swiper': [
+            '//cdn.bootcss.com/Swiper/3.4.2/js/swiper.min',
+            'lib/swiper/3.4.2/swiper.min'
+          ],
+          'config': 'settings',
+          'WebView': 'common/WebView',
+          'AsyncTaskManager': 'common/asyncTaskManager',
+          'investController': 'controller/investController',
+          'userController': 'controller/userController',
+          'appController': 'controller/appController'
+        }
+      });
+      require([
+        'jquery', 'swiper', 'config', 'WebView', 'appController'
+      ], function($, Swiper, config, WebView, appController) {
+        var curr = 0;
+        $('.swiper-slide').height($('.bidinfo-page-wrapper').height());
+        // 定义标签滑动切换
+        var mySwiper = new Swiper('.swiper-container', {
+          resistanceRatio: 0, //第一个最后一个禁止拖动
+          height: $('.bidinfo-page-wrapper').height(),
+          onSlideChangeEnd: function(swiper) {
+            curr = swiper.activeIndex;
+            $('#useRed_tab li').eq(swiper.activeIndex).addClass('active').siblings().removeClass('active');
+          }
+        });
+
+        $('#useRed_tab').on('click', 'li', function() {
+          mySwiper.slideTo($(this).index());
+        });
+        var html = '',
+          currPageArr = [0, 0, 0];
+        //失效列表
+        appController.enUsedAwardList({
+          currentPage: currPageArr[2]++,
+          pageSize: 100
+        }, function(list) {
+          var html = '';
+          console.log(list)
+          if (list.length == 0) {
+            html += '<div class="noUseRecord"><img src="/weixin/images/activity/NoUseRecord@3x.png" alt="" /><p>暂无记录</p><p style="opacity: 0.6;">您可以参与相关互动获取，<a class="color-red" href="/focus.html">立即前往</a></p></div>';
+          } else {
+            $.each(list, function(idx, item) {
+              html += '<div class="cashRed-list cashRed-list-gray"><div class="ac-title"><h2>' + item.title + '</h2></div><div class="cashRed-yuan"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><p class="reward-use">' + item.money + '<span>元</span></p><p class="reward-source">来源：' + item.sourceStr + '</p><p class="reward-time">有效期截止：' + item.enddateStr + '</p></div>';
+            });
+          }
+          $('#useRed_tab li span').eq(2).html(list.length);
+          $('.swiper-slide').eq(2).html(html);
+        });
+        //已使用列表
+        appController.usedAwardList({
+          currentPage: currPageArr[1]++,
+          pageSize: 100
+        }, function(list) {
+          var html = '';
+          console.log(list)
+          if (list.length == 0) {
+            html += '<div class="noUseRecord"><img src="/weixin/images/activity/NoRedEnvelopes@3x.png" alt="" /><p>暂无使用记录</p><p style="opacity: 0.6;">您可以参与相关互动获取，<a class="color-red" href="/focus.html">立即前往</a></p></div>';
+          } else {
+            $.each(list, function(idx, item) {
+              html += '<div class="cashRed-list cashRed-list-gray"><div class="ac-title"><h2>' + item.title + '</h2></div><div class="cashRed-yuan"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><p class="reward-use">' + item.money + '<span>元</span></p><p class="reward-source">来源：' + item.sourceStr + '</p><p class="reward-time">有效期截止：' + item.enddateStr + '</p></div>';
+            });
+          }
+
+          $('#useRed_tab span').eq(1).html(list.length);
+          $('.swiper-slide').eq(1).html(html);
+        });
+        //可用红包列表
+        appController.availableAwardList({
+          currentPage: currPageArr[0]++,
+          pageSize: 100
+        }, function(list) {
+          var html = '';
+          console.log(list)
+          if (list.length == 0) {
+            html += '<div class="noUseRecord"><img src="/weixin/images/activity/NoRedEnvelopes@3x.png" alt="" /><p>暂无可用红包</p><p style="opacity: 0.6;">您可以参与相关互动获取，<a class="color-red" href="/focus.html">立即前往</a></p></div>';
+          } else {
+            $.each(list, function(idx, item) {
+              html += '<div class="cashRed-list"><div class="ac-title"><h2>' + item.title + '</h2></div><div class="cashRed-yuan"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><p class="reward-use">' + item.money + '<span>元</span></p><p class="reward-source">来源：' + item.sourceStr + '</p><p class="reward-time">有效期截止：' + item.enddateStr + '</p></div>';
+            });
+          }
+
+          $('#useRed_tab li span').eq(0).html(list.length);
+          $('.swiper-slide').eq(0).html(html);
+        });
+
+      });
+    };
+  </script>
+</head>
+
+<body class="useRed-page gray-bg">
+  <header class="header-nav">
+    <ul id="useRed_tab" class="bidinfo-tab clearfix">
+      <li class="bidinfo-tab-item useRed-tab-item active">未使用(<span>0</span>)</li>
+      <li class="bidinfo-tab-item useRed-tab-item">已使用(<span>0</span>)</li>
+      <li class="bidinfo-tab-item useRed-tab-item">已过期(<span>0</span>)</li>
+    </ul>
+  </header>
+  <div class="bidinfo-page-wrapper" style="overflow: hidden;bottom: 0;padding-top: 10px">
+    <div class="swiper-container">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide"></div>
+        <div class="swiper-slide"></div>
+        <div class="swiper-slide"></div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

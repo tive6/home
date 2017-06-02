@@ -1,0 +1,11 @@
+require([
+  'cookie',
+  'jquery',
+  'jqueryForm',
+  'swiper',
+  'iScroll',
+  'ImagePicker',
+  'Transform',
+  'AlloyFinger',
+  'AlloyCrop'
+]);

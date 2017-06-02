@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="keywords" content="八斗金服">
+  <meta name="description" content="八斗金服">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+  <title>恭喜您获得红包</title>
+  <link rel="stylesheet" type="text/css" href="weixin/css/wechat.css" />
+  <script src="weixin/js/require.js" data-main="weixin/js/main" defer="defer" async="async" type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript">
+    window.onload = function () {
+      require.config({
+        baseUrl: 'weixin/js',
+        paths: {
+          'jquery': [
+            '//cdn.bootcss.com/jquery/1.12.4/jquery.min',
+            'lib/jquery/1.12.4/jquery.min'
+          ],
+          'config': 'settings',
+          'WebView': 'common/WebView',
+          'AsyncTaskManager': 'common/asyncTaskManager',
+          'investController': 'controller/investController',
+          'userController': 'controller/userController',
+          'appController': 'controller/appController'
+        }
+      });
+      require([
+        'jquery', 'config', 'WebView', 'appController'
+      ], function ($, config, WebView, appController) {
+        appController.waitTakeRedPacket(function (list) {
+          var html = '';
+          $.each(list, function (idx, packet) {
+              html += '<div class="cashRed-list"><div class="ac-title"><h2>'+item.title+'</h2></div><div class="cashRed-yuan"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><p class="reward-use">'+item.money+'<span>元</span></p><p class="reward-source">来源：'+item.sourceStr+'</p><p class="reward-time">有效期截止：'+item.enddateStr+'</p><span class="useRed-state"></span></div>';
+          });
+          $('#cashRedWrapper').append(html);
+        });
+        $('#receive').on('click', function () {
+          appController.takeRedPacket(function (res) {
+            WebView.msgAlert({
+              msg: res.getMsg(),
+              action: function () {
+                window.history.go(-1);
+              }
+            }).show();
+          });
+        });
+      });
+    };
+  </script>
+</head>
+
+<body class="getRed-page gray-bg">
+  <div class="getRed-wrapper scroll-wrapper">
+    <p class="cashRed-title">奖励将在1~2个工作日到账，请关注<a href="/total-assets.html">【可用余额】</a>，查看到账情况</p>
+    <div id="cashRedWrapper" class="cashRed-wrapper">
+      <!--<div class="cashRed-list">
+        <p class="reward-use">10<span>元</span></p>
+        <p>来源：投资1000元返现</p>
+        <p class="reward-time">有效期截止：2017-12-12</p>
+      </div>-->
+    </div>
+  </div>
+  <div id="receive" class="footer-bar oneKey-receive">一键领取</div>
+</body>
+
+</html>

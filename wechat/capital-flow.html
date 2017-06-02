@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="keywords" content="八斗金服">
+	<meta name="description" content="八斗金服">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+	/>
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="format-detection" content="telephone=no" />
+	<title>资金流水</title>
+	<link rel="stylesheet" type="text/css" href="weixin/css/wechat.css" />
+	<script src="weixin/js/require.js" data-main="weixin/js/main" defer="defer" async="async" type="text/javascript" charset="utf-8"></script>
+	<script>
+		window.onload = function () {
+			require.config({
+				baseUrl: 'weixin/js',
+				paths: {
+					// 外部库／插件
+					'jquery': [
+						'//cdn.bootcss.com/jquery/1.12.4/jquery.min',
+						'lib/jquery/1.12.4/jquery.min'
+					],
+					'util': 'common/util',
+					'swipeLoader': 'common/swipeLoader',
+					'appController': 'controller/appController'
+				}
+			});
+			require([
+				'jquery', 'util', 'swipeLoader', 'appController'
+			], function ($, util, swipeLoader, appController) {
+				var
+					currentPage = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+					hasList = [false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+						false, false, false, false, false
+					],
+					htmlList = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+					noMoreData = [false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+						false, false, false, false, false
+					],
+					tag = 0;
+
+				loadMore(tag);
+
+				$('.capitalFlow-type li').on('click', function () {
+					tag = $(this).data('type')
+					$(this).addClass("type-active").siblings().removeClass("type-active");
+
+					if (htmlList[tag]) {
+						$('#listWrapper').html(htmlList[tag]);
+						$('#loadMore').show().html('加载更多');
+						$('body').removeClass('no-records');
+						return;
+					} else {
+						$('#listWrapper').html('');
+						$('#loadMore').hide(0);
+						loadMore(tag);
+					}
+				});
+
+				function loadMore(tag) {
+					var options = {
+                  currentPage: currentPage[tag],
+                  pageSize: 10,
+                  tag: tag
+              };
+		
+					appController.getCapitalList(options, function (list) {
+						if (list.length > 0) {
+							hasList[tag] = true;
+							currentPage[tag]++;
+							var html = '',
+								color, signSymbol,
+								icon;
+							$.each(list, function (index, item) {
+								signSymbol = item.getSignSymbol();
+								if (signSymbol === '+') {
+									color = 'color-red';
+								} else {
+									color = 'color-green';
+								}
+
+								if (item.getDealtype() == 0) {//全部
+									icon = "recharge-icon";
+								} else if (item.getDealtype() == 1) {//充值
+									icon = "recharge-icon";
+								} else if (item.getDealtype() == 2) {//提现
+									icon = "withdrawals-icon";
+								} else if (item.getDealtype() == 3) {//投资
+									icon = "investment-icon";
+								} else if (item.getDealtype() == 4) {//转账
+									icon = "wu-icon";
+								} else if (item.getDealtype() == 5) {//回本
+									icon = "backThe-icon";
+								} else if (item.getDealtype() == 6) {//回息
+									icon = "backRest-icon";
+								} else if (item.getDealtype() == 7) {//还款
+									icon = "wu-icon";
+								} else if (item.getDealtype() == 9) {//红包返现
+									icon = "redEnvelope-icon";
+								} else if (item.getDealtype() == 10) {//加息券返现
+									icon = "coupon-icon";
+								}else if (item.getDealtype() == 11) {//补息
+									icon = "buxi-icon";
+								}else if (item.getDealtype() == 12) {//展期垫资
+									icon = "wu-icon";
+								}else if (item.getDealtype() == 13) {//展期垫资回收
+									icon = "wu-icon";
+								}else if (item.getDealtype() == 14) {//t+0手续费
+									icon = "wu-icon";
+								}else if (item.getDealtype() == 15) {//债权转让手续费
+									icon = "shouxu-icon";
+								}else if (item.getDealtype() == 24) {//贴息
+									icon = "tiexi-icon";
+								}else if (item.getDealtype() == 25) {//债权转让垫息
+									icon = "dianxi-icon";
+								}
+
+								html += '<div class="capitalFlow-list ' + icon + '" data-tag="' + item.getDealtype() + '">' + item.getDealtypeStr() +
+									'<span class="' + color + '">' + signSymbol + item.getDealmoney() + '</span>' +
+									'<div class="capitalFlow-time">' + item.getOpdate() + '</div>' +
+									'</div>';
+
+							});
+							htmlList[tag] += html;
+							$('#listWrapper').html(htmlList[tag]);
+							$('body').removeClass('no-records');
+							$('#loadMore').html('加载更多');
+						} else {
+							noMoreData[tag] = true;
+							$('#loadMore').html('没有更多记录啦～');
+						}
+
+						if (!hasList[tag]) {
+							$('body').addClass('no-records');
+							$('#listWrapper').html('');
+							$('#loadMore').hide(0);
+						} else {
+							$('#loadMore').show();
+							$('body').removeClass('no-records');
+						}
+					});
+				};
+				$('#loadMore').on('click', function () {
+					if (noMoreData[tag]) {
+						$('#loadMore').html('没有更多记录啦～');
+					} else {
+						loadMore(tag);
+						$('#loadMore').html('加载更多');
+					}
+				}).fadeIn(600);
+
+			});
+		};
+	</script>
+</head>
+
+<body class="capital-flow-page gray-bg">
+	<div class="capitalFlow-wrapper">
+		<!--分类-->
+		<div class="capitalFlow-type">
+			<ul>
+				<li class="type-active" data-type="0"><span>全部</span></li>
+				<li data-type="1"><span>充值</span></li>
+				<li data-type="2"><span>提现</span></li>
+				<li data-type="3"><span>投资</span></li>
+				<!--<li data-type="4"><span>转账</span></li>-->
+				<li data-type="5"><span>回本</span></li>
+				<li data-type="6"><span>回息</span></li>
+				<!--<li data-type="7"><span>还款</span></li>-->
+				<li data-type="9"><span>红包返现</span></li>
+				<li data-type="10"><span>加息券返现</span></li>
+				<li data-type="11"><span>补息</span></li>
+				<!--<li data-type="12"><span>展期垫资</span></li>
+				<li data-type="13"><span>展期垫资回收</span></li>-->
+				<li data-type="14"><span>t+0手续费</span></li>
+				<li data-type="15"><span>转让手续费</span></li>
+				<li data-type="24"><span>贴息</span></li>
+				<li data-type="35"><span>债权转让垫息</span></li>
+			</ul>
+		</div>
+		<div id="listWrapper"></div>
+		<div id="loadMore" class="load-more">加载更多</div>
+	</div>
+	<div class="no-data-msg">暂时还没有记录~</div>
+</body>
+
+</html>

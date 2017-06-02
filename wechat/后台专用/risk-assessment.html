@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="keywords" content="八斗金服">
+	<meta name="description" content="八斗金服">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="format-detection" content="telephone=no" />
+	<title>风险等级评测</title>
+	<link rel="stylesheet" type="text/css" href="weixin/css/swiper/3.3.1/swiper.min.css" />
+	<link rel="stylesheet" type="text/css" href="weixin/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" href="../weixin/css/wechat.css" />
+	<script src="weixin/js/jquery/1.12.4/jquery.min.js" data-main="weixin/js/main" type="text/javascript" charset="utf-8"></script>
+	<script src="weixin/js/swiper/3.3.1/swiper.min.js" data-main="weixin/js/main" type="text/javascript" charset="utf-8"></script>
+	<script>
+		var mySwiper = new Swiper('.swiper-container', {
+			onlyExternal: true,
+			effect: 'fade',
+			fade: {
+				crossFade: true
+			}
+		});
+		// 保存已选择项
+		var score = [],
+			idx;
+		$(document).on('click', function (e) {
+			var $target = $(e.target).closest('li');
+			if ($target.length > 0) {
+				idx = parseInt($target.parent('ul').data('qid'), 10);
+				score[idx - 1] = $target.index();
+				$target.addClass('checked').siblings().removeClass('checked');
+				setTimeout(function () {
+					mySwiper.slideTo(idx);
+				}, 100);
+			}
+		});
+	</script>
+</head>
+
+<body class="risk-assessment-page">
+	<div class="swiper-container">
+		<div class="swiper-wrapper">
+			<div class="swiper-slide risk-content">
+				<h2>您的年龄</h2>
+				<p>1/11</p>
+				<ul data-qid="1">
+					<li>18-30岁</li>
+					<li>31-45岁</li>
+					<li>46-59岁</li>
+					<li>60岁以上</li>
+				</ul>
+				<div class="risk-content-text">
+					风险等级评测是用来协助评估您本身投资属性与「一般」风险承受度，评测结果可能不能完全呈现投资人在面对投资风险的真正态度，但可提供您一些衡量自身风险属性的一项重要指标。
+				</div>
+			</div>
+			<div class="swiper-slide risk-content risk-assessment-content2">
+				<h2>您的近来的收支情况</h2>
+				<p>2/11</p>
+				<ul data-qid="2">
+					<li>收入控制得当，每年都可以存入一定的资金</li>
+					<li>收入刚好持平，无多余的资金可以放款</li>
+					<li>收支略有透支，希望通过投资报酬改善现状</li>
+				</ul>
+			</div>
+			<div class="swiper-slide risk-content risk-assessment-content3">
+				<h2>您投资理财的金额大约占年收入的百分之多少</h2>
+				<p>3/11</p>
+				<ul data-qid="3">
+					<li>10%以内</li>
+					<li>10%~30%</li>
+					<li>30%~50%</li>
+					<li>50%以上</li>
+				</ul>
+			</div>
+			<div class="swiper-slide risk-content risk-assessment-content4">
+				<h2>您对理财产品的看法</h2>
+				<p>4/11</p>
+				<ul data-qid="4">
+					<li>理财产品无风险，类似存款</li>
+					<li>理财产品应当保本，但收益不确定</li>
+					<li>理财产品本金可能产生少量损失</li>
+					<li>理财产品可能大幅亏损，应当仔细选择</li>
+				</ul>
+			</div>
+			<div class="swiper-slide risk-content risk-assessment-content5">
+				<h2>您的投资经验情况</h2>
+				<p>5/11</p>
+				<ul data-qid="5">
+					<li>除存款、国债外，几乎不投资其他金融产品</li>
+					<li>大部分投资于存款、国债等，较少投资于股票、P2P、基金等风险产品</li>
+					<li>资产均衡分布于存款、国债、银行理财、P2P、股票、基金等</li>
+				</ul>
+			</div>
+			<div class="swiper-slide risk-content risk-assessment-content6">
+				<h2>您持续投资股票、基金、外汇、金融衍生产品的年限</h2>
+				<p>6/11</p>
+				<ul data-qid="6">
+					<li>没有经验</li>
+					<li>少于2年</li>
+					<li>2-5年</li>
+					<li>5-10年</li>
+					<li>10年以上</li>
+				</ul>
+			</div>
+			<div class="swiper-slide risk-content risk-assessment-content7">
+				<h2>您投资的目的</h2>
+				<p>7/11</p>
+				<ul data-qid="7">
+					<li>资产保值，不愿意承担任何投资风险</li>
+					<li>资产在保值的基础上，有小幅增长，可以承担较低的投资风险</li>
+					<li>资产稳定增长，可以承担一定的投资风险</li>
+					<li>资产迅速增长，愿意承担很大的投资风险</li>
+				</ul>
+			</div>
+			<div class="swiper-slide risk-content risk-assessment-content8">
+				<h2>您如何理解风险</h2>
+				<p>8/11</p>
+				<ul data-qid="8">
+					<li>风险就是损失</li>
+					<li>风险代表不确定性,可能会带来收益,也可能带来损失</li>
+					<li>风险代表机会,可能带来收益</li>
+					<li>风险代表巨大的额外收益机会</li>
+				</ul>
+			</div>
+			<div class="swiper-slide risk-content risk-assessment-content9">
+				<h2>您更青睐的投资期限是多久</h2>
+				<p>9/11</p>
+				<ul data-qid="9">
+					<li>3个月以下</li>
+					<li>3-6个月</li>
+					<li>6-12个月</li>
+					<li>1年-3年</li>
+					<li>1年-3年</li>
+				</ul>
+			</div>
+			<div class="swiper-slide risk-content risk-assessment-content10">
+				<h2>您的投资出现何种波动时,会呈现明显的焦虑</h2>
+				<p>10/11</p>
+				<ul data-qid="10">
+					<li>本金无损失,但收益未达到预期</li>
+					<li>出现轻微本金损失</li>
+					<li>本金10%以内的损失</li>
+					<li>本金20-50%以内的损失</li>
+					<li>本金50%以上的损失</li>
+				</ul>
+			</div>
+			<div class="swiper-slide risk-content risk-assessment-content11">
+				<h2>除金融产品外,您的资产状况如何</h2>
+				<p>11/11</p>
+				<ul data-qid="11">
+					<li>有自有住房和私家车</li>
+					<li>无自有住房,有私家车</li>
+					<li>有自有住房,无私家车</li>
+					<li>无自有住房和私家车</li>
+				</ul>
+			</div>
+			<div class="swiper-slide risk-result" style="position: relative;">
+				<p class="risk-p">您属于</p>
+				<h1>稳健型投资者</h1>
+				<div class="risk-result-cont">渴望有较高的投资收益,但又不愿承受较大的风险;可以承受一定的投资波动,但是希望自己的投资风险小于市场的整体风险,因此希望投资收益长期,稳步的增长.</div>
+				<div class="risk-statement">
+					<h3>重要声明</h3>
+					<p>本风险属性评估问卷结果系根据您填问卷当时所提供的个人资料而推论得知，且其结果将作为您未来在八斗金服理财产品时的参考所用。此问卷内容及其结果不构成与您进行交易之要约或要约之引诱，亦非投资买卖建议。八斗金服不对此份问卷之准确性及咨询是否完整负责。您在此问卷上所填的个人资料本公司将予以保密。</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

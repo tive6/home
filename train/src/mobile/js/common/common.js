@@ -3,8 +3,8 @@
   var HL = {};
   var config = {
     // keying
-    BASE_URL: 'http://192.168.12.109:8282',
-    SERVICE_URL: 'http://192.168.12.109:8282',
+    BASE_URL: 'http://192.168.1.200:8082',
+    SERVICE_URL: 'http://192.168.1.200:8082/trainingweb',
     RES_PAGE_URL_RP_ORIGIN: 'https://fuyoutest.badoufax.com/',
     AJAX_MIME: 'application/json;charset="UTF-8"',
     TEL_400: '400-168-8885',
@@ -28,7 +28,7 @@
     // 手机号校验正则
     TEL_REG: /^1[34578][0-9]{9}$/,
     // 密码校验正则
-    PASSWORD_REG: /^(?!([a-zA-Z]+|[0-9]+)$)[a-zA-Z0-9]{8,16}$/,
+    PASSWORD_REG: /^(?!([a-zA-Z]+|[0-9]+)$)[a-zA-Z0-9]{6,16}$/,
     // 验证码校验正则
     CODE_REG: /^[0-9]{4,6}$/,
     // 邀请码校验正则
@@ -51,11 +51,41 @@
     PAGE_URI_MAP: {
       REG_AND_LOGIN: '/tpl/register-login.html',
       RESET_PASSWOED: '/tpl/reset-password.html',
-      CHANGE_PASSWOED: '/tpl/change-password.html'
+      CHANGE_PASSWOED: '/tpl/change-password.html',
+      REGISTRATION_PROTOCOL: '/tpl/registration-protocol.html',
+      ACTIVITY_DETAIL: '/activity-detail.html',
     },
 
     SERVICE_URI_MAP: {
-      LOGIN: '/login.json'
+      // 用户
+      REGISTER: '/api/users/register.json', // 注册
+      LOGIN: '/api/users/login.json', // 登录
+      LOGIN_CODE: '/api/users/loginCode.json', // 登录（验证码）
+      RESET_PASSWORD: '/api/users/updateByTel.json', // 找回密码
+      MONDIFY_PASSWORD: '/api/users/updatePwd.json', // 修改密码
+      LOGOUT: '/api/users/exit.json', // 登出
+
+      // 系统
+      GET_CELLPHONE_CODE: '/api/users/getCode.json', // 获取验证码
+      GET_BANNER_SLIDES: '/api/homepageimage/Example.json', // banner接口地址
+      GET_ACTIVITY_SLIDES: '/api/activity/activitylist.json', // 公开活动轮播图地址
+      SEARCH_LIST: '/api/search/searchlist.json', // 搜索列表
+
+      // 新闻
+      GET_NEWS_LIST: '/api/news/newslist.json', // 获取新闻列表
+
+      // 讲师个人中心
+      EDIT_LECTURER_INFO: '/api/trainer/trainerUpdate.json', // 编辑讲师资料
+      ADD_LESSON: '/api/course/insert.json', // 添加课程
+      EDIT_LESSON: '/api/course/update.json', // 编辑课程
+      GET_LESSONS: '/api/course/datagrid.json', // 获取当前登录老师全部课程全部课程接口
+      DELETE_LESSON: '/api/course/datagrid.json', // 删除课程
+      GET_PASSED_LESSONS: '/api/course/getAll.json', // 获取全部审核通过课程
+      GET_LECTURER_LIST: '/api/trainer/getTrainerList.json', // 讲师列表取得
+
+      // 企业资料
+      EDIT_FIRM_INFO: '/api/company/companyUpdate.json', // 企业资料编辑
+      SELECT_DEMAND_LIST: '/api/demand/selectDemandList.json', // 需求
     },
     BROKEN_IMAGE: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABGUAAAGkCAIAAAAXBA+/AAAAGXRFWHRTb2' +
       'Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eH' +
@@ -147,7 +177,8 @@
     type: "POST",
     contentType: config.AJAX_MIME,
     accepts: config.AJAX_MIME,
-    dataType: 'json'
+    dataType: 'json',
+    timeout: 30000
   });
 
 
@@ -267,10 +298,10 @@
      * 验证手机号码
      * @return {Boolean} 手机格式合法返回true，否则返回false
      */
-    checkTelphone: function (telphone) {
+    checkCellphone: function (cellphone) {
       return config
         .TEL_REG
-        .test(telphone);
+        .test(cellphone);
     },
 
     /**
@@ -502,6 +533,295 @@
     // 返回校验位
     return C[sum % 11];
   }
+
+
+  /**
+   * 构造器
+   * @constructor {AsyncTaskManager} AsyncTaskManager
+   */
+  function AsyncTaskManager() {
+    this._flags = [];
+    this._tasks = [];
+    this._exceptions = {};
+    this._catchfunc = null;
+  }
+
+  AsyncTaskManager.of = function () {
+    return new AsyncTaskManager();
+  }
+
+  /**
+   * 添加异步任务
+   * @param {Function} f 异步方法
+   * @param {Object} param 异步方法参数
+   * @param {Object} key 结果对应map中的健
+   */
+  AsyncTaskManager.prototype.addTask = function (f, param, key) {
+    if (Object.prototype.toString.call(f) === '[object Object]') {
+      this._tasks.push(f);
+      this._flags[f.key] = 'ready';
+    } else {
+      this._tasks.push({
+        fn: f,
+        param: param,
+        key: key
+      });
+      this._flags[key] = 'ready';
+    }
+    return this;
+  };
+
+  /**
+   * 批量添加异步任务
+   * @param {Array} '[{fn: '异步方法', param: '异步方法参数', key: '结果对应map中的健'}]'
+   */
+  AsyncTaskManager.prototype.addTasks = function (tasks) {
+    for (var key in tasks) {
+      if (tasks.hasOwnProperty(key)) {
+        this._tasks.push(tasks[key]);
+      }
+    }
+    return this;
+  };
+
+  /**
+   * 所有异步任务都完成时执行
+   * @param {Function} f
+   */
+  AsyncTaskManager.prototype.every = function (f) {
+    var _self = this,
+      result = [],
+      _task;
+
+    while (this._tasks.length) {
+      _task = this._tasks.shift();
+      _self._flags[_task.key] = 'pending';
+      if (_task.param !== null && _task.param !== 'undefined') {
+        (function (task) {
+          task.fn(task.param, function (res) {
+            result[task.key] = res;
+            _self._flags[task.key] = 'resolved';
+            ask(f);
+          }, function (err) {
+            _self._flags[task.key] = 'rejected';
+            _self._exceptions[task.key] = err.msg;
+          });
+        }(_task));
+      } else {
+        (function (task) {
+          task.fn(function (res) {
+            result[task.key] = res;
+            _self._flags[task.key] = 'resolved';
+            ask(f);
+          }, function (err) {
+            _self._flags[task.key] = 'rejected';
+            _self._exceptions[task.key] = err.msg;
+          });
+        }(_task));
+      }
+    }
+
+    function ask(f) {
+      var completed = true;
+      var resolved = true;
+      var empty = true;
+      for (var key in _self._flags) {
+        if (_self._flags.hasOwnProperty(key)) {
+          // 任何 pending 状态的任务存在，则说明未执行完成，即亦没有得到完全解决
+          // ** 注：走到这一步不会出现 ready 状态
+          if (_self._flags[key] === 'pending' || _self._flags[key] === 'ready') {
+            completed = false;
+            resolved = false;
+            return;
+          }
+          // 有任何非 resolved 状态的任务存在，即代表没有得到完全解决
+          if (_self._flags[key] !== 'resolved') {
+            resolved = false;
+          }
+        }
+      }
+      if (completed) {
+        for (var k in _self._exceptions) {
+          if (_self._exceptions.hasOwnProperty(k)) {
+            _self._catchfunc(_self._exceptions);
+            break;
+          }
+        }
+      }
+      resolved && f(result);
+    }
+    return this;
+  };
+
+  /**
+   * 任务异常捕获
+   * @param {Function} f
+   * @param {Boolean} catchall 是否捕获并记录所有异常的异步任务
+   */
+  AsyncTaskManager.prototype.catch = function (f, catchall) {
+    this._catchfunc = f;
+  };
+
+
+  /**
+   * @description 活动指示器
+   * @argument cancelable 是否可关闭指示器
+   */
+  var ActivityIndicator = function (type, text, cancelable) {
+    this.cancelable = !!cancelable;
+    this.init(type, text, cancelable);
+  };
+
+  ActivityIndicator.prototype.init = function (type, text) {
+    type = type ? type : 0;
+    var _self = this;
+    var spinners = ['<div class="spinner-02"><div class="spinner-container container1"><div class="circle1"></div><div class="circle2"></div><div class="circle3"></div><div class="circle4"></div></div><div class="spinner-container container2"><div class="circle1"></div><div class="circle2"></div><div class="circle3"></div><div class="circle4"></div></div><div class="spinner-container container3"><div class="circle1"></div><div class="circle2"></div><div class="circle3"></div><div class="circle4"></div></div></div><div class="spinner-text">' + (text || '处理中...') + '</div>', '<div class="spinner-01"><div class="bounce1"></div><div class="bounce2"></div><div class="bounce3"></div></div><div class="spinner-text">' + (text || '处理中...') + '</div>', '<div class="spinner-03"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div><div class="spinner-text">' + (text || '处理中...') + '</div>'];
+    this.$ai = $('<div class="indicator-container"><div class="indicator-wrapper">' + spinners[type] + '</div></div>');
+
+    $('body').append(this.$ai);
+
+    if (this.cancelable) {
+      this.$ai.one('click', function () {
+        _self.hide();
+      });
+      this.$ai.find('.indicator-wrapper').one('click', function (e) {
+        e.stopPropagation();
+      });
+    }
+
+    this.$ai[0].addEventListener('touchmove', function (e) {
+      e.preventDefault();
+    }, false);
+    this.show();
+  };
+
+  ActivityIndicator.prototype.show = function () {
+    this.$ai.fadeIn(260);
+    this.$ai.find('.indicator-wrapper').fadeIn(0).animate({
+      opacity: 1,
+      width: 120,
+      height: 120
+    }, 240);
+  };
+
+  ActivityIndicator.prototype.hide = function () {
+    var _self = this;
+    this.$ai.fadeOut(260, function () {
+      _self.destory();
+    });
+  };
+
+  ActivityIndicator.prototype.immediatelyHide = function () {
+    this.destory();
+  };
+
+  ActivityIndicator.prototype.destory = function () {
+    this.$ai.remove();
+  };
+
+  ActivityIndicator.indicator = function (type, text, cancelable) {
+    return new ActivityIndicator(type, text, cancelable);
+  }
+
+  /**
+   * @description 弹窗组件
+   * @argument title:@string 弹窗标题
+   * @argument  msg:@string 消息
+   * @argument buttons:@Array 按钮数组
+   *          {text: '', onPress: ()=>{}}
+   * @argument cancelable:@boolean true: 开启点击弹窗周围区域隐藏弹窗 
+   *                               false: 否则不开启
+   */
+  var Alert = function (title, msg, buttons, cancelable) {
+    var _self = this;
+    this.title = title || '系统提示';
+    this.msg = msg;
+    this.buttons = buttons || [{
+      text: '确定',
+      onPress: function () {
+        _self.hide();
+      }
+    }];
+    this.cancelable = !!cancelable;
+    this.init();
+  }
+
+  Alert.prototype.init = function () {
+    var _self = this;
+    var _buttons = [];
+    this.$alert = $('<div class="alert-container"><div class="alert-wrapper">' + (this.title ? '<div class="alert-header">' + this.title + '</div>' : '') + '<div class="alert-content">' + (this.msg || '') + '</div><div class="alert-footer"></div></div></div>');
+    var size = this.buttons.length < 4 ? this.buttons.length : 3;
+    $.each(this.buttons, function (idx, button) {
+      // 最多支持3个按钮
+      if (idx > 2) return;
+      var $btn = $('<button class="alert-btn btn-column-' + size + '">' + button.text + '</button>');
+      $btn.one('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        button.onPress.call(_self);
+      });
+      _buttons[idx] = $btn;
+    });
+    if (this.cancelable) {
+      this.$alert.one('click', function (e) {
+        e.stopPropagation();
+        _self.hide();
+      });
+      this.$alert.find('.alert-wrapper').one('click', function (e) {
+        e.stopPropagation();
+      });
+    }
+    this.$alert.find('.alert-footer').append(_buttons);
+    $('body').append(this.$alert);
+    this.$alert[0].addEventListener('touchmove', function (e) {
+      e.preventDefault();
+    }, false);
+    this.show();
+  };
+
+  Alert.prototype.show = function () {
+    var $C = this.$alert.find('.alert-wrapper');
+    var _$alert = this.$alert;
+    // console.log($C[0].getBoundingClientRect());
+    _$alert.fadeIn(260);
+    $C.css({
+      display: 'block',
+      width: $C.width() + 20,
+      height: $C.height() + 20,
+      top: (_$alert.height() - $C.height() - 20) / 2
+    }).animate({
+      opacity: 1,
+      width: '-=20',
+      height: '-=20',
+      top: '-=10'
+    }, 160);
+    // console.log((_$alert.height() - $C.height()) / 2);
+    // console.log($C[0].getBoundingClientRect());
+  };
+
+  Alert.prototype.hide = function () {
+    var _self = this;
+    this.$alert.fadeOut(360, function () {
+      _self.destory();
+    });
+  };
+
+  Alert.prototype.immediatelyHide = function () {
+    this.destory();
+  };
+
+  Alert.alert = function (title, msg, buttons, cancelable) {
+    new Alert(title, msg, buttons, cancelable);
+  }
+
+  // 销毁弹窗
+  Alert.prototype.destory = function () {
+    this.$alert.remove();
+  };
+
+  HL.AsyncTaskManager = AsyncTaskManager;
+  HL.Alert = Alert;
+  HL.ActivityIndicator = ActivityIndicator;
 
   window.HL = HL;
 }(jQuery));

@@ -1,0 +1,12 @@
+<svg style="display:block;margin:0 auto;width:180px;height:180px" viewbox="0 0 84 84" version="1.1" xmlns="http://www.w3.org/2000/svg">
+      <!--<circle cx="60" cy="60" r="50" fill="transparent" stroke="#f00"></circle>-->
+      <!--'M', 0, 0, 'v', -r, 'A', r, r, 0, lenghty, 1, x, y, 'z'-->
+      <!--<path d="M0,0 A60 60 0 20 '1' '1' 0 0"></path>-->
+      <circle id="freeAssets" cx="42" cy="42" r="40" fill="transparent" stroke="#f9364d" stroke-width="2.5" class="assets-circle"></circle>
+      <circle id="freezedAssets" cx="42" cy="42" r="40" fill="transparent" stroke="#19c8b7" stroke-width="2.7" class="frozeed-assets-circle" stroke-dashoffset="60"
+        stroke-dasharray="0 251.32741228718345"></circle>
+        <text style="text-anchor:middle;fill:#5a5a5a">
+          <tspan id="totalAssets" x="44" y="42" style="font-size:12px;">0.00</tspan>
+          <tspan x="44" y="53" style="font-size:6.5px;">资产总额（元）</tspan>
+        </text>
+    </svg>

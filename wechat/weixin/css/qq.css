@@ -1,0 +1,615 @@
+.information-page-wrapper {
+	width: 100%;
+	height: 100%;
+	padding-bottom: 10px;
+	overflow-y: scroll;
+}
+
+.information-conten {
+	margin-bottom: 10px;
+	background: #fff;
+	border-top: 1px solid #E7E7E7;
+	border-bottom: 1px solid #E7E7E7;
+}
+
+.information-conten.first {
+	border-top: none;
+}
+
+.information-conten .recharge-group {
+	margin-bottom: 0;
+	border-bottom: none;
+}
+
+.recharge-group.has-card span i {
+	display: block;
+	margin-top: .3571429rem;
+	font-style: normal;
+	color: #5A5A5A;
+}
+
+.message-introduction {
+	line-height: 1.5;
+	padding: 10px 15px 10px 0;
+	margin-left: 15px;
+	color: #989898;
+	text-indent: 30px;
+	border-top: 1px solid #E7E7E7;
+}
+
+
+/*加*/
+
+.setUp-page-wrapper .pull-right {
+	margin-right: 15px;
+}
+
+.cooperative-partner {
+	position: relative;
+	margin: 0 15px;
+}
+
+.cooperative-partner h2 {
+	text-align: center;
+	font-size: 14px;
+	font-weight: 400;
+	color: #5A5A5A;
+}
+
+.cooperative-partner h2:before {
+	position: absolute;
+	top: 9px;
+	left: 0;
+	display: inline-block;
+	content: "";
+	width: 36%;
+	height: 1px;
+	background: #E7E7E7;
+}
+
+.cooperative-partner h2:after {
+	position: absolute;
+	top: 9px;
+	right: 0;
+	display: inline-block;
+	content: "";
+	width: 36%;
+	height: 1px;
+	background: #E7E7E7;
+}
+
+.cooperative-partner ul {
+	padding: 0;
+	position: absolute;
+	left: 50%;
+	margin-left: -90px;
+}
+
+.cooperative-partner ul li {
+	float: left;
+	margin-right: 28px;
+	width: 40px;
+	height: 40px;
+	background: #E7E7E7;
+	border-radius: 20px;
+	list-style: none;
+}
+
+.record-conten {
+	padding-top: 52%;
+	position: relative;
+}
+
+.bank-card-information {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	width: 67.6%;
+	height: auto;
+	padding-top: 30%;
+	margin: 23px auto;
+	background: #00729d;
+	border-radius: 5px;
+}
+
+.record-page-wrapper .swiper-pagination-bullet {
+	width: 6px;
+	height: 6px;
+	display: inline-block;
+	border-radius: 100%;
+	border: 1px solid #F9364D;
+	background: #f7f7f7;
+	opacity: 1;
+}
+
+.record-page-wrapper .swiper-pagination-bullet-active {
+	opacity: 1;
+	border: none;
+	background: #F9364D;
+}
+
+.record-list {
+	margin-bottom: 10px;
+	padding: 0 15px;
+	background: #fff;
+	border-top: 1px solid #E7E7E7;
+	border-bottom: 1px solid #E7E7E7;
+}
+
+.color-red {
+	color: #F9364D;
+}
+
+.color-green {
+	color: #19c8b7;
+}
+
+.record-list .bank-name {
+	padding-top: 15px;
+}
+
+.record-list .table-cell {
+	padding-bottom: 12px;
+}
+
+.record-money {
+	margin-top: -18px;
+	text-align: right;
+}
+
+.horizontal-input input {
+	position: relative;
+	top: 2.5px;
+}
+
+.bank-notice {
+	padding-top: 12.5px;
+	text-align: center;
+	color: #989898;
+	font-size: 12px;
+}
+
+.agree-wrapper {
+	position: absolute;
+	bottom: 37px;
+	width: 100%;
+	text-align: center;
+}
+
+.agree-wrapper p {
+	color: #989898;
+}
+
+.agree-wrapper a {
+	display: block;
+	padding-top: 10px;
+	color: #fa364e;
+}
+
+.horizontal-input input {
+	position: relative;
+	top: 0;
+}
+
+.bank-notice {
+	padding-top: 12.5px;
+	text-align: center;
+	color: #989898;
+	font-size: 12px;
+}
+
+.help-conten {
+	padding-top: 10px;
+	margin: 15px -15px -15px -15px;
+	border-top: 1px solid #E7E7E7;
+}
+
+.help-title {
+	margin: 7px 15px 0 15px;
+	padding-left: 6px;
+	line-height: 1;
+	font-size: 14px;
+	color: #5A5A5A;
+	border-left: 4px solid #f9364d;
+}
+
+.help-text {
+	margin: 7px 15px 15px 15px;
+	line-height: 1.5;
+	font-size: 14px;
+	color: #989898;
+}
+
+.read-more-open a:after {
+	float: right;
+	display: block;
+	content: "";
+	position: relative;
+	top: 13px;
+	width: 1rem;
+	height: 1.7142857rem;
+	background: transparent url(../images/icons/icons_3x.png) no-repeat -453px 0.3571429rem;
+	background-size: 43.3333333rem auto;
+	-webkit-background-size: 43.3333333rem auto;
+}
+
+
+/*账户信息*/
+
+.read-more-open:after {
+	float: right;
+	display: block;
+	content: "";
+	position: relative;
+	top: 0;
+	width: 2rem;
+	height: 1rem;
+	background: transparent url(../images/icons/icons_3x.png) no-repeat -31.6rem 0.3571429rem;
+	background-size: 43.3333333rem auto;
+	-webkit-background-size: 43.3333333rem auto;
+}
+
+.read-more-arrow {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+
+.read-more-arrow:after {
+	float: right;
+	display: block;
+	content: "";
+	position: relative;
+	right: 1.0714286rem;
+	width: 1rem;
+	height: 100%;
+	background: transparent url(../images/icons/icons_3x.png) no-repeat -33.7857143rem 0.8971429rem;
+	background-size: 43.3333333rem auto;
+	-webkit-background-size: 43.3333333rem auto;
+}
+
+.account-info-wrapper a {
+	float: right;
+	color: #A8A8A8;
+}
+
+.copy-btn {
+	float: right;
+	color: #A8A8A8;
+}
+
+.copy-btn a {
+	margin-left: 10px;
+	color: #6bb5ff;
+}
+
+.head-portrait {
+	padding: 30px 0;
+	margin-bottom: 10px;
+	text-align: center;
+	background: #fff;
+}
+
+.head-portrait img {
+	width: 80px;
+	height: 80px;
+}
+
+
+/*资产总额*/
+
+.total-header {
+	position: relative;
+	padding-top: 73%;
+	background: url(../images/total-bg.png) no-repeat;
+	background-size: 100%;
+}
+
+.total-assets-wrapper li {
+	float: left;
+	list-style: none;
+}
+
+.total-list {
+	text-align: center;
+}
+
+.total-title {
+	position: absolute;
+	left: 50%;
+	bottom: 0;
+	margin-left: -79px;
+	padding: 0;
+}
+
+.available-amount-li {
+	margin-right: 20px;
+}
+
+.available-amount-li:before {
+	content: "";
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	margin-right: 5px;
+	background: #f9364d;
+	border-radius: 4px;
+}
+
+.freezing-amount-li:before {
+	content: "";
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	margin-right: 5px;
+	background: #19c8b7;
+	border-radius: 4px;
+}
+
+.total-tab {
+	margin: 0;
+	padding: 0;
+	background: #fff;
+	border-top: 1px solid #e7e7e7;
+}
+
+.total-tab li {
+	width: 50%;
+	padding: 25px 0;
+	border-bottom: 1px solid #e7e7e7;
+	border-right: 1px solid #e7e7e7;
+}
+
+.total-tab li span {
+	display: block;
+	padding-bottom: 3px;
+	color: #F9364E;
+	font-size: 18px;
+}
+
+
+/*弹层*/
+
+.successalert,
+.failalert,
+.msgalert,
+.servicealert {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background-color: rgba(0, 0, 0, .6);
+	z-index: 9;
+}
+
+.successalert-container,
+.failalert-container,
+.msgalert-container,
+.servicealert-container {
+	position: absolute;
+	top: 0;
+	left: 11%;
+	width: 78%;
+	background-color: #fff;
+	border-radius: 8px;
+}
+
+.successalert-container,
+.failalert-container,
+.msgalert-container {
+	top: 25%;
+}
+
+.servicealert-container {
+	top: 30%;
+}
+
+.successalert-header,
+.failalert-header,
+.msgalert-header,
+.servicealert-header {
+	position: relative;
+	text-align: center;
+}
+
+.successalert-header img,
+.failalert-header img,
+.msgalert-header img {
+	position: absolute;
+	top: -33px;
+	left: 50%;
+	width: 65px;
+	height: 65px;
+	margin-left: -33px;
+	z-index: 10;
+}
+
+.successalert-header h3,
+.failalert-header h3,
+.msgalert-header h3,
+.servicealert-header h3 {
+	display: inline-block;
+	width: 100%;
+	padding: 40px 0 12px 0;
+	font-size: 16px;
+	font-weight: normal;
+	background: #f7f7f7;
+	border-bottom: 1px solid #e7e7e7;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+}
+
+.servicealert-header h3 {
+	padding: 15px 0;
+}
+
+.successalert-content,
+.failalert-content,
+.msgalert-content,
+.servicealert-content {
+	padding: 20px 25px 15px;
+}
+
+.successalert-msg,
+.failalert-msg,
+.servicealert-msg {
+	text-align: center;
+	line-height: 1.6;
+}
+
+.successalert-msg h2 {
+	color: #f9364d;
+	font-size: 25px;
+	font-weight: normal;
+}
+
+.successalert-msg ul {
+	padding: 0;
+	text-align: left;
+}
+
+.successalert-msg li {
+	list-style: none;
+	padding: 8px 0;
+	border-bottom: 1px solid #E7E7E7;
+}
+
+.successalert-msg li span {
+	float: right;
+}
+
+.failalert-msg h2 {
+	margin-bottom: 20px;
+	font-size: 16px;
+	font-weight: normal;
+}
+
+.failalert-msg span {
+	margin-left: 20px;
+}
+
+.successalert-footer,
+.msgalert-footer {
+	padding-bottom: 20px;
+	text-align: center;
+}
+
+.failalert-footer {
+	padding: 20px 0 20px;
+	text-align: center;
+}
+
+.servicealert-footer {
+	padding: 0 0 10px;
+	text-align: center;
+}
+
+.successalert-confirm,
+.failalert-confirm,
+.msgalert-confirm,
+.cancel-btn,
+.servicealert-footer button {
+	display: inline-block;
+	width: 84%;
+	padding: 10px 0;
+	text-align: center;
+	font-size: 16px;
+	color: #fff;
+	background: #F9364D;
+	border-radius: 4px;
+	border: none;
+}
+
+.cancel-btn {
+	padding: 14px 0 0 0;
+	color: #989898;
+	background: #Fff;
+	display: none;
+}
+
+.success-authentication {
+	padding: 30px 0 10px;
+}
+
+.alert-img {
+	width: 60px;
+	height: 60px;
+	margin: 15px 0;
+}
+
+.servicealert-footer button {
+	width: 41%;
+}
+
+.servicealert-footer .cancel-button {
+	margin-right: 4%;
+	color: #5A5A5A;
+	background: #fff;
+	border: 1px solid #F9364D;
+}
+
+
+/*资金流水*/
+
+.capital-flow-menu .menu-li {
+	background: #F7F7F7;
+}
+
+.menu-li img {
+	width: 27px;
+	height: 18px;
+}
+
+
+/*我的*/
+
+.account-warning {
+	position: relative;
+}
+
+.account-warning i {
+	position: absolute;
+	top: 11px;
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	margin-right: 20px;
+	background: url(../images/tan.png) no-repeat center;
+	background-size: 100%;
+}
+
+.account-warning span {
+	padding-left: 22px;
+}
+
+
+/*首页*/
+
+.rate-content-inner {
+	position: relative;
+	width: 130px;
+	margin: 0 auto;
+}
+
+.rate-content-inner img {
+	position: absolute;
+	right: 7%;
+	top: -120%;
+	width: 12px;
+	height: 20px;
+}
+
+
+/*我的*/
+
+.icon-03 {
+	width: 24px;
+	height: 24px;
+	background: transparent url(../images/zx_3x.png) no-repeat -1px center;
+	background-size: 98%;
+	-webkit-background-size: 98%;
+}

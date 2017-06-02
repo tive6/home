@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="keywords" content="八斗金服">
+  <meta name="description" content="八斗金服">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+  <!--<base href="http://192.168.0.220:8022/" />-->
+  <title>实名认证</title>
+  <link rel="stylesheet" type="text/css" href="weixin/css/wechat.css" />
+  <script src="weixin/js/require.js" data-main="weixin/js/main" defer="defer" async="async" type="text/javascript" charset="utf-8"></script>
+  <script>
+    window.onload = function() {
+      require.config({
+        baseUrl: 'weixin/js',
+        paths: {
+          // 外部库／插件
+          'jquery': [
+            '//cdn.bootcss.com/jquery/1.12.4/jquery.min',
+            'lib/jquery/1.12.4/jquery.min'
+          ],
+          'config': 'settings',
+          'util': 'common/util',
+          'User': 'model/user',
+          'userController': 'controller/userController'
+        }
+      });
+      require([
+        'jquery', 'config', 'util', 'User', 'userController'
+      ], function($, config, util, User, userController) {
+        var user = new User();
+        userController.loadRealnameAuth(function(result) {
+          var _user = result.getData(),
+            username, cardnum, params = {};
+          username = _user.getUsername();
+          cardnum = _user.getCardnum();
+
+          user.setUsername(username);
+          user.setCardnum(cardnum);
+
+          $('#loading').hide(0);
+          $('#loaded').show(0);
+          setTimeout(function() {
+            $('#indicatorTitle').html('下一步');
+            $('[ name="username"]').val(username);
+            $('[ name="cardnum"]').val(cardnum);
+            $('#fRealNext').on('click', function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              $('#indicator').show(0);
+              userController.realnameAuth(user);
+            });
+          }, 1400);
+
+          $('[name="username"]').on('input', function() {
+            user.setUsername($('[name="username"]').val());
+          });
+
+          $('[name="cardnum"]').on('input', function() {
+            user.setCardnum($('[name="cardnum"]').val());
+          });
+        });
+
+        $('#loaded')[0].addEventListener("webkitAnimationEnd", function() {
+          $('#loadedMark').show(0);
+        }, false);
+      });
+    };
+  </script>
+</head>
+
+<body class="open-f">
+  <div class="f-realName-cont">
+    <div class="f-realName-header clear">
+      <div class="f-real-step">
+        <span class="circle-outer outer-pass"><span class="circle-inner inner-pass">1</span></span>
+        <p class="f-is-realed">实名认证</p>
+      </div>
+      <div class="f-real-step">
+        <hr class="line-left" />
+        <span class="circle-outer"><span class="circle-inner">2</span></span>
+        <p>开通富友金账户</p>
+        <hr class="line-right" />
+      </div>
+      <div class="f-real-step">
+        <span class="circle-outer"><span class="circle-inner">3</span></span>
+        <p>开通安心签</p>
+        <hr class="line-right" />
+      </div>
+      <div class="f-real-step">
+        <span class="circle-outer"><span class="circle-inner">4</span></span>
+        <p>完成认证</p>
+      </div>
+    </div>
+    <div class="f-realName-body">
+      <div class="per-msg-list">
+        <span class="f-list-left">姓名</span>
+        <input class="f-list-input" name="username" type="text" placeholder="请输入您的真实姓名" />
+      </div>
+      <div class="per-msg-list">
+        <span class="f-list-left">身份证号</span>
+        <input class="f-list-input" name="cardnum" type="text" placeholder="请输入您的身份证号码" />
+      </div>
+    </div>
+  </div>
+  <div class="f-footer">
+    <a id="fRealNext" class="f-real-next" href="javascript:void(0);">
+      <svg id="indicator" class="indicator-wrapper" viewbox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <circle id="loading" class="indicator-animate" cx="10" cy="10" r="8" fill="transparent" stroke="#fff" stroke-width="1" class="frozeed-assets-circle"
+              stroke-dashoffset="7.7654816" stroke-dasharray="42.5 7.7654816"></circle>
+            <circle id="loaded" class="indicator-animate-loaded" cx="10" cy="10" r="8" fill="transparent" stroke="#fff" stroke-width="1" class="frozeed-assets-circle"
+              stroke-linecap="round" stroke-dashoffset="0" stroke-dasharray="42.5 7.7654816">
+            </circle>
+            <polyline id="loadedMark" class="indicator-animate-loaded-mark" points="5.8,8.8 10,13.5 18,5" stroke-linecap="round" fill="transparent" stroke="#fff"
+              stroke-width="1" stroke-dasharray="0 17.9979633" />
+          </svg>
+      <span id="indicatorTitle" class="indicator-title">数据加载中...</span></a>
+  </div>
+</body>
+
+</html>

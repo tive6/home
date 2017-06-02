@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <title>功能规范</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <link href="resources/css/jquery-ui-themes.css" type="text/css" rel="stylesheet"/>
+    <link href="resources/css/axure_rp_page.css" type="text/css" rel="stylesheet"/>
+    <link href="data/styles.css" type="text/css" rel="stylesheet"/>
+    <link href="files/功能规范/styles.css" type="text/css" rel="stylesheet"/>
+    <script src="resources/scripts/jquery-1.7.1.min.js"></script>
+    <script src="resources/scripts/jquery-ui-1.8.10.custom.min.js"></script>
+    <script src="resources/scripts/prototypePre.js"></script>
+    <script src="data/document.js"></script>
+    <script src="resources/scripts/prototypePost.js"></script>
+    <script src="files/功能规范/data.js"></script>
+    <script type="text/javascript">
+      $axure.utils.getTransparentGifPath = function() { return 'resources/images/transparent.gif'; };
+      $axure.utils.getOtherPath = function() { return 'resources/Other.html'; };
+      $axure.utils.getReloadPath = function() { return 'resources/reload.html'; };
+    </script>
+  </head>
+  <body>
+    <div id="base" class="">
+
+      <!-- Unnamed (文本段落) -->
+      <div id="u1158" class="ax_default _文本段落">
+        <img id="u1158_img" class="img " src="images/功能规范/u1158.png"/>
+        <!-- Unnamed () -->
+        <div id="u1159" class="text">
+          <p><span style="font-family:'PingFangSC-Thin', 'PingFang SC Thin', 'PingFang SC';font-weight:200;">设计功能遵循的规范，每个功能模块的要求不同，具体以功能样式为准。</span></p><p><span style="font-family:'PingFangSC-Thin', 'PingFang SC Thin', 'PingFang SC';font-weight:200;">比如功能尽量模块化，尽量解耦。</span></p><p><span style="font-family:'PingFangSC-Thin', 'PingFang SC Thin', 'PingFang SC';font-weight:200;">比如很多功能应该采用SDK，而不是自己开发（如分享、IM、推送）。</span></p><p><span style="font-family:'PingFangSC-Thin', 'PingFang SC Thin', 'PingFang SC';font-weight:200;"><br></span></p><p><span style="font-family:'PingFangSC-Thin', 'PingFang SC Thin', 'PingFang SC';font-weight:200;"><br></span></p><p><span style="font-family:'PingFangSC-Regular', 'PingFang SC';font-weight:400;">内禀规则是什么？</span><span style="font-family:'PingFangSC-Thin', 'PingFang SC Thin', 'PingFang SC';font-weight:200;"></span></p><p><span style="font-family:'PingFangSC-Thin', 'PingFang SC Thin', 'PingFang SC';font-weight:200;">指业务实体本身具备的内在规则，并且不受外部以及用例交互的影响。这类规则应该实现到你的实体类中，根据面向对象的封装原则，内禀的逻辑一定不要让它暴露到外部。不论你的业务实体是EntityBean，JavaBean，POJO还是COM+。</span></p><p><span style="font-family:'PingFangSC-Thin', 'PingFang SC Thin', 'PingFang SC';font-weight:200;"><br></span></p><p><span style="font-family:'PingFangSC-Thin', 'PingFang SC Thin', 'PingFang SC';font-weight:200;">如何获得？</span></p><p><span style="font-family:'PingFangSC-Thin', 'PingFang SC Thin', 'PingFang SC';font-weight:200;">需要对每个业务实体的属性进行罗列，并找出它们的规则。、</span></p><p><span style="font-family:'PingFangSC-Thin', 'PingFang SC Thin', 'PingFang SC';font-weight:200;"><br></span></p><p><span style="font-family:'PingFangSC-Regular', 'PingFang SC';font-weight:400;">全局规则是什么？</span><span style="font-family:'PingFangSC-Thin', 'PingFang SC Thin', 'PingFang SC';font-weight:200;"></span></p><p><span style="font-family:'PingFangSC-Thin', 'PingFang SC Thin', 'PingFang SC';font-weight:200;">通常与所有用例相关，而不是与特定用例相关。所以应该抽象出来让系统去负责这些特性的实现。比如小乐要给朋友发图片以及在朋友圈发图片用例必须获得相应的授权，或者用户在系统中的所有操作都要被记录下来等等。</span></p><p><span style="font-family:'PingFangSC-Thin', 'PingFang SC Thin', 'PingFang SC';font-weight:200;">授权，事务，备份等这些全局特性都是由系统框架去实现的，具体的功能中只是调用而不再实现它们。</span></p><p><span style="font-family:'PingFangSC-Thin', 'PingFang SC Thin', 'PingFang SC';font-weight:200;"><br></span></p><p><span style="font-family:'PingFangSC-Thin', 'PingFang SC Thin', 'PingFang SC';font-weight:200;">如何获得？</span></p><p><span style="font-family:'PingFangSC-Thin', 'PingFang SC Thin', 'PingFang SC';font-weight:200;">很难从用户处调研得来，通常这方面是用户的盲点。主要从业务特点、应用环境、行业规定、法律规章等等方面去总结，再求得客户方的认可。</span></p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

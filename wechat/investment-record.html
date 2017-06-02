@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="keywords" content="八斗金服">
+	<meta name="description" content="八斗金服">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+	/>
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="format-detection" content="telephone=no" />
+	<title>投资记录</title>
+	<link rel="stylesheet" type="text/css" href="weixin/css/swiper/3.3.1/swiper.min.css" />
+	<link rel="stylesheet" type="text/css" href="weixin/css/wechat.css" />
+	<style type="text/css">
+		.swiper-slide {
+			overflow-y: auto;
+		}
+	</style>
+	<script src="weixin/js/require.js" data-main="weixin/js/main" defer="defer" async="async" type="text/javascript" charset="utf-8"></script>
+	<script>
+		window.onload = function () {
+			require.config({
+				baseUrl: 'weixin/js',
+				paths: {
+					// 外部库／插件
+					'jquery': [
+						'//cdn.bootcss.com/jquery/1.12.4/jquery.min',
+						'lib/jquery/1.12.4/jquery.min'
+					],
+					'swiper': [
+						'//cdn.bootcss.com/Swiper/3.4.2/js/swiper.min',
+						'lib/swiper/3.4.2/swiper.min'
+					],
+
+					'config': 'settings',
+					'swipeLoader': 'common/swipeLoader',
+					'userController': 'controller/userController',
+					'investController': 'controller/investController',
+					'appController': 'controller/appController'
+				}
+			});
+			require([
+				'jquery', 'swiper', 'config', 'swipeLoader', 'userController', 'investController', 'appController'
+			], function ($, Swiper, config, swipeLoader, userController, investController, appController) {
+				var dataCount = [0, 0],
+					currentPage = [0, 0],
+					noMoreData = [false, false],
+					isSettlement = 1,
+					dataCache = ['', ''],
+					investTypeClass = 'noviceMark',
+					tag = 0;
+
+
+				$('.swiper-slide').height($('.investmentRecord-wrapper').height());
+				// 定义标签滑动切换
+				var mySwiper = new Swiper('#swiper-container', {
+					resistanceRatio: 0, //第一个最后一个禁止拖动
+					height: $('.investmentRecord-wrapper').height(),
+					onSlideChangeEnd: function (swiper) {
+						$('#investmentRecord-tab li').eq(swiper.activeIndex).addClass('active').siblings().removeClass('active');
+					}
+				});
+
+
+				function loadMore() {
+					if (noMoreData[tag]) {
+						return;
+					}
+					var options = {
+						currentPage: currentPage[tag]++,
+						pageSize: 10,
+						isSettlement: isSettlement,
+						type: 0
+					};
+					// 加载投资记录列表
+					appController.getInvestNewList(options, function (list) {
+						var html = '', icon, cct;
+						if (list.length > 0) {
+							dataCount[tag] += list.length;
+							$.each(list, function (index, item) {
+								if (item.investType == 1) {
+									investTypeClass = isSettlement == 1 ? 'zhixiang' : 'zhixiang-settlement';
+								} else if (item.investType == 2) {
+									investTypeClass = isSettlement == 1 ? 'zhaizhuan' : 'zhaizhuan-settlement';
+								} else if (item.investType == 3) {
+									investTypeClass = isSettlement == 1 ? 'jingxuan' : 'jingxuan-settlement';
+								} else if (item.investType == 4) {
+									investTypeClass = isSettlement == 1 ? 'noviceMark' : 'noviceMark-settlement';
+								}
+
+								if (isSettlement == 1) {
+									cct = '';
+									icon = '';
+								} else {
+									cct = ' investment-settlement';
+									icon = '<img class="jiesuan" src="weixin/images/icons/jiesuan@3x.png"/>';
+								}
+
+								html += '<a href="repay-detail.html?oi=' + item.orderid + '&bi=' + item.bidinfoid + '&it='+item.investType+'&record=1"><div class="investmentDetails-list' + cct + '">' +
+									'<div class="investmentDetails-title ' + investTypeClass + '">' + item.bidTitle + '<span>' + item.bidLimit + '个月</span></div>' +
+									'<div class="expected-rate"><p>' + item.yearRate + '</p>' + icon + '历史年化收益率(%)</div>' +
+									'<div class="matching-wrapper">' +
+									'<ul class="clearfix">' +
+									'<li class="border-right"><span>' + item.money + '</span>持有金额(元)<img src=""/></li>' +
+									'<li><span>' + item.sumEarn + '</span>已收收益(元)<i></i></li>' +
+									'</ul>' +
+									'</div>' +
+									'</div></a>';
+							});
+							(dataCache[tag] += html);
+							isSettlement == 1 ? $('.possession-wrapper').append(html) : $('.alreadySettled-wrapper').append(html);
+
+							$('.load-more').show();
+						} else {
+							noMoreData[tag] = true;
+							$('.load-more').html('没有更多数据啦～');
+						}
+
+						if (dataCount[tag] <= 0) {
+							$('.load-more').hide();
+							$('.possession-wrapper').addClass('no-records');
+							$('.alreadySettled-wrapper').addClass('no-records');
+						} else {
+							$('.load-more').show().html("加载更多");
+							$('.possession-wrapper').removeClass('no-records');
+							$('.alreadySettled-wrapper').removeClass('no-records');
+						}
+					});
+				}
+
+				$('.load-more').on('click', function () {
+					if (noMoreData[tag] == true) {
+						$('.load-more').html('没有更多记录啦～');
+					} else {
+						loadMore(mySwiper);
+						$('.load-more').html('加载更多');
+					}
+				}).fadeIn(600);
+
+				// 标签项点击关联
+				$('#investmentRecord-tab').on('click', function (e) {
+					var $target = $(e.target).closest('li.investmentRecord-tab-item');
+					$target.addClass('active').siblings().removeClass('active');
+					mySwiper.slideTo($target.index());
+					if ($target.index() == 0) {
+						tag = 0;
+						isSettlement = 1;
+						if (!dataCache[0]) {
+							loadMore(mySwiper);
+						}
+					} else {
+						tag = 1;
+						isSettlement = 2;
+						if (!dataCache[1]) {
+							loadMore(mySwiper);
+						}
+					}
+					if (dataCount[tag] <= 0) {
+						$('.load-more').hide();
+						$('.possession-wrapper').addClass('no-records');
+						$('.alreadySettled-wrapper').addClass('no-records');
+					} else {
+						$('.load-more').show().html("加载更多");
+						$('.possession-wrapper').removeClass('no-records');
+						$('.alreadySettled-wrapper').removeClass('no-records');
+					}
+				});
+
+				loadMore(mySwiper);
+
+
+			});
+		};
+	</script>
+</head>
+
+<body class="investment-Record-wrapper gray-bg">
+	<!--下拉-->
+	<div class="biaoType-wrapper" style="display: none;">
+		<ul>
+			<li><img src="weixin/images/icons/xin@3x.png" alt="" /><span>新手标</span></li>
+			<li><img src="weixin/images/icons/jing@3x.png" alt="" /><span>精选标</span></li>
+			<li><img src="weixin/images/icons/zhai@3x.png" alt="" /><span>债转标</span></li>
+			<li><img src="weixin/images/icons/zhi@3x.png" alt="" /><span>智享计划</span></li>
+		</ul>
+	</div>
+	<div class="investmentRecord-nav">
+		<ul id="investmentRecord-tab" class="investmentRecord-tab clearfix">
+			<li class="investmentRecord-tab-item active" data-tab="1">持有中</li>
+			<li class="investmentRecord-tab-item" data-tab="2">已结算</li>
+		</ul>
+	</div>
+	<div class="investmentRecord-wrapper">
+		<div class="swiper-container" id="swiper-container">
+			<div id="swiper_wrapper" class="swiper-wrapper">
+				<div class="swiper-slide">
+					<div class="possession-wrapper clearfix">
+						<!--<div class="investmentDetails-list">
+								<div class="investmentDetails-title noviceMark">新手标010101<span>12个月</span></div>
+								<div class="expected-rate">预期年化收益率(%)<p>11.00</p></div>
+								<div class="matching-wrapper">
+									<ul class="clearfix">
+				            <li class="border-right"><span>0.00</span>理财金额(元)</li>
+				            <li><span>0.00</span>已收金额(元)</li>
+				          </ul>
+								</div>
+							</div>
+							<div class="investmentDetails-list">
+								<div class="investmentDetails-title jingxuan">新手标010101<span>12个月</span></div>
+								<div class="expected-rate">预期年化收益率(%)<p>11.00</p></div>
+								<div class="matching-wrapper">
+									<ul class="clearfix">
+				            <li class="border-right"><span>0.00</span>理财金额(元)</li>
+				            <li><span>0.00</span>已收金额(元)</li>
+				          </ul>
+								</div>
+							</div>
+							<div class="investmentDetails-list">
+								<div class="investmentDetails-title zhaizhuan">新手标010101<span>12个月</span></div>
+								<div class="expected-rate">预期年化收益率(%)<p>11.00</p></div>
+								<div class="matching-wrapper">
+									<ul class="clearfix">
+				            <li class="border-right"><span>0.00</span>理财金额(元)</li>
+				            <li><span>0.00</span>已收金额(元)</li>
+				          </ul>
+								</div>
+							</div>
+							<div class="investmentDetails-list">
+								<div class="investmentDetails-title zhixiang">新手标010101<span>12个月</span></div>
+								<div class="expected-rate">预期年化收益率(%)<p>11.00</p></div>
+								<div class="matching-wrapper">
+									<ul class="clearfix">
+				            <li class="border-right"><span>0.00</span>理财金额(元)</li>
+				            <li><span>0.00</span>已收金额(元)</li>
+				          </ul>
+								</div>
+							</div>-->
+						<div class="no-data-msg">暂时还没有消息</div>
+					</div>
+					<div class="load-more">加载更多</div>
+				</div>
+				<div class="swiper-slide">
+					<div class="alreadySettled-wrapper">
+						<!--已结算-->
+						<!--<div class="investmentDetails-list investment-settlement">
+								<div class="investmentDetails-title noviceMark-settlement">新手标010101<span>12个月</span></div>
+								<div class="expected-rate">预期年化收益率(%)<p>11.00</p><img class="jiesuan" src="weixin/images/icons/jiesuan@3x.png"/></div>
+								<div class="matching-wrapper">
+									<ul class="clearfix">
+				            <li class="border-right"><span>0.00</span>理财金额(元)</li>
+				            <li><span>0.00</span>已收金额(元)</li>
+				          </ul>
+								</div>
+							</div>
+							<div class="investmentDetails-list investment-settlement">
+								<div class="investmentDetails-title jingxuan-settlement">新手标010101<span>12个月</span></div>
+								<div class="expected-rate">预期年化收益率(%)<p>11.00</p><img class="jiesuan" src="weixin/images/icons/jiesuan@3x.png"/></div>
+								<div class="matching-wrapper">
+									<ul class="clearfix">
+				            <li class="border-right"><span>0.00</span>理财金额(元)</li>
+				            <li><span>0.00</span>已收金额(元)</li>
+				          </ul>
+								</div>
+							</div>
+							<div class="investmentDetails-list investment-settlement">
+								<div class="investmentDetails-title zhaizhuan-settlement">新手标010101<span>12个月</span></div>
+								<div class="expected-rate">预期年化收益率(%)<p>11.00</p><img class="jiesuan" src="weixin/images/icons/jiesuan@3x.png"/></div>
+								<div class="matching-wrapper">
+									<ul class="clearfix">
+				            <li class="border-right"><span>0.00</span>理财金额(元)</li>
+				            <li><span>0.00</span>已收金额(元)</li>
+				          </ul>
+								</div>
+							</div>
+							<div class="investmentDetails-list investment-settlement">
+								<div class="investmentDetails-title zhixiang-settlement">新手标010101<span>12个月</span></div>
+								<div class="expected-rate">预期年化收益率(%)<p>11.00</p><img class="jiesuan" src="weixin/images/icons/jiesuan@3x.png"/></div>
+								<div class="matching-wrapper">
+									<ul class="clearfix">
+				            <li class="border-right"><span>0.00</span>理财金额(元)</li>
+				            <li><span>0.00</span>已收金额(元)</li>
+				          </ul>
+								</div>
+							</div>-->
+						<div class="no-data-msg">暂时还没有消息</div>
+					</div>
+					<div class="load-more">加载更多</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

@@ -7,3 +7,5 @@ npm-debug.log
 yarn-error.log
 .idea
 .project
+.vscode
+.git

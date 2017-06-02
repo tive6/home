@@ -1,0 +1,225 @@
+.modal-open {
+  overflow: hidden;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1050;
+  display: none;
+  overflow: hidden;
+  -webkit-overflow-scrolling: touch;
+  outline: 0;
+}
+
+.modal.fade .modal-dialog {
+  -webkit-transition: -webkit-transform .3s ease-out;
+  -o-transition: -o-transform .3s ease-out;
+  transition: transform .3s ease-out;
+  -webkit-transform: translate(0, -25%);
+  -ms-transform: translate(0, -25%);
+  -o-transform: translate(0, -25%);
+  transform: translate(0, -25%);
+}
+
+.modal.in .modal-dialog {
+  -webkit-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  transform: translate(0, 0);
+}
+
+.modal-open .modal {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.modal-content {
+  position: relative;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  border-radius: 6px;
+  outline: 0;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1040;
+  background-color: #000;
+}
+
+.modal-backdrop.fade {
+  filter: alpha(opacity=0);
+  opacity: 0;
+}
+
+.modal-backdrop.in {
+  filter: alpha(opacity=50);
+  opacity: .5;
+}
+
+.modal-open .modal {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.modal-dialog {
+  position: relative;
+  width: 20.7142857rem;
+  margin: 7rem auto 0;
+}
+
+.modal-content {
+  position: relative;
+  background-color: #fff;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  border: 1px solid #999;
+  border: 1px solid rgba(0, 0, 0, .2);
+  border-radius: .4285714rem;
+  outline: 0;
+  -webkit-box-shadow: 0 .2142857rem .6428571rem rgba(0, 0, 0, .5);
+  box-shadow: 0 .2142857rem .6428571rem rgba(0, 0, 0, .5);
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1040;
+  background-color: #000;
+}
+
+.modal-backdrop.fade {
+  filter: alpha(opacity=0);
+  opacity: 0;
+}
+
+.modal-backdrop.in {
+  filter: alpha(opacity=50);
+  opacity: .5;
+}
+
+.modal-header {
+  padding: 1.0714286rem 0 .7142857rem;
+  font-family: 'siyuan';
+  text-align: center;
+}
+
+.modal-header span {
+  position: relative;
+  top: .2142857rem;
+  margin-left: 2.8571429rem;
+  font-size: 1.1428571rem;
+}
+
+.modal-title {
+  margin: 0;
+  line-height: 1.42857143;
+}
+
+.modal-body {
+  position: relative;
+  padding: 1.0714286rem 1.7857143rem;
+  text-align: center;
+  line-height: 1.7412386;
+  font-size: 1rem;
+}
+
+.modal-footer {
+  padding: 1.0714286rem;
+}
+
+.btn-close {
+  float: right;
+  position: relative;
+  width: 2.8571429rem;
+  height: 1.8571286rem;
+  background: transparent url(../images/icons/close.png) no-repeat top right;
+  background-size: 100%;
+  -webkit-background-size: 100%;
+  border-radius: 0;
+}
+
+.alert-msg-title {
+  display: block;
+  margin-bottom: .5rem;
+  font-size: 1rem;
+  color: #989898;
+}
+
+.modal-header span.pull-left {
+  margin-left: 1.4285714rem;
+}
+
+.cashed-modal .modal-body {
+  padding: 0 1.4285714rem;
+  text-align: left;
+}
+
+.modal-body .cashed-group {
+  padding: 0;
+  border: none;
+}
+
+.modal-body .cashed-group .cashed {
+  float: none;
+  margin-left: .7142857rem;
+}
+
+.cashed-modal .modal-footer {
+  padding: 0;
+}
+
+.modal-footer .btn-group {
+  margin: 1.4285714rem 0;
+}
+
+.cashed-input-group-wrapper {
+  padding-left: 4.2857143rem;
+  margin-top: 1.4285714rem;
+}
+
+
+.cashed-input-group-wrapper span {
+  float: left;
+  position: relative;
+  top: .7142857rem;
+  margin-left: -4.2857143rem;
+}
+
+.cashed-input-group {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  padding: .7142857rem .3571429rem;
+  border: 1px solid #e7e7e7;
+  border-radius: .2857143rem;
+}
+
+.cashed-input-group input {
+  width: 100%;
+  -webkit-appearance: none;
+}
+
+.cashed-input-group a.cashed-get-code {
+  position: absolute;
+  top: .2857143rem;
+  right: .2857143rem;
+  bottom: .2857143rem;
+  padding: 0 .7142857rem;
+  font-size: .8571429rem;
+  color: #fff;
+  line-height: 2.5714286rem;
+  background-color: #19c8b7;
+  border-radius: .2857143rem;
+}

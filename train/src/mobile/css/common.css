@@ -1,14 +1,19 @@
 /* img-res */
-.img-res{
-    display: block;
-    width: 100%;
+
+.img-res {
+  display: block;
+  width: 100%;
 }
-.active{
-    color: #00ccbb;
+
+.active {
+  color: #00ccbb;
 }
+
+
 /* 底部菜单 */
+
 .footer {
-  position: fixed;
+  position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>摇一摇</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<link rel="stylesheet" type="text/css" href="/weixin/css/wechat.css" />
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+	<style type="text/css">
+		.msgalert-header {
+			background-color: #f7f7f7;
+		}
+		
+		.msgalert-header h3 {
+			padding: 0;
+			border: none;
+		}
+		
+		.msgalert-content {
+			padding: 25px 25px 35px;
+		}
+		
+		.msgalert-footer {
+			background: #F9364D;
+		}
+		
+		.msgalert-confirm {
+			color: #fff;
+		}
+	</style>
+	<script src="/weixin/js/require.js" data-main="/weixin/js/main" defer="defer" async="async" type="text/javascript" charset="utf-8"></script>
+	<script>
+		window.onload = function () {
+			require.config({
+				baseUrl: '/weixin/js',
+				paths: {
+					// 外部库／插件
+					'jquery': [
+						'//cdn.bootcss.com/jquery/1.12.4/jquery.min',
+						'lib/jquery/1.12.4/jquery.min'
+					],
+					'cookie': [
+						'//cdn.bootcss.com/cookie.js/1.1.0/cookie.min',
+						'lib/cookie/1.1.0/cookie.min'
+					],
+					'Shake': '../../activity/js/lib/shake/shake',
+					'WebView': 'common/webView',
+					'activityController': '../../activity/js/controller',
+					'userController': 'controller/userController'
+				}
+			});
+			require([
+				'jquery', 'cookie', 'Shake', 'WebView', 'activityController', 'userController'
+			], function ($, cookie, Shake, WebView, activityController, userController) {
+				var shake = new Shake(),
+					code = null,
+					money;
+				shake.start();
+				$(window).one('shake', shakeLottery);
+
+				$(".close-btn").click(function () {
+					$(".shake-opcity-bg").hide();
+					$(".ji-winning").hide();
+					$(".unfortunately").hide();
+				});
+
+				function shakeLottery() {
+					document.getElementById('shakeAudio').play();
+					var user = userController.getLoginUserFromLocalStorage();
+					var options = {
+						token: user && user.getToken(),
+						code: code
+					};
+					activityController.shake4Lottery(options, function (result) {
+						switch (result.getStatus()) {
+							case '1':
+								// 抽奖成功
+								money = result.getData();
+								setTimeout(function () {
+									showPrize(result);
+								}, 1000);
+								break;
+							case '2':
+								// 已经抽过
+								money = result.getData();
+								setTimeout(function () {
+									showPrize(result);
+								}, 1000);
+								break;
+							case '3':
+								// 3:活动结束
+								setTimeout(function () {
+									document.getElementById('resultAudio').play();
+									WebView.msgAlert({
+										title: '<span style="color:#F9364D">系统提示</span>',
+										msg: '本次活动已结束，感谢您的参与！'
+									}).show();
+								}, 1000);
+								break;
+							case '4':
+								// 4:输口令开始摇奖
+								setTimeout(function () {
+									document.getElementById('resultAudio').play();
+									WebView.msgAlert({
+										title: '<span style="color:#F9364D">系统提示</span>',
+										msg: '<span style="color:#F9364D">输入口令开启摇奖</span><input style="width:100%;padding: 5px;border:1px solid #e7e7e7" type="text" id="code" value="" placeholder="输入口令开启摇奖">',
+										action: function () {
+											code = $('#code').val();
+											$('#code').attr('readonly', 'readonly').val('').blur();
+										}
+									}).show();
+								}, 1000);
+								break;
+							default:
+								break;
+						}
+						$(window).one('shake', shakeLottery);
+					});
+				}
+
+				function hasLotteried() {
+					$('.tok-podium').html('<span style="display:block;margin-bottom:10px;">您已经抽过奖啦！</span>凭此页面上台领奖吧！');
+					$('.shake-opcity-bg').fadeIn(300);
+					$('#prize').fadeIn(300);
+				}
+
+				$('.lottery').on('click', function () {
+					openPrize(money);
+				});
+
+				function showPrize(result) {
+					document.getElementById('resultAudio').play();
+					$('.shake-opcity-bg').fadeIn(300);
+					if (result.getData() === '0') {
+						$('.unfortunately').fadeIn(300);
+						$('#prize').hide();
+					} else {
+						$('.lottery').fadeIn(300);
+					}
+				}
+
+				function openPrize(money) {
+					$('#money').html(money);
+					$('#prize').fadeIn(300);
+					$('.unfortunately').hide();
+					$('.lottery').hide();
+				}
+			});
+		};
+	</script>
+</head>
+
+<body>
+	<div class="shake-wrapper">
+		<img class="logo" src="images/logo.png" alt="八斗金服" />
+		<img class="title" src="images/jixinggaozhao.png" alt="吉星高照" />
+		<img class="title" src="images/duojiduoli.png" alt="多鸡多礼" />
+		<img class="hongbao" src="images/honbao.png" alt="红包" />
+		<img class="shake-img" src="images/shake-img.png" alt="" />
+		<img class="shake-money" src="images/bg.png" alt="" />
+		<div class="percent">【人品大爆发】</div>
+		<div class="red-packets">红包最多861元，最少168元！</div>
+		<div class="yao">用力摇起来吧~</div>
+	</div>
+	<!--弹层背景-->
+	<div class="shake-opcity-bg" style="display: none;"></div>
+	<!--开奖-->
+	<div class="lottery" style="display: none;"></div>
+	<!--获奖-->
+	<div id="prize" class="ji-winning" style="display: none;">
+		<div class="cash"><sup>￥</sup><span id="money">861</span><sub>现金</sub></div>
+		<div class="tok-podium">凭此页面上台领奖吧！</div>
+		<div class="close-btn"><img src="images/close-btn.png" /></div>
+	</div>
+	<!--遗憾-->
+	<div class="unfortunately" style="display: none;">
+		<div class="close-btn"><img src="images/close-btn.png" /></div>
+	</div>
+	<audio id="shakeAudio" preload>
+		<source src="/activity/audio/shake/5018.mp3" type="audio/mpeg">
+		<source src="/activity/audio/shake/5018.wav" type="audio/wav">
+	</audio>
+	<audio id="resultAudio" preload>
+		<source src="/activity/audio/shake/4092.mp3" type="audio/mpeg">
+		<source src="/activity/audio/shake/4092.wav" type="audio/wav">
+	</audio>
+</body>
+
+</html>

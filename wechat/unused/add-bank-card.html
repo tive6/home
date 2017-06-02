@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="keywords" content="八斗金服">
+  <meta name="description" content="八斗金服">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+  <!--<base href="http://192.168.0.220:8022/" />-->
+  <title>添加银行卡</title>
+  <link rel="stylesheet" type="text/css" href="weixin/css/normalize.css" />
+  <link rel="stylesheet" type="text/css" href="weixin/css/wechat.css" />
+  <script src="weixin/js/require.js" data-main="weixin/js/main" defer="defer" async="async" type="text/javascript" charset="utf-8"></script>
+</head>
+
+<body class="bank-page gray-bg">
+  <div class="bank-page-wrapper">
+    <div class="scroll-content horizontal-content">
+      <div class="horizontal-input section-row first">
+        <label for="">开户人:&nbsp;</label>
+        <input type="text" name="n_real_name" id="real_name" value="张艺兴" readonly="readonly" />
+      </div>
+      <div class="horizontal-input section-row">
+        <label for="">选择开户银行</label>
+        <input type="hidden" name="n_bank_id" id="bank_id" value="张艺兴" readonly="readonly" />
+        <a id="select_bank_card" class="read-more" href="javascript:void(0);"></a>
+      </div>
+      <div class="horizontal-input section-row">
+        <label for="">银行卡号</label>
+        <input type="text" name="n_bank_card_id" id="bank_card_id" class="form-control" value="" placeholder="请输入银行卡号" />
+      </div>
+      <div class="horizontal-input section-row">
+        <label for="">手机号码</label>
+        <input type="text" name="n_telphone" id="telphone" class="form-control" value="" placeholder="请输入银行卡预留手机号" />
+      </div>
+      <div class="horizontal-input section-row dynamic-code">
+        <label for="">手机动态码</label>
+        <input type="text" name="n_reserved_phone" id="reserved_phone" class="form-control" value="" placeholder="请输入手机动态码" />
+        <a id="get_dynamic_code" href="javascript:void(0);">获取动态码</a>
+      </div>
+      <div class="btn-group bank-btn">
+        <button id="add_bank" class="btn btn-primary">确定</button>
+        <p class="add-bank-info">目前充值支持的银行：工商、建设、中国、农业、交通、浦东、广大、民生、平安、中兴、兴业、广发、招商（具体根据第三方支付为主）</p>
+      </div>
+    </div>
+    <div class="scroll-content bank-content">
+      <div class="bank-item">
+        <div class="bank-item-content clearfix">
+          <div class="bank-item-icon"></div>
+          <div class="bank-info">
+            <h3 class="bank-name">招商银行</h3>
+            <div class="table-wrapper">
+              <div class="table-cell">
+                单笔支付限额:<span>50000</span>
+              </div>
+              <div class="table-cell">
+                单日支付限额:<span>50000</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a id="bank_001" class="read-more prevent-callout" href="javascript:void(0);"></a>
+      </div>
+      <div class="bank-item">
+        <div class="bank-item-content clearfix">
+          <div class="bank-item-icon"></div>
+          <div class="bank-info">
+            <h3 class="bank-name">招商银行</h3>
+            <div class="table-wrapper">
+              <div class="table-cell">
+                单笔支付限额:<span>50000</span>
+              </div>
+              <div class="table-cell">
+                单日支付限额:<span>50000</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a id="bank_002" class="read-more prevent-callout" href="javascript:void(0);"></a>
+      </div>
+      <div class="bank-item">
+        <div class="bank-item-content clearfix">
+          <div class="bank-item-icon"></div>
+          <div class="bank-info">
+            <h3 class="bank-name">招商银行</h3>
+            <div class="table-wrapper">
+              <div class="table-cell">
+                单笔支付限额:<span>50000</span>
+              </div>
+              <div class="table-cell">
+                单日支付限额:<span>50000</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a id="bank_003" class="read-more prevent-callout" href="javascript:void(0);"></a>
+      </div>
+      <div class="bank-item">
+        <div class="bank-item-content clearfix">
+          <div class="bank-item-icon"></div>
+          <div class="bank-info">
+            <h3 class="bank-name">招商银行</h3>
+            <div class="table-wrapper">
+              <div class="table-cell">
+                单笔支付限额:<span>50000</span>
+              </div>
+              <div class="table-cell">
+                单日支付限额:<span>50000</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a id="bank_004" class="read-more prevent-callout" href="javascript:void(0);"></a>
+      </div>
+      <div class="bank-item">
+        <div class="bank-item-content clearfix">
+          <div class="bank-item-icon"></div>
+          <div class="bank-info">
+            <h3 class="bank-name">招商银行</h3>
+            <div class="table-wrapper">
+              <div class="table-cell">
+                单笔支付限额:<span>50000</span>
+              </div>
+              <div class="table-cell">
+                单日支付限额:<span>50000</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a id="bank_005" class="read-more prevent-callout" href="javascript:void(0);"></a>
+      </div>
+      <div class="bank-item">
+        <div class="bank-item-content clearfix">
+          <div class="bank-item-icon"></div>
+          <div class="bank-info">
+            <h3 class="bank-name">招商银行</h3>
+            <div class="table-wrapper">
+              <div class="table-cell">
+                单笔支付限额:<span>50000</span>
+              </div>
+              <div class="table-cell">
+                单日支付限额:<span>50000</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a id="bank_006" class="read-more prevent-callout" href="javascript:void(0);"></a>
+      </div>
+      <div class="bank-item">
+        <div class="bank-item-content clearfix">
+          <div class="bank-item-icon"></div>
+          <div class="bank-info">
+            <h3 class="bank-name">招商银行</h3>
+            <div class="table-wrapper">
+              <div class="table-cell">
+                单笔支付限额:<span>50000</span>
+              </div>
+              <div class="table-cell">
+                单日支付限额:<span>50000</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a id="bank_007" class="read-more prevent-callout" href="javascript:void(0);"></a>
+      </div>
+      <div class="bank-item">
+        <div class="bank-item-content clearfix">
+          <div class="bank-item-icon"></div>
+          <div class="bank-info">
+            <h3 class="bank-name">招商银行</h3>
+            <div class="table-wrapper">
+              <div class="table-cell">
+                单笔支付限额:<span>50000</span>
+              </div>
+              <div class="table-cell">
+                单日支付限额:<span>50000</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a id="bank_008" class="read-more prevent-callout" href="javascript:void(0);"></a>
+      </div>
+      <div class="bank-item">
+        <div class="bank-item-content clearfix">
+          <div class="bank-item-icon"></div>
+          <div class="bank-info">
+            <h3 class="bank-name">招商银行</h3>
+            <div class="table-wrapper">
+              <div class="table-cell">
+                单笔支付限额:<span>50000</span>
+              </div>
+              <div class="table-cell">
+                单日支付限额:<span>50000</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a id="bank_009" class="read-more prevent-callout" href="javascript:void(0);"></a>
+      </div>
+      <div class="bank-item">
+        <div class="bank-item-content clearfix">
+          <div class="bank-item-icon"></div>
+          <div class="bank-info">
+            <h3 class="bank-name">招商银行</h3>
+            <div class="table-wrapper">
+              <div class="table-cell">
+                单笔支付限额:<span>50000</span>
+              </div>
+              <div class="table-cell">
+                单日支付限额:<span>50000</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a id="bank_010" class="read-more prevent-callout" href="javascript:void(0);"></a>
+      </div>
+      <div class="bank-item">
+        <div class="bank-item-content clearfix">
+          <div class="bank-item-icon"></div>
+          <div class="bank-info">
+            <h3 class="bank-name">招商银行</h3>
+            <div class="table-wrapper">
+              <div class="table-cell">
+                单笔支付限额:<span>50000</span>
+              </div>
+              <div class="table-cell">
+                单日支付限额:<span>50000</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a id="bank_011" class="read-more prevent-callout" href="javascript:void(0);"></a>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

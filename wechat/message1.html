@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="keywords" content="八斗金服">
+	<meta name="description" content="八斗金服">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="format-detection" content="telephone=no" />
+	<!--<base href="http://192.168.0.220:8022/" />-->
+	<title>消息</title>
+	<link rel="stylesheet" type="text/css" href="weixin/css/wechat.css" />
+	<script src="weixin/js/require.js" data-main="weixin/js/main" defer="defer" async="async" type="text/javascript" charset="utf-8"></script>
+	<script>
+		window.onload = function () {
+			require.config({
+				baseUrl: 'weixin/js',
+				paths: {
+					// 外部库／插件
+					'jquery': [
+						'//cdn.bootcss.com/jquery/1.12.4/jquery.min',
+						'lib/jquery/1.12.4/jquery.min'
+					],
+					'config': 'settings',
+					'swipeLoader': 'common/swipeLoader',
+					'appController': 'controller/appController'
+				}
+			});
+			require([
+				'jquery', 'config', 'swipeLoader', 'appController'
+			], function ($, config, swipeLoader, appController) {
+
+				var dataCount = 0,
+					currentPage = 0,
+					noMoreData = false;
+
+				function loadMore(callback, swiper) {
+					if (noMoreData) {
+						return;
+					}
+					var options = {
+						currentPage: currentPage++,
+						pageSize: 3
+					};
+					appController.getMyMessage(options, function (result) {
+						var list = result.messages;
+						if (list.length > 0) {
+							dataCount += list.length;
+							var html = '';
+							$.each(list, function (index, message) {
+								var statusText = '',
+									hasReaded = true;
+								if (message.getStatus() === '未读') {
+									hasReaded = false;
+									statusText = '<span class="message-status">未读</span>'
+								}
+								html +=
+									'<div class="information-conten"><div data-readed="' + hasReaded + '" data-msgid="' + message.getId() +
+									'" class="recharge-group has-card"><span class="bank-icon icon-zs"></span><span>' +
+									message.getCreateDate() + statusText + '<i>' +
+									message.getTitle() +
+									'</i></span></div><p class="message-introduction">' +
+									message.getContent() +
+									'</p></div>';
+							});
+							$('#messageWrapper').append(html);
+							$('#loadMore').one('click', loadMore).fadeIn(600);
+						} else {
+							noMoreData = true;
+							$('#loadMore').html('没有更多消息啦～');
+						}
+						if (dataCount <= 0) {
+							$('body').addClass('no-message');
+						}
+					});
+				};
+
+				loadMore();
+
+				$('#messageWrapper').on('click', function (e) {
+					var $target = $(e.target).closest('.recharge-group');
+					if ($target.length > 0) {
+						$target.next().slideToggle();
+
+						if (!$target.data('readed')) {
+							var options = {
+								messageId: $target.data('msgid')
+							};
+							appController.msgReaded(options, function (hasReaded) {
+								if (hasReaded) {
+									$target.find('.message-status').remove();
+									$target.data('readed', true);
+								}
+							});
+						}
+					}
+				});
+			});
+		};
+	</script>
+</head>
+
+<body class="information-page gray-bg">
+	<div class="wrapper" id="wrapper">
+		<div id="messageWrapper"></div>
+		<div id="loadMore" class="load-more">加载更多</div>
+	</div>
+	<div class="no-data-msg">暂时还没有消息</div>
+</body>
+
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="keywords" content="八斗金服">
+    <meta name="description" content="八斗金服">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+    <title>匹配记录</title>
+    <link rel="stylesheet" type="text/css" href="weixin/css/wechat.css" />
+
+    <script src="weixin/js/require.js" data-main="weixin/js/main" defer="defer" async="async" type="text/javascript" charset="utf-8"></script>
+    <script>
+        window.onload = function () {
+            require.config({
+                baseUrl: 'weixin/js',
+                paths: {
+                    // 外部库／插件
+                    'jquery': [
+                        '//cdn.bootcss.com/jquery/1.12.4/jquery.min',
+                        'lib/jquery/1.12.4/jquery.min'
+                    ],
+                    'cookie': [
+                        '//cdn.bootcss.com/cookie.js/1.1.0/cookie.min',
+                        'lib/cookie/1.1.0/cookie.min'
+                    ],
+                    'config': 'settings',
+                    'util': 'common/util',
+                    'investController': 'controller/investController'
+                }
+            });
+            require([
+                'jquery', 'cookie', 'config', 'util', 'investController'
+            ], function ($, cookie, config, util, investController) {
+                var bookid = util.getSearchField('bi');
+                investController.getInvestDetail(bookid, function (project) {
+                    $('#allMoney').html(project.book.matched);
+                    var html = '', params, loanTypes, loanTypeStr;
+                    $.each(project.getMatchs(), function (index, match) {
+                        params = {
+                            bi: match.getBidId(),
+                            oi: match.getOrderId()
+                        };
+                        loanTypes = match.getLoanType();
+                        loanTypeStr = loanTypes == 1?'<i class="che-biao">车</i>':loanTypes == 2?'<i class="fang-biao">房</i>':'';
+                        html +=
+                                '<div class="payment-list"><div class="payment-title">' +
+                                loanTypeStr+match.getBidTitle()+'<span class="payment-status">'+match.getRepaymentResult()+'</span></div>' +
+                                '<ul><li class="border-right"><span>'+match.getPlanSumRepayment()+'</span>回款总额(元)</li>' +
+                                '<li class="border-right"><span>'+match.getPlanPrincipal()+'</span>回款本金(元)</li>' +
+                                '<li><span>'+match.getPlanInterest()+'</span>回款利息(元)</li></ul><div class="collection-plan">' +
+                                '<a href="/repay-detail.html?'+$.param(params)+'">回款详情</a></div></div>'
+                    });
+                    $('.collectionPlan-wrapper').prepend(html);
+                });
+            });
+        };
+    </script>
+
+    <style>
+        .collection-plan a{
+            color: #19c8b7;
+            display: block;
+        }
+    </style>
+</head>
+<body class="match-record-page gray-bg">
+<div class="match-record-wrapper">
+    <div class="match-amount-wrapper">
+        <span id="allMoney"></span><p>已匹配总金额(元)</p>
+    </div>
+    <div class="collectionPlan-wrapper">
+        <p class="record-prompt">亲，您的匹配记录已经到底了哦~</p>
+    </div>
+</div>
+
+</body>
+</html>

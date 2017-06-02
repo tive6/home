@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="keywords" content="八斗金服">
+  <meta name="description" content="八斗金服">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+  <title>解冻金额</title>
+  <link rel="stylesheet" type="text/css" href="weixin/css/wechat.css" />
+  <script src="weixin/js/require.js" data-main="weixin/js/main" defer="defer" async="async" type="text/javascript" charset="utf-8"></script>
+  <script>
+    window.onload = function () {
+      require.config({
+        baseUrl: 'weixin/js',
+        paths: {
+          // 外部库／插件
+          'jquery': [
+            '//cdn.bootcss.com/jquery/1.12.4/jquery.min',
+            'lib/jquery/1.12.4/jquery.min'
+          ],
+          'config': 'settings',
+          'util': 'common/util',
+          'investController': 'controller/investController'
+        }
+      });
+      require([
+        'jquery', 'config', 'util', 'investController'
+      ], function ($, config, util, investController) {
+        var money = util.getSearchField('money'),
+          bookId = util.getSearchField('bookid');
+        $('[name="n_bank_card_id"]').val(money);
+        $('#money').html(money);
+        $('#cashed').on('click', function () {
+          var options = {
+            amt: money,
+            bookId: bookId
+          };
+          investController.unfreeze(options, function(){
+
+          });
+        });
+      });
+    };
+  </script>
+</head>
+
+<body class="thaw-page gray-bg">
+  <div class="thaw-page-wrapper">
+    <div class="scroll-content">
+      <div class="cashed-group">
+        <span>可解冻金额(元)</span>
+        <span id="money" class="cashed">0.00</span>
+      </div>
+      <div class="btn-group cashed-btn">
+        <button id="cashed" class="btn btn-primary">转出</button>
+        <div class="bank-notice">
+          解冻后请前往个人中心查看余额，随时可通过提现转出
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

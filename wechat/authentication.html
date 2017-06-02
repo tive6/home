@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="keywords" content="八斗金服">
+		<meta name="description" content="八斗金服">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="format-detection" content="telephone=no" />
+		<title>身份验证</title>
+		<link rel="stylesheet" type="text/css" href="weixin/css/wechat.css" />
+		<script src="weixin/js/require.js" data-main="weixin/js/main" defer="defer" async="async" type="text/javascript" charset="utf-8"></script>
+
+	  <script>
+	    window.onload = function() {
+	      require.config({
+	        baseUrl: 'weixin/js',
+	        paths: {
+	          // 外部库／插件
+	          'jquery': [
+	            '//cdn.bootcss.com/jquery/1.12.4/jquery.min',
+	            'lib/jquery/1.12.4/jquery.min'
+	          ],
+	          'swiper': [
+	            '//cdn.bootcss.com/Swiper/3.4.2/js/swiper.min',
+	            'lib/swiper/3.4.2/swiper.min'
+	          ],
+	          'config': 'settings',
+	          'util': 'common/util',
+	          'AsyncTaskManager': 'common/asyncTaskManager',
+	          'WebView': 'common/webView',
+	          'userController': 'controller/userController',
+	          'investController': 'controller/investController',
+	          'appController': 'controller/appController'
+	        }
+	      });
+	      require([
+        'jquery', 'swiper', 'config', 'util', 'AsyncTaskManager', 'WebView', 'userController', 'investController', 'appController'
+      	], function ($, Swiper, config, util, AsyncTaskManager, WebView, userController, investController, appController) {
+					var cardnum = '',
+							telphone = '',
+							code = '';
+
+	        var opts = {
+		            cardnum : cardnum,
+		            telphone : telphone,
+	            	code : code
+		          };
+		      
+		      // 获取手机验证码
+	        function getPhoneCode(e) {
+	          e.stopPropagation();
+	          var codeTag = e.data.codeTag,
+	            data = {
+	              codeTag: codeTag
+	            }
+	          $btn = $(this),
+	            callback = null;
+	          if ('changePayPwd' === codeTag) {
+	            data.telphone = $('#telphone').val();
+	            callback = function () {
+	              $('#getCode').one('click', {
+	                codeTag: "changePayPwd"
+	              }, getPhoneCode)
+	            }
+	          }
+	          appController.getPhoneCode(data, $btn, callback);
+	        }
+	        
+	        $('#getCode').one('click', {
+	          codeTag: "changePayPwd"
+	        }, getPhoneCode);
+		      
+		      $(".confirm-code").on("click",function(){
+		      	opts.cardnum = $("#IDnumber").val();
+		      	opts.telphone = $("#telphone").val();
+		      	opts.code = $("#changeCode").val();
+		      	
+		      	userController.checkCode4checkEquipment(function(res){
+		      		//console.log(res);
+		      	});
+		      	
+	          userController.authentication(opts, function (res) {
+	          	//console.log(res);
+	          	if(res.status) {
+	          		// 成功
+	          		window.location.href = '/setting-payment-password1.html?cardnum='+ opts.cardnum +'&telphone='+ opts.telphone +'&code='+ opts.code; 
+	          	}else {
+	          		//出錯
+	          		alert(res.msg)
+	          	}
+	          });
+		      });
+        	
+	      });
+	    };
+	  </script>
+	</head>
+	<body class="authentication-page gray-bg">
+		<div class="authentication-wrapper">
+			<div class="horizontal-input cashed-group">
+	      <label>身份证</label>
+	      <input id="IDnumber" type="number" name="IDnumber" class="form-control" value="" placeholder="请输入您实名认证时使用的身份证号">
+	    </div>
+	    <div class="horizontal-input cashed-group">
+	      <label>手机号</label>
+	      <input id="telphone" type="number" name="telphone" class="form-control" value="" placeholder="请输入您注册时填写的手机号码">
+	    </div>
+      <div class="authentication-prompt"><span>请输入正确的手机号</span></div>
+	    <div id="codeInput" class="verification-code" style="margin-top:15px;padding: 1rem 7.4285714rem 1rem 15px;border-top:1px solid #E7E7E7;background: #fff;">
+        <div class="input-group">
+          <label for="changeCode" class="sr-only" title="请输入验证码">请输入验证码</label>
+          <input type="tel" id="changeCode" class="form-control" name="change_code" placeholder="请输入验证码" value="">
+        </div>
+        <a id="getCode" class="btn-secondary prevent-callout" href="javascript:void(0);">获取验证码</a>
+      </div>
+      <a class="confirm-code" href="javascript:void(0);">确定</a>
+      <div style="margin: 0 15px;">如无法自助修改，请拨打人工客服400-168-8885，由客服协助您进行修改。</div>
+		</div>
+	</body>
+</html>

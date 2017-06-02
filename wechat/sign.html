@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="keywords" content="八斗金服">
+  <meta name="description" content="八斗金服">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+  <title>开通安心签</title>
+  <link rel="stylesheet" type="text/css" href="weixin/css/wechat.css" />
+  <script src="weixin/js/require.js" data-main="weixin/js/main" defer="defer" async="async" type="text/javascript" charset="utf-8"></script>
+
+  <script>
+    window.onload = function() {
+      require.config({
+        baseUrl: 'weixin/js',
+        paths: {
+          // 外部库／插件
+          'jquery': [
+            '//cdn.bootcss.com/jquery/1.12.4/jquery.min',
+            'lib/jquery/1.12.4/jquery.min'
+          ],
+          'config': 'settings',
+          'util': 'common/util',
+          'WebView': 'common/webView',
+          'User': 'model/user',
+          'userController': 'controller/userController',
+          'appController': 'controller/appController'
+        }
+      });
+      require([
+        'jquery', 'config', 'util', 'WebView', 'User', 'userController', 'appController'
+      ], function($, config, util, WebView, User, userController, appController) {
+        $('#signBtn').one('click', getCode);
+
+        $('#codeGroup').on('click', function() {
+          $('#signCode').focus();
+        });
+        var codes = $('#codeGroup span');
+        $('#signCode').on('keyup', function(e) {
+          var _self = this,
+            val = $(this).val();
+          codes.html('&nbsp;');
+          $.each(val.split(''), function(idx, item) {
+            $(codes[idx]).html(item);
+          });
+          if (val.length >= 6) {
+            $(this).blur();
+            $(this).attr('disabled', 'disabled');
+            $('#indicator').show(0);
+            $('#indicatorText').html('正在开通安心签...');
+            // 授权
+            userController.checkVerification(val, function(res) {
+              if (res.getStatus()) {
+                $('loaded').show(0);
+                $('loading').hide(0);
+                setTimeout(function() {
+                  $('#indicatorText').html('授权成功，即将跳转...');
+                  setTimeout(function() {
+                    codes.html('&nbsp;');
+                    $(_self).val('');
+                    window.location = config.BASE_URL + config.PAGE_URI_MAP.REALNAME_AUTH_SUCC_PAGE;
+                  }, 1000);
+                }, 1400);
+              } else {
+                $('#indicator').hide(0);
+                $('loading').hide(0);
+                $(_self).removeAttr('disabled');
+                res.getMsg() ? $('#indicatorText').html(res.getMsg()) : $('#indicatorText').html('开通安心签，确保投资安全');
+                codes.html('&nbsp;');
+                $(_self).val('');
+              }
+            });
+          }
+        });
+
+        $('#loaded')[0].addEventListener("webkitAnimationEnd", function() {
+          $('#loadedMark').show(0);
+        }, false);
+
+        function getCode() {
+          var _self = this,
+            count = 30;
+          // 发送授权码
+          obtainYZM();
+          $(this).html(count-- + '秒后重新获取授权验证码');
+          var timer = setInterval(function() {
+            if (count <= 0) {
+              clearInterval(timer);
+              $(_self).html('获取授权验证码');
+              $('#signBtn').one('click', getCode);
+            } else {
+              $(_self).html(count-- + '秒后重新获取授权验证码');
+            }
+          }, 1000);
+        }
+
+        function obtainYZM() {
+          // 安心签
+          userController.sendverification(function(res) {
+            if (res.getStatus()) {
+              $('#indicatorText').html('授权验证码已发送到您的手机' + util.replacePhoneNumberUseAsterisk(res.getData()))
+                .fadeIn(300);
+            }
+          });
+        }
+      });
+    };
+  </script>
+</head>
+
+<body class="fuyou-page open-f">
+  <div id="fuiouWrapper" class="f-realName-cont">
+    <div class="f-realName-header clear">
+      <div class="f-real-step">
+        <span class="circle-outer outer-pass"><span class="circle-inner inner-pass">1</span></span>
+        <p class="f-is-realed">实名认证</p>
+      </div>
+      <div class="f-real-step">
+        <hr class="line-left real-pass" />
+        <span class="circle-outer outer-pass"><span class="circle-inner inner-pass">2</span></span>
+        <p class="f-is-realed">开通富友金账户</p>
+        <hr class="line-right" />
+      </div>
+      <div class="f-real-step">
+        <hr class="line-left real-pass" />
+        <span class="circle-outer outer-pass"><span class="circle-inner inner-pass">3</span></span>
+        <p class="f-is-realed">开通安心签</p>
+        <hr class="line-right" />
+      </div>
+      <div class="f-real-step">
+        <span class="circle-outer"><span class="circle-inner">4</span></span>
+        <p>完成认证</p>
+      </div>
+    </div>
+    <div class="peaceSign-wrapper">
+      <!--<div class="payment-phone"></div>-->
+      <div class="payment-phone sign-notice">
+        <svg id="indicator" style="display: none" class="indicator-wrapper" viewbox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <circle id="loading" class="indicator-animate" cx="10" cy="10" r="8" fill="transparent" stroke="#f9364e" stroke-width="1" class="frozeed-assets-circle"
+              stroke-dashoffset="7.7654816" stroke-dasharray="42.5 7.7654816"></circle>
+            <circle id="loaded" class="indicator-animate-loaded" cx="10" cy="10" r="8" fill="transparent" stroke="#f9364e" stroke-width="1" class="frozeed-assets-circle"
+              stroke-linecap="round" stroke-dashoffset="0" stroke-dasharray="42.5 7.7654816">
+            </circle>
+            <polyline id="loadedMark" class="indicator-animate-loaded-mark" points="5.8,8.8 10,13.5 18,5" stroke-linecap="round" fill="transparent" stroke="#f9364e"
+              stroke-width="1" stroke-dasharray="0 17.9979633" />
+          </svg>
+        <span id="indicatorText" style="color: #f9364e;" class="indicator-text">开通安心签，确保投资安全</span></div>
+      <div class="hidden-input-clip">
+        <input type="tel" id="signCode" maxlength="6" unselectable="on" name="login_code" style="width: 10000px;text-align: right;" />
+      </div>
+      <p class="plase-yzm">请输入6位授权验证码</p>
+      <div id="codeGroup" class="six-yzm"><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span></div>
+      <a id="signBtn" class="btn sign-btn">获取授权验证码</a>
+    </div>
+    <div class="peaceSign-cont">
+      <div class="beCareful-cont">
+        <p>安心签是由中国金融认证中心（以下简称“CFCA”）管理的第三方电子缔约服务平台，开通安心签功能，为每一位投资用户的投资合同安全加码。</p>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

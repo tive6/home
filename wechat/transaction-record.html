@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="keywords" content="八斗金服">
+  <meta name="description" content="八斗金服">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+  <!--<base href="http://192.168.0.220:8022/" />-->
+  <title>交易记录</title>
+  <link rel="stylesheet" type="text/css" href="weixin/css/swiper/3.3.1/swiper.min.css" />
+  <link rel="stylesheet" type="text/css" href="weixin/css/wechat.css" />
+  <script src="weixin/js/require.js" data-main="weixin/js/main" defer="defer" async="async" type="text/javascript" charset="utf-8"></script>
+</head>
+
+<body class="record-page gray-bg">
+  <div class="record-page-wrapper">
+    <div class="swiper-container">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide record-conten">
+          <div class="bank-card-information">Slide 1</div>
+        </div>
+        <div class="swiper-slide record-conten">
+          <div class="bank-card-information">Slide2</div>
+        </div>
+        <div class="swiper-slide record-conten">
+          <div class="bank-card-information">Slide3</div>
+        </div>
+        <div class="swiper-slide record-conten">
+          <div class="bank-card-information">Slide4</div>
+        </div>
+      </div>
+      <div class="swiper-pagination"></div>
+    </div>
+    <div class="record-list">
+      <div class="bank-info">
+        <h3 class="bank-name">充值</h3>
+        <div class="table-wrapper">
+          <div class="table-cell">
+            <span>2016年6月1日 09:50</span>
+          </div>
+          <div class="record-money color-red">-20.56</div>
+        </div>
+      </div>
+    </div>
+    <div class="record-list">
+      <div class="bank-info">
+        <h3 class="bank-name">提现</h3>
+        <div class="table-wrapper">
+          <div class="table-cell">
+            <span>2016年6月1日 09:50</span>
+          </div>
+          <div class="record-money color-green">+20.56</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+      $(function() {
+        var swiper = new Swiper('.swiper-container', {
+          pagination: '.swiper-pagination',
+          paginationClickable: true
+        });
+      });
+    </script>
+</body>
+
+</html>

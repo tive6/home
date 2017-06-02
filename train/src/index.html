@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 
 <head>
-  <title>汇智方略</title>
   <meta charset="utf-8" />
   <meta name="keywords" content="汇智方略">
   <meta name="description" content="汇智方略">
@@ -10,28 +9,279 @@
   />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="format-detection" content="telephone=no" />
+  <title>首页</title>
   <link href="mobile/css/style.css" rel="stylesheet">
   <script src="mobile/js/lib/jquery/1.12.4/jquery.min.js"></script>
   <script src="mobile/js/lib/swiper/3.4.2/swiper.min.js"></script>
+  <script src="mobile/js/lib/iscroll/5.2.0/iscroll.min.js"></script>
   <script src="mobile/js/lib/cookie/1.1.0/cookie.min.js"></script>
   <script src="mobile/js/common/common.js"></script>
   <script src="mobile/js/service/appService.js"></script>
   <script src="mobile/js/service/userService.js"></script>
+  <script src="mobile/js/service/firmService.js"></script>
+  <script src="mobile/js/service/lecturerService.js"></script>
   <script src="mobile/js/main.js"></script>
   <script>
-    jQuery(function ($) {
+    window.onload = function () {
       var config = HL.config;
-      if (!cookie.get(config.LOGIN_COOKIE_NAME)) {
-        HL._shouldLogin();
+      var Alert = HL.Alert;
+      var appService = HL.appService;
+      var firmService = HL.firmService;
+      var lecturerService = HL.lecturerService;
+      var indicator = HL.ActivityIndicator.indicator(0, '加载中...');
+      var asyncTaskManager = HL.AsyncTaskManager.of();
+      asyncTaskManager.addTasks([{
+        fn: appService.getActivitySlides,
+        param: {
+          currentPage: 0,
+          pageSize: 7
+        },
+        key: 'activitySlides'
+      }, {
+        fn: appService.getBannerSlides,
+        param: null,
+        key: 'bannerSlides'
+      }, {
+        fn: appService.getNewsList,
+        param: {
+          currentPage: 0,
+          pageSize: 7
+        },
+        key: 'newsList'
+      }, {
+        fn: firmService.getDemandsList,
+        param: {
+          currentPage: 0,
+          pageSize: 7
+        },
+        key: 'demandsList'
+      }, {
+        fn: lecturerService.getLecturerList,
+        param: {
+          currentPage: 0,
+          pageSize: 9
+        },
+        key: 'lecturerList'
+      }]).every(function (res) {
+        console.log(res);
+        var newsHtml = '',
+          bannerHtml = '',
+          activitiesHtml = '',
+          demandsHtml = '',
+          lecturerHtml = '';
+        // 新闻列表数据
+        $.each(res.newsList.data.list, function (i, n) {
+          newsHtml +=
+            '<li class="swiper-slide swiper-no-swiping"><a href="javascript:">' + n.newsTitle +
+            '</a></li>';
+        });
+        // banner
+        $.each(res.bannerSlides.data, function (i, b) {
+          bannerHtml +=
+            '<div class="swiper-slide"><a href="' + b.imgHref +
+            '"><img src="' + b.imgPath + '" alt="' + b.imgTitle + '"></a></div>';
+        });
+        // 活动
+        $.each(res.activitySlides.data.list, function (i, a) {
+          activitiesHtml +=
+            '<div class="swiper-slide"><a href="' + config.BASE_URL + config.PAGE_URI_MAP.ACTIVITY_DETAIL +
+            '?aid=' + a.activityId + '"><img src="' +
+            a.filePath +
+            '" alt="' + a.title + '"></a></div>';
+        });
+        // 需求
+        $.each(res.demandsList.data, function (i, d) {
+          demandsHtml +=
+            '<tr><td>' + d.className + '</td><td>' + d.address + '</td><td>' + d.persons + '人</td></tr>';
+        });
+        // 优秀讲师
+        $.each(res.lecturerList.data.list, function (i, l) {
+          var starHtml = '',
+            i;
+          for (i = 0; i < l.levels; i++) {
+            starHtml += '<span class="xing-active"></span>';
+          }
+          for (i = 0; i < (5 - l.levels); i++) {
+            starHtml += '<span></span>';
+          }
+          lecturerHtml +=
+            '<div class="home-teacher-list swiper-slide"><img class="' + l.filePath + '" alt="' +
+            l.trainerName + '" /><h3>' +
+            l.trainerName + '</h3><h4>' + l.courseName +
+            '</h4><div class="lecturer-list-xing">' + starHtml + '</div></div>';
+        });
+
+        $('#newsListWrapper').html(newsHtml);
+        $('#banner .swiper-wrapper').html(bannerHtml);
+        $('#activity .swiper-wrapper').html(activitiesHtml);
+        $('#demandsList').html(demandsHtml);
+        $('#lecturer .swiper-wrapper').html(lecturerHtml);
+        // console.log(res);
+        setTimeout(function () {
+          indicator.hide();
+          $('#wrapper').fadeIn(300);
+          buildSwiper();
+        }, 300);
+
+      }).catch(function (err) {
+        console.log(err)
+        indicator.immediatelyHide();
+        Alert.alert('系统提示', '数据加载异常，请稍后重试。');
+        // case 'H289004': // 新闻
+        // case 'H289003': // 活动幻灯片
+        // case 'H289002': // banner幻灯片
+        // case 'H458001': // 获取需求列表
+        // case 'H672001': // 讲师列表
+      });
+
+      function buildSwiper() {
+        var myScroll = null;
+        setTimeout(function () {
+          myScroll = new IScroll('#wrapper', {
+            bindToWrapper: true,
+            mouseWheel: true,
+            // disablePointer: true
+          });
+        }, 0);
+        var banner = new Swiper('#banner', {
+          autoplay: 3000,
+          pagination: '#bannerPagination',
+          paginationClickable: true,
+          loop: true
+        });
+        var news = new Swiper('#news', {
+          direction: 'vertical',
+          autoplay: 4000,
+          noSwiping: true,
+          loop: true
+        });
+        var activity = new Swiper('#activity', {
+          autoplay: 3000,
+          pagination: '#activityPagination',
+          paginationClickable: true,
+          loop: true
+        });
+        var lecturer = new Swiper('#lecturer', {
+          slidesPerView: 3,
+          slidesPerGroup: 3,
+          spaceBetween: 15
+        });
       }
-    });
+    };
+    document.addEventListener('touchmove', function (e) {
+      e.preventDefault();
+    }, false);
   </script>
 </head>
 
-<body>
-  <div id="pageContainer" class="page-container">
-    <div onclick="HL._shouldLogin();">
-      登录
+<body class="telephone-page prevent-callout bg">
+  <div class="header-search">
+    <div class="header-search-inner">
+      <div class="header-search-icon">
+        <img width="18" src="./mobile/images/icon/icon-search.png" alt="" />
+      </div>
+      <span class="header-search-input">请输入培训课程、公开课名称或讲师姓名</span>
+    </div>
+    <a href="/search.html"></a>
+  </div>
+  <div id="wrapper" class="home-page-container">
+    <div>
+      <div class="page-section home-header">
+        <div id="banner" class="swiper-container header-banner">
+          <div class="swiper-wrapper"></div>
+          <div id="bannerPagination" class="swiper-pagination"></div>
+        </div>
+        <div class="header-news">
+          <div class="home-news-link clear">
+            <div id="news" class="swiper-container">
+              <ul id="newsListWrapper" class="swiper-wrapper home-news-list">
+              </ul>
+            </div>
+            <a class="link-news-list" href="/new-list.html"></a>
+          </div>
+        </div>
+      </div>
+      <div class="page-section home-nav clear">
+        <div class="nav-class">
+          <img src="./mobile/images/home-nav-01.jpg" alt="" />
+          <h4>人力资源培训</h4>
+          <a class="img-res" href="/lesson-list.html?parentId=1&classId=2"></a>
+        </div>
+        <div class="nav-class">
+          <img src="./mobile/images/home-nav-02.jpg" alt="" />
+          <h4>战略管理培训</h4>
+          <a class="img-res" href="/lesson-list.html?parentId=1&classId=2"></a>
+        </div>
+        <div class="nav-class">
+          <img src="./mobile/images/home-nav-03.jpg" alt="" />
+          <h4>物流培训</h4>
+          <a class="img-res" href="/lesson-list.html?parentId=1&classId=2"></a>
+        </div>
+        <div class="nav-class">
+          <img src="./mobile/images/home-nav-04.jpg" alt="" />
+          <h4>更多</h4>
+          <a class="img-res" href="/lesson-list.html?parentId=1&classId=2"></a>
+        </div>
+      </div>
+      <div class="page-section home-teacher">
+        <div class="home-title">
+          <a class="home-title-link" href="/lecturer-list.html">优秀讲师</a>
+        </div>
+        <div id="lecturer" class="swiper-container home-teacher-content">
+          <div class="swiper-wrapper"></div>
+        </div>
+      </div>
+      <div class="page-section home-activity">
+        <div class="home-title">
+          <a class="home-title-link" href="/activity-list.html">公开活动</a>
+        </div>
+        <div class="home-acy-banner">
+          <div id="activity" class="swiper-container">
+            <div class="swiper-wrapper"></div>
+            <div id="activityPagination" class="swiper-pagination"></div>
+          </div>
+        </div>
+      </div>
+      <div class="page-section home-need">
+        <div class="home-title">
+          <a class="home-title-link" href="/demand-list.html">需求园地</a>
+        </div>
+        <div class="home-need-content">
+          <table>
+            <thead>
+              <tr>
+                <th width="40%">需求类型</th>
+                <th>地点</th>
+                <th>培训人数</th>
+              </tr>
+            </thead>
+            <tbody id="demandsList"></tbody>
+          </table>
+        </div>
+      </div>
+      <div style="height: 1px"></div>
+    </div>
+  </div>
+  <div class="footer clear">
+    <div class="footer-list">
+      <img src="./mobile/images/icon/menu-home-active.jpg" />
+      <p class="active">首页</p>
+      <a href="javascript:void(0)"></a>
+    </div>
+    <div class="footer-list">
+      <img src="./mobile/images/icon/menu-teacher.jpg" />
+      <p>优秀讲师</p>
+      <a href="/lecturer-list.html"></a>
+    </div>
+    <div class="footer-list">
+      <img src="./mobile/images/icon/menu-activity.jpg" />
+      <p>公开活动</p>
+      <a href="/activity-list.html"></a>
+    </div>
+    <div class="footer-list">
+      <img src="./mobile/images/icon/menu-user.jpg" />
+      <p>个人中心</p>
+      <a href="/personal.html"></a>
     </div>
   </div>
 </body>

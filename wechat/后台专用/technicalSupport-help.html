@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="keywords" content="八斗金服">
+	<meta name="description" content="八斗金服">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="format-detection" content="telephone=no" />
+	<title>帮助中心</title>
+	<link rel="stylesheet" type="text/css" href="help.css"/>
+	<script src="./js/jquery/1.12.4/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+   window.onload= function(){
+      $('.help-titles').bind('click', function() {
+	        $(this).toggleClass('read-more-open');
+	        $(this).next().slideToggle();
+	    });
+   };
+  </script>
+</head>
+
+<body class="help-page gray-bg">
+	<div class="help-page-wrapper">
+		<div class="cashed-group">
+			<div class="help-titles read-more-open">
+				<span>技术保障</span>
+				<a href="javascript:void(0);"></a>
+			</div>
+			<div class="help-conten" style="display: block;">
+				<p class="help-text">1、全站采用顶级信息安全技术 SSL 加密传输方式，保证您网上数据的安全性、保密性、真实性、完整性；</p>
+				<p class="help-text">2、SSL 是一种国际标准的加密及身份认证通信协议。 SLL 协议使用通讯双方的客户证书以及 CA 根证书，允许客户/服务器应用以一种不能被偷听的方式通讯，在通讯双方间建立起了一条安全可信的通讯通道；</p>
+				<p class="help-text">3、用户要求修改重要账户信息时，将严格按照法律相关规定，验证操作是否由投资人本人发起。</p>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

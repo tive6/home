@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="八斗金服">
+  <meta name="description" content="八斗金服">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+  <title>意见反馈</title>
+  <link rel="stylesheet" type="text/css" href="weixin/css/wechat.css" />
+  <script src="weixin/js/require.js" data-main="weixin/js/main" defer="defer" async="async"></script>
+  <script>
+    window.onload = function () {
+      require.config({
+        baseUrl: 'weixin/js',
+        paths: {
+          // 外部库／插件
+          'jquery': [
+            '//cdn.bootcss.com/jquery/1.12.4/jquery.min',
+            'lib/jquery/1.12.4/jquery.min'
+          ],
+          'Feedback': 'model/feedback',
+          'localFileReader': 'common/localFileReader',
+          'appController': 'controller/appController'
+        }
+      });
+      require([
+        'jquery', 'localFileReader', 'Feedback', 'appController'
+      ], function ($, localFileReader, Feedback, appController) {
+
+        $('#submit').on('click', function(e){
+          e.preventDefault();
+          var feedback = new Feedback();
+          feedback.setFeedbackText($('[name="feedbackText"]').val());
+          feedback.setContact($('[name="contact"]').val());
+          feedback.setImage($('[name="feedbackImage"]').val());
+          appController.feedback(feedback);
+        });
+        
+      });
+    };
+  </script>
+</head>
+
+<body class="feedback-page">
+	<!--意见反馈-->
+	<div class="alert-wrapper feedback-alert" style="display: none;">
+  	<div class="alert-cont">
+			<h2 class="alert-title">谢谢您的意见！</h2>  
+			<div class="alert-body">
+				<p class="payment-phone">感谢您对我们的关注，我们会通过短信或电话即时回复您的反馈，尽快修复和完善相关功能。</p>
+				<div class="beCareful-cont">
+					<p>您还可以通过八斗金服官微和客服电话进行咨询<br>官方微信: badoujinfu<br>客服电话: 400-168-8885</p>
+				</div>
+				<a class="immediate-recharge-btn" href="account-center.html">朕知道了</a>
+			</div>
+  	</div>
+  </div>
+  <!--<form id="feedback" method="POST" enctype="multipart/form-data">-->
+    <div class="feedback-content">
+      <div class="feedback-logo">
+        <img src="weixin/images/logo.png" alt="" />
+      </div>
+      <div class="feedback-text">
+        <textarea name="feedbackText" maxlength="100" placeholder="请详细描述您的问题或建议，我们将及时跟进解决。（不超过100字哦）"></textarea>
+      </div>
+      <div class="feedback-input">
+        <input type="text" name="contact" placeholder="手机号（方便我们联系你）" />
+      </div>
+      <!--<input type="file" name="feedbackImage" hidden="hidden" value="">-->
+      <!--<input type="hidden" name="token" value="">-->
+      <div class="btn-group">
+        <button id="submit" class="btn btn-primary">提交</button>
+      </div>
+    </div>
+  <!--</form>-->
+</body>
+
+</html>

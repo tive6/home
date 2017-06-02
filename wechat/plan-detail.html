@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="keywords" content="八斗金服">
+  <meta name="description" content="八斗金服">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+  <title>预约详情</title>
+  <link rel="stylesheet" type="text/css" href="weixin/css/wechat.css" />
+  <script src="weixin/js/require.js" data-main="weixin/js/main" defer="defer" async="async" type="text/javascript" charset="utf-8"></script>
+  <script>
+    window.onload = function () {
+      require.config({
+        baseUrl: 'weixin/js',
+        paths: {
+          // 外部库／插件
+          'jquery': [
+            '//cdn.bootcss.com/jquery/1.12.4/jquery.min',
+            'lib/jquery/1.12.4/jquery.min'
+          ],
+          'cookie': [
+            '//cdn.bootcss.com/cookie.js/1.1.0/cookie.min',
+            'lib/cookie/1.1.0/cookie.min'
+          ],
+          'config': 'settings',
+          'util': 'common/util',
+          'investController': 'controller/investController'
+        }
+      });
+      require([
+        'jquery', 'cookie', 'config', 'util', 'investController'
+      ], function ($, cookie, config, util, investController) {
+        var bookid = util.getSearchField('bi'),
+          money = util.getSearchField('im'),
+          st = util.getSearchField('st'),//匹配状态
+          /* 匹配期限 各个不同状态的图标 */
+          baseImgPath = 'weixin/images/icons/plan/';// 基础路径
+          console.log(st);
+
+        $('.read-more-arrow').attr('href','/bid-detail.html?'+$.param({
+          bi: bookid
+        }));
+        investController.getInvestDetail(bookid, function (project) {
+          var matchedNum = project.getMatchedNum(),
+            unmatched = project.book.unmatched,
+            thawched = project.book.thawched,
+            money = project.book.money;
+          $('#matchTime').html(project.book.groupByMothTag+'  '+project.book.orderTimeStr);
+          $('#lockperiodStr').html(project.book.lockperiodStr);
+          $('#money').html(money);
+          $('#thawched').html(thawched);
+          $('#unmatched').html(unmatched);
+          $('.matched').html(project.book.matched);
+          $('#yearRate').html(project.book.yearRate);
+          $('#sumEarn').html(project.book.sumEarn);
+          $('#matchedNum').html(matchedNum);
+          $('#predictMatchDate').html(project.getPredictMatchDate());
+          $('#predictAccrualDate').html(project.getPredictAccrualDate());
+          $('#predictDoneDate').html(project.getPredictDoneDate());
+          if(unmatched>0){
+            /* 预约后 有未匹配金额（可解冻金额） */
+            $('.icon-img-01').attr('src',baseImgPath+'yuyue@2x.png');
+            $('.icon-img-02').attr('src',baseImgPath+'jixi@2x.png');
+            $('.icon-img-03').attr('src',baseImgPath+'jiesuan@2x.png');
+
+            $('#nothawched').on('click', function () {
+              window.location = config.BASE_URL + config.PAGE_URI_MAP.UNFREEZE_PAGE + '?' + $.param({
+                money: unmatched,
+                bookid: bookid
+              });
+            }).html('解冻未匹配金额 '+ unmatched +' 元').addClass('default');
+          }else if(thawched > 0){
+            $('#nothawched').html('已解冻(元)' + thawched).addClass('success');
+            $('.showMatchTips').hide(0);
+            if(thawched===money){
+              $('.footer-bar').hide(0);
+            }else if(thawched>0){
+              $('.footer-bar').hide(0);
+            }
+          }else{
+            $('#nothawched').html('无可解冻金额').addClass('disabled');
+          }
+          if(parseInt(matchedNum)>0){
+            $('.showMatchTips').hide(0);
+          }else{
+            $('.matched-num').hide(0);
+            /* 无匹配记录 时 匹配期限状态icon */
+            $('.icon-img-01').attr('src',baseImgPath+'yuyue@2x.png');
+            $('.icon-img-02').attr('src',baseImgPath+'cuohe@2x.png');
+            $('.icon-img-03').attr('src',baseImgPath+'quxiao@2x.png');
+          }
+        });
+        /* 默认状态为：已匹配、已结算状态 相同 */
+        /*if(st==2){// 匹配已取消
+          $('.icon-img-01').attr('src',baseImgPath+'yuyue@2x.png');
+          $('.icon-img-02').attr('src',baseImgPath+'cuohe@2x.png');
+          $('.icon-img-03').attr('src',baseImgPath+'quxiao@2x.png');
+        }*/
+      });
+    };
+  </script>
+  <style>
+    .fundSummary-wrapper{
+      margin-bottom: 55px;
+    }
+    .financingPeriod-time span{
+      z-index: 10;
+    }
+    .disabled{
+      background: #666;
+    }
+    .success{
+      background: #169BD5;
+    }
+    .default{
+      background: #f9364d;
+    }
+  </style>
+</head>
+
+<body class="bookingDetails-page gray-bg">
+<div class="bookingDetails-wrapper scroll-wrapper">
+  <div class="reservationRecord-list lockingThree-list">
+    <div class="lockingPhase-title"><div class="lockingThree"><h2>锁定期：<strong id="lockperiodStr"></strong></h2></div><span id="matchTime"></span></div>
+    <div class="expected-rate"><p id="yearRate"></p>历史年化收益率(%)</div>
+    <div class="matching-wrapper">
+      <ul class="clearfix">
+        <li class="border-right"><span id="money"></span>预约金额(元)</li>
+        <li><span class="matched"></span>已匹配金额(元)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="financing-period">
+    <div class="financingPeriod-title">
+      <h2>预计匹配期限</h2>
+    </div>
+    <div class="liebiao clear">
+      <ul class="clear">
+        <li>
+          <span><img class="icon-img-path icon-img-01" src="weixin/images/icons/plan/chenggong@2x.png" /></span>
+          <p>
+            <i id="predictMatchDate"></i><br/><b>预计撮合期</b>
+          </p>
+        </li>
+        <li>
+          <span class="biao-center"><img class="icon-img-path icon-img-02" src="weixin/images/icons/plan/kaishijixi@2x.png" /></span>
+          <p>
+            <i id="predictAccrualDate"></i><br/><b>预计计息</b>
+          </p>
+        </li>
+        <li>
+          <span><img class="icon-img-path icon-img-03" src="weixin/images/icons/plan/jiesuan8@2x.png" /></span>
+          <p>
+            <i id="predictDoneDate"></i><br/><b>预计本息结算</b>
+          </p>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="fundSummary-wrapper">
+    <div class="financingPeriod-title">
+      <h2>资金概括</h2>
+    </div>
+    <div>已匹配<span class="matched"></span></div>
+    <div>未匹配<span id="unmatched"></span></div>
+    <div>已解冻<span id="thawched"></span></div>
+    <div class="matched-num" style="position: relative;">匹配记录（<strong id="matchedNum"></strong>）<a class="read-more-arrow" href=""></a></div>
+    <div class="showMatchTips">匹配记录<span>请耐心等待，系统正在为您匹配</span></div>
+  </div>
+</div>
+<div class="footer-bar">
+  <a class="invest-immediately" href="javascript:" id="nothawched">解冻未匹配金额（0.00元）</a>
+</div>
+</body>
+</html>

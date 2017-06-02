@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>摇一摇</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="/weixin/js/require.js" data-main="/weixin/js/main" defer="defer" async="async" type="text/javascript" charset="utf-8"></script>
+  <script>
+    window.onload = function () {
+      require.config({
+        baseUrl: '/weixin/js',
+        paths: {
+          // 外部库／插件
+          'jquery': [
+            '//cdn.bootcss.com/jquery/1.12.4/jquery.min',
+            'lib/jquery/1.12.4/jquery.min'
+          ],
+          'Shake': '../../activity/js/lib/shake/shake',
+          'activityController': '../../activity/js/controller'
+        }
+      });
+      require([
+        'jquery', 'Shake', 'activityController'
+      ], function ($, Shake, activityController) {
+        var shake = new Shake();
+        shake.start();
+        $(window).on('shake', shakeLottery);
+
+        function shakeLottery() {
+          document.getElementById('shakeAudio').play();
+        }
+      });
+    };
+  </script>
+</head>
+
+<body>
+  <audio id="shakeAudio" preload>
+    <source src="/activity/audio/shake/5018.mp3" type="audio/mpeg">
+    <source src="/activity/audio/shake/5018.wav" type="audio/wav">
+  </audio>
+</body>
+
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="keywords" content="八斗金服">
+	<meta name="description" content="八斗金服">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="format-detection" content="telephone=no" />
+	<title>帮助中心</title>
+	<link rel="stylesheet" type="text/css" href="help.css"/>
+	<script src="./js/jquery/1.12.4/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+   window.onload= function(){
+      $('.help-titles').bind('click', function() {
+	        $(this).toggleClass('read-more-open');
+	        $(this).next().slideToggle();
+	    });
+   };
+  </script>
+</head>
+
+<body class="help-page gray-bg">
+	<div class="help-page-wrapper">
+		<div class="cashed-group">
+			<div class="help-titles">
+				<span>是否可以绑定信用卡?</span>
+				<a href="javascript:void(0);"></a>
+			</div>
+			<div class="help-conten" style="display: none;">
+				<p class="help-text">根据银监会信用卡使用规范规定，信用卡不可投资理财项目；平台目前仅支持储蓄卡绑定。</p>
+			</div>
+		</div>
+		<div class="cashed-group">
+			<div class="help-titles">
+				<span>是否可以绑定他人银行卡?</span>
+				<a href="javascript:void(0);"></a>
+			</div>
+			<div class="help-conten" style="display: none;">
+				<p class="help-text">为了您的投资账户的资金安全，绑定的银行卡开户人信息必须和您在八斗金服上验证的实名信息一致。</p>
+			</div>
+		</div>
+		<div class="cashed-group">
+			<div class="help-titles">
+				<span>是否支持绑定多张银行卡?</span>
+				<a href="javascript:void(0);"></a>
+			</div>
+			<div class="help-conten" style="display: none;">
+				<p class="help-text">为了保障您的账户资金安全，八斗金服坚持同卡进出原则，不支持绑定多张银行卡。</p>
+			</div>
+		</div>
+		<div class="cashed-group">
+			<div class="help-titles">
+				<span>为什么我的银行预留手机号不正确?</span>
+				<a href="javascript:void(0);"></a>
+			</div>
+			<div class="help-conten" style="display: none;">
+				<p class="help-text"> 请您先确认银行预留手机号是否正确,若正确仍无法验证,可能是以下原因：</p>
+				<p class="help-text">1.您未开通网上银行，所以银行为预留您的手机号；</p>
+				<p class="help-text">2.您曾经更改过银行预留手机号，但开户银行未及时与银行系统同步；</p>
+				<p class="help-text">3.如非上述原因，建议您携带本人身份证及银行卡，去相关银行柜台进行修改或从新绑定。</p>
+			</div>
+		</div>
+		<div class="cashed-group">
+			<div class="help-titles">
+				<span>银行卡丢失怎么办?</span>
+				<a href="javascript:void(0);"></a>
+			</div>
+			<div class="help-conten" style="display: none;">
+				<p class="help-text">如果您的银行卡丢失了，请您务必先联系相关银行挂失，再联系富友平台95138要求冻结您的账户。</p>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

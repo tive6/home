@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="keywords" content="八斗金服">
+  <meta name="description" content="八斗金服">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+  <title>智享预约</title>
+  <link rel="stylesheet" type="text/css" href="weixin/css/wechat.css" />
+  <script src="weixin/js/require.js" data-main="weixin/js/main" defer="defer" async="async" type="text/javascript" charset="utf-8"></script>
+  <script>
+    window.onload = function () {
+      require.config({
+        baseUrl: 'weixin/js',
+        paths: {
+          // 外部库／插件
+          'jquery': [
+            '//cdn.bootcss.com/jquery/1.12.4/jquery.min',
+            'lib/jquery/1.12.4/jquery.min'
+          ],
+          'swipeLoader': 'common/swipeLoader',
+          'investController': 'controller/investController'
+        }
+      });
+      require([
+        'jquery', 'swipeLoader', 'investController'
+      ], function ($, swipeLoader, investController) {
+        investController.getInvestPandect(function (overview) {
+          $('#amountMoney').html(overview.getAmountMoney());
+          $('#subSidy').html(overview.getSubSidy());
+          $('#earningMoney').html(overview.getSumEarnOfZX());
+          var params = {
+            am:overview.getAmountMoney(),// 投资金额
+            ss:overview.getSubSidy(),// 累计贴息补偿
+            se:overview.getSumEarnOfZX(),// 累计投资收益
+            ms:overview.getMatchSum(),// 已匹配总额
+            nm:overview.getNuMatchSum(),// 未匹配总额
+            ws:overview.getWaitSubSidy(),// 待收贴息补偿
+            le:overview.getLatestEarn(),// 最新投资收益
+            we:overview.getWaitEarnSum(),// 待收投资收益
+            sm:overview.getSumMatchedBid()// 已匹配标的（笔）
+          };
+        });
+
+        var dataCount = 0,
+          currentPage = [0,0,0,0],
+          noMoreData = [false,false,false,false],
+          dataHtmlCache = ['','','',''],
+          _tag = 0;
+
+        function loadMore(_tag) {
+          var options = {
+            currentPage: currentPage[_tag]++,
+            tag: _tag
+          };
+          hasDataBtnUi();
+
+          investController.getBookList(options, function (list) {
+            var html = '',
+              params,
+              lockSts,
+              htmlStr;
+            if (list && list.length > 0) {
+              dataCount += list.length;
+              $.each(list, function (index, booking) {
+                params = {
+                  bi: booking.getBookid(),
+                  st: _tag // 匹配状态
+                };
+                lockSts = booking.getLockperiod();
+                htmlStr = '<h2>锁定期：<strong>'+booking.getLockperiodStr()+'</strong></h2></div><span>'+booking.getOrderdate() +'&nbsp;'+ booking.getOrderTimeStr()+'</span></div>'+
+                '<div class="expected-rate"><p>'+booking.getYearRate()+'</p>历史年化收益率(%)</div>'+
+                '<div class="matching-wrapper">'+
+                '<ul class="clearfix">'+
+                '<li class="border-right"><span>'+booking.getMoney()+'</span>投资金额(元)</li>'+
+                '<li><span>'+booking.getMatched()+'</span>匹配金额(元)</li>'+
+                '</ul><a href="/plan-detail.html?' + $.param(params) +
+                '" class="read-more"></a></div></div>';
+                if(lockSts ==  0){
+                  html += '<div class="reservationRecord-list lockFreeperiod-list">'+
+                  '<div class="lockingPhase-title"><div class="lockFreeperiod">'+htmlStr;
+                }else if(lockSts == 5){
+                  html += '<div class="reservationRecord-list lockingSix-list">'+
+                  '<div class="lockingPhase-title"><div class="lockingSix">'+htmlStr;
+                }else if(lockSts == 6){
+                  html += '<div class="reservationRecord-list lockingTwelve-list">'+
+                  '<div class="lockingPhase-title"><div class="lockingTwelve">'+htmlStr;
+                }else{
+                    html += '<div class="reservationRecord-list lockingThree-list">'+
+                    '<div class="lockingPhase-title"><div class="lockingThree">'+htmlStr;
+                }
+              });
+              dataHtmlCache[_tag] += html;
+              $('#projectsWrapper').html(dataHtmlCache[_tag]);
+              $('#loadMore').html('查看更多').show();
+              $('.reser-wrapper').removeClass('no-records');
+            } else {
+              noMoreData[_tag] = true;
+              $('#loadMore').html('没有更多记录啦～').show();
+              if(dataHtmlCache[_tag]===''){
+                $('.reser-wrapper').addClass('no-records');
+                $('#loadMore').hide();
+              }
+            }
+          });
+        }
+        function hasDataBtnUi(){
+          if(!noMoreData[_tag]){
+            $('#loadMore').html('加载更多').show();
+            if(dataHtmlCache[_tag]===''){
+              $('.reser-wrapper').addClass('no-records');
+              $('#loadMore').hide();
+            }
+          }else{
+            return;
+          }
+        }
+
+        loadMore(_tag);
+
+        // 四种 tag
+        $('.zhixiang-tag .zhixiang-tag-tabs').on('click',function(){
+          _tag = $(this).index();
+          $(this).siblings().children().removeClass('tag-active');
+          $(this).children().addClass('tag-active');
+          $('#projectsWrapper').html('');
+          if(!dataHtmlCache[_tag]){
+            $('#loadMore').click();
+          } else {
+            $('.reser-wrapper').removeClass('no-records');
+            $('#loadMore').html('没有更多记录啦～').show();
+            $('#projectsWrapper').html(dataHtmlCache[_tag]);
+            return;
+          }
+          hasDataBtnUi();
+        });
+
+        $('#loadMore').on('click',function(){
+          if(noMoreData[_tag]){
+            return;
+          }else{
+            loadMore(_tag);
+          }
+        });
+      });
+    };
+  </script>
+  <style>
+    .zhixiang-tag{
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 10px;
+    }
+    .zhixiang-tag>div{
+      width: 25%;
+      float: left;
+      text-align: center;
+      line-height: 30px;
+    }
+    .zhixiang-tag a{
+      line-height: 25px;
+      padding: 5px 10px;
+    }
+    .tag-active{
+      color: #19C9B8;
+    }
+    .reservationRecord-list{
+      position: relative;
+    }
+    .f-real-next{
+      position: relative;
+      z-index: 100;
+    }
+    .no-data-msg{
+      position: relative;
+    }
+    .load-more{
+      cursor: pointer;
+    }
+    .booking-amount{
+      position: relative;
+    }
+    .booking-allMoney{
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      display: block;
+    }
+
+  </style>
+</head>
+<body class="zhixiang-page gray-bg">
+<div class="zhixiang-wrapper">
+  <div class="booking-amount-wrapper">
+    <div class="booking-amount">
+      <h3 id="amountMoney"></h3><span>预约金额(元)</span><img class="enter-icon" src="weixin/images/icons/Enter@3x.png" />
+      <a class="booking-allMoney" href="plan-info.html"></a>
+    </div>
+    <div class="matching-wrapper">
+      <ul class="clearfix">
+        <li class="border-right"><span id="subSidy"></span>累计贴息补偿(元)</li>
+        <li><span id="earningMoney"></span>累计投资收益(元)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="zhixiang-tag clear">
+    <div class="zhixiang-tag-tabs"><a href="javascript:" class="tag-active">所有</a></div>
+    <div class="zhixiang-tag-tabs"><a href="javascript:">持有中</a></div>
+    <div class="zhixiang-tag-tabs"><a href="javascript:">已取消</a></div>
+    <div class="zhixiang-tag-tabs"><a href="javascript:">已结算</a></div>
+  </div>
+  <div class="reser-wrapper">
+    <div class="reser-wrapper-inner" id="projectsWrapper"></div>
+    <div id="loadMore" class="load-more" style="display: none;">加载更多</div>
+    <div class="no-data-msg">暂时还没有预约记录</div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="keywords" content="八斗金服">
+  <meta name="description" content="八斗金服">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+  <title>资产统计</title>
+  <link rel="stylesheet" type="text/css" href="weixin/css/swiper/3.4.2/swiper.min.css" />
+  <link rel="stylesheet" type="text/css" href="weixin/css/wechat.css" />
+
+  <style>
+    .swiper-container {
+      height: 100%;
+      overflow-y: auto;
+      background: #fff
+    }
+    
+    .swiper-content {
+      background: #E7E7E7
+    }
+    
+    .table {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 15px 0;
+      background: #fff;
+      overflow: hidden;
+      border-bottom: 1px solid #E7E7E7;
+    }
+    
+    .swiper-slide {
+      background: #fff;
+    }
+    
+    .swiper-pagination {
+      top: 125px;
+      width: 100%;
+      bottom: auto !important;
+    }
+    
+    .swiper-pagination-bullet-active {
+      background: #fff
+    }
+  </style>
+  <script src="weixin/js/require.js" data-main="weixin/js/main" defer="defer" async="async" type="text/javascript" charset="utf-8"></script>
+  <script>
+    window.onload = function() {
+      require.config({
+        baseUrl: 'weixin/js',
+        paths: {
+          // 外部库／插件
+          'jquery': [
+            '//cdn.bootcss.com/jquery/1.12.4/jquery.min',
+            'lib/jquery/1.12.4/jquery.min'
+          ],
+          'swiper': [
+            '//cdn.bootcss.com/Swiper/3.4.2/js/swiper.min',
+            'lib/swiper/3.4.2/swiper.min'
+          ],
+          'userController': 'controller/userController',
+          'Chart': 'lib/chart/Chart.min'
+        }
+      });
+      require([
+        'jquery', 'swiper', 'userController', 'Chart'
+      ], function($, Swiper, userController, Chart) {
+
+        var swiper = new Swiper('.swiper-container', {
+          resistanceRatio: 0, //第一个最后一个禁止拖动
+          pagination: '.swiper-pagination',
+          onInit: function() {}
+        });
+
+        var Chart = window.Chart;
+        var firstData = [],
+          secondData = [],
+          firstCanvas = 'firstCanvas',
+          secondCanvas = 'secondCanvas';
+        userController.getMyAsset(function(asset) {
+          console.log(asset);
+
+          //资产总额
+          $('#amountMoney').text(asset.getMyAsset());
+          //累计收益
+          $('#sumEarnOfZXT').html(asset.getSumEarnings());
+
+          //可用
+          $('#zijin_01').html(asset.getCABalance());
+          //散标冻结
+          $('#zijin_02').html(asset.getFreezeOfGeneral());
+          //智享冻结
+          $('#zijin_03').html(asset.getFreezeOfZhix());
+          //待收本金
+          $('#zijin_04').html(asset.getWaitingOfCapital());
+          //待收收益
+          $('#zijin_05').html(asset.getSumUnGetInterest());
+
+          //已获收益
+          $('#shouyi_01').html(asset.getSumEarnings());
+          //活动奖励
+          $('#shouyi_02').html(asset.getAwardOfActivity());
+          //其他费用
+          $('#shouyi_03').html(asset.getOtherMoney());
+          //累计充值
+          $('#shouyi_04').html(asset.getRechargeSum());
+          //累计提现
+          $('#shouyi_05').html(asset.getWithdrawSum());
+
+          var f = getPercent(asset.getCABalance(), asset.getFreezeOfGeneral(), asset.getFreezeOfZhix(), asset.getWaitingOfCapital(), asset.getSumUnGetInterest());
+          var s = getPercent(asset.getSumEarnings(), asset.getAwardOfActivity(), asset.getOtherMoney());
+          asset.getCABalance() == 0 && asset.getFreezeOfGeneral() == 0 && asset.getFreezeOfZhix() == 0 && asset.getWaitingOfCapital() == 0 && asset.getSumUnGetInterest() == 0 && (f = [1, 1, 1, 1, 1]);
+          asset.getSumEarnings() == 0 && asset.getAwardOfActivity() == 0 && asset.getOtherMoney() == 0 && (s = [1, 1, 1]);
+          firstData = [{
+            value: f[0],
+            color: "#f8c93b"
+          }, {
+            value: f[1],
+            color: "#19c8b7"
+          }, {
+            value: f[2],
+            color: "#dfe3e7"
+          }, {
+            value: f[3],
+            color: "#48ccfb"
+          }, {
+            value: f[4],
+            color: "#ff6c5b"
+          }];
+          secondData = [{
+            value: s[0],
+            color: "#f8c93b"
+          }, {
+            value: s[1],
+            color: "#19c8b7"
+          }, {
+            value: s[2],
+            color: "#ff6c5b"
+          }];
+          getChart(firstCanvas, firstData);
+          getChart(secondCanvas, secondData);
+        });
+
+        function getPercent(v1 /*[, v2 ...]*/ ) {
+          var vs = Array.prototype.slice.call(arguments),
+            _tmp = [],
+            _p = 0,
+            _sum = 0;
+          console.log(vs);
+          $.each(vs, function(idx, v) {
+            vs[idx] = v * 10000;
+            _sum += parseFloat(v) * 100;
+          });
+          $.each(vs, function(idx, v) {
+            _p = Math.ceil(v / _sum);
+            _tmp[idx] = v > 0 ? _p > 0 ? _p : 1 : 0;
+          });
+          return _tmp;
+        }
+
+        function getChart(canvasID, data) {
+          new Chart(document.getElementById(canvasID).getContext("2d")).Doughnut(data, {
+            segmentShowStroke: true,
+            segmentStrokeColor: "#fff",
+            segmentStrokeWidth: 2,
+            percentageInnerCutout: 80,
+            animation: true,
+            animationSteps: 100,
+            animationEasing: "easeOutBounce",
+            animateRotate: true,
+            animateScale: false,
+            onAnimationComplete: null
+          });
+        }
+        
+        $('#closeAlert1').on('click', function (e) {
+          $('#alertWrapper1').fadeOut(300);
+        });
+        $('.wen-icon1').on('click', function (e) {
+          $('#alertWrapper1').fadeIn(300);
+        });
+        $('#closeAlert2').on('click', function (e) {
+          $('#alertWrapper2').fadeOut(300);
+        });
+        $('.wen-icon2').on('click', function (e) {
+          $('#alertWrapper2').fadeIn(300);
+        });
+        
+      });
+    };
+  </script>
+</head>
+
+<body class="zhixiangData-page" style="background:#F7F7F7">
+  <div class="swiper-container">
+    <div class="swiper-pagination"></div>
+    <div class="swiper-wrapper">
+      <div class="swiper-slide">
+        <div class="swiper-content">
+          <div class="match-amount-wrapper">
+            <span id="amountMoney"></span>
+            <p>资产总额(元)<img class="wen-icon wen-icon1" src="weixin/images/icons/wen-icon@3x.png" alt="问号" /></p>
+          </div>
+          <div class="chart-container">
+            <div class="table">
+              <div class="can">
+                <canvas id="firstCanvas" width="150" height="150"></canvas>
+                <div class="font">资金分布</div>
+              </div>
+              <div class="text-state">
+                <div class="list">
+                  <h4 class="asset-1">可用余额</h4>
+                  <p id="matchSum"></p>
+                </div>
+                <div class="list">
+                  <h4 class="asset-2">散标冻结</h4>
+                  <p id="nuMatchSum"></p>
+                </div>
+                <div class="list">
+                  <h4 class="asset-3">智享冻结</h4>
+                  <p id="nuMatchSum"></p>
+                </div>
+                <div class="list">
+                  <h4 class="asset-4">待收本金</h4>
+                  <p id="nuMatchSum"></p>
+                </div>
+                <div class="list">
+                  <h4 class="asset-5">待收收益</h4>
+                  <p id="nuMatchSum"></p>
+                </div>
+              </div>
+            </div>
+            <div class="fundSummary-wrapper" style="text-align: left">
+              <div class="fundSummary-icon fundSummary-icon1">可用余额(元)<span id="zijin_01">0.00</span></div>
+              <div class="fundSummary-icon fundSummary-icon2">散标冻结(元)<span id="zijin_02">0.00</span></div>
+              <div class="fundSummary-icon fundSummary-icon3">智享冻结(元)<span id="zijin_03">0.00</span></div>
+              <div class="fundSummary-icon fundSummary-icon4">待收本金(元)<span id="zijin_04">0.00</span></div>
+              <div class="fundSummary-icon fundSummary-icon5">待收收益(元)<span id="zijin_05">0.00</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="swiper-slide">
+        <div class="swiper-content">
+          <div class="match-amount-wrapper">
+            <span id="sumEarnOfZXT"></span>
+            <p>累计收益(元)<img class="wen-icon wen-icon2" src="weixin/images/icons/wen-icon@3x.png" alt="问号" /></p>
+          </div>
+          <div class="chart-container">
+            <div class="table">
+              <div class="can">
+                <canvas id="secondCanvas" width="150" height="150"></canvas>
+                <div class="font">收益分布</div>
+              </div>
+              <div class="text-state">
+                <div class="list">
+                  <h4 class="asset-6">已收收益</h4>
+                  <p id="matchSum"></p>
+                </div>
+                <div class="list">
+                  <h4 class="asset-7">活动奖励</h4>
+                  <p id="nuMatchSum"></p>
+                </div>
+                <div class="list">
+                  <h4 class="asset-8">其他费用</h4>
+                  <p id="nuMatchSum"></p>
+                </div>
+              </div>
+            </div>
+            <div class="fundSummary-wrapper" style="text-align: left">
+              <div class="fundSummary-icon fundSummary-icon6">已收收益(元)<span id="shouyi_01">0.00</span></div>
+              <div class="fundSummary-icon fundSummary-icon7">活动奖励(元)<span id="shouyi_02">0.00</span></div>
+              <div class="fundSummary-icon fundSummary-icon8">其他费用(元)<span id="shouyi_03">0.00</span></div>
+            </div>
+            <div class="fundSummary-wrapper" style="text-align: left">
+              <div class="fundSummary-icon fundSummary-icon9">累计充值 (元)<span id="shouyi_04">0.00</span></div>
+              <div class="fundSummary-icon fundSummary-icon10">累计提现(元)<span id="shouyi_05">0.00</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!--资产总额弹层-->
+  <div id="alertWrapper1" class="alert-wrapper" style="display: none;text-align: center;">
+    <div class="alert-cont">
+      <div id="peaceSignContent">
+        <h2 class="alert-title">资产总额</h2>
+        <div class="alert-body" style="padding-bottom: 15px">
+        	<p class="payment-phone">资产总额=可用金额+散标冻结+智享冻结+待收本金+待收收益</p>
+        </div>
+      </div>
+      <div id="closeAlert1" class="close-img"><img src="weixin/images/close@2x.png" /></div>
+    </div>
+  </div>
+  <!--累计收益弹层-->
+  <div id="alertWrapper2" class="alert-wrapper" style="display: none;text-align: center;">
+    <div class="alert-cont">
+      <div id="peaceSignContent">
+        <h2 class="alert-title">累计收益</h2>
+        <div class="alert-body" style="padding-bottom: 15px;">
+        	<p class="payment-phone" style="text-align: left;">累计收益=已收收益+活动奖励+其他费用</p>
+        	<p class="payment-phone" style="text-align: left;">已收收益=已收回款收益+提前回款+补贴收益</p>
+        	<p class="payment-phone" style="text-align: left;">活动奖励=红包奖励+分享奖励</p>
+        	<p class="payment-phone" style="text-align: left;">其他费用=年化利率利差补偿款</p>
+        </div>
+      </div>
+      <div id="closeAlert2" class="close-img"><img src="weixin/images/close@2x.png" /></div>
+    </div>
+  </div>
+  
+</body>
+
+</html>

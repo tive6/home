@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="keywords" content="八斗金服">
+  <meta name="description" content="八斗金服">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+  <title>债权转让</title>
+  <link rel="stylesheet" type="text/css" href="weixin/css/swiper/3.3.1/swiper.min.css" />
+  <link rel="stylesheet" type="text/css" href="weixin/css/wechat.css" />
+  <script src="weixin/js/require.js" data-main="weixin/js/main" defer="defer" async="async" type="text/javascript" charset="utf-8"></script>
+  <script>
+    window.onload = function() {
+      require.config({
+        baseUrl: 'weixin/js',
+        paths: {
+          // 外部库／插件
+          'jquery': [
+            '//cdn.bootcss.com/jquery/1.12.4/jquery.min',
+            'lib/jquery/1.12.4/jquery.min'
+          ],
+          'swiper': [
+            '//cdn.bootcss.com/Swiper/3.4.2/js/swiper.min',
+            'lib/swiper/3.4.2/swiper.min'
+          ],
+          'swipeLoader': 'common/swipeLoader',
+          'util': 'common/util',
+          'WebView': 'common/webView',
+          'bondController': 'controller/bondController',
+          'userController': 'controller/userController',
+          'investController': 'controller/investController'
+        }
+      });
+      require([
+        'jquery', 'swiper', 'swipeLoader', 'util', 'WebView', 'bondController', 'investController', 'userController'
+      ], function($, Swiper, swipeLoader, util, WebView, bondController, investController, userController) {
+        $('.swiper-slide').css('min-height', $(".transfer-page-wrapper").height());
+        // 定义标签滑动切换
+        var mySwiper = new Swiper('#swiperContainer', {
+          resistanceRatio: 0, //第一个最后一个禁止拖动
+          autoHeight: true,
+          onSlideChangeEnd: function(swiper) {
+            $('#bidinfo_tab li').eq(swiper.activeIndex).trigger('click');
+          }
+        });
+
+        // 标签项点击关联
+        $('#bidinfo_tab').on('click', function(e) {
+          var $target = $(e.target).closest('li.bidinfo-tab-item');
+          $target.addClass('active').siblings().removeClass('active');
+          mySwiper.slideTo($target.index());
+        });
+
+        var dataCount = 0,
+          transferCurrentPage = 0,
+          transferingCurrentPage = 0,
+          transferedCurrentPage = 0,
+          transferNoMoreData = false,
+          transferingNoMoreData = false,
+          transferedNoMoreData = false,
+          tag = 0,
+          investing = false,
+          td = {},
+          closed = true,
+          hasSendCode = false;
+
+        function loadMore(swiper) {
+          if (transferNoMoreData) {
+            return;
+          }
+          var options = {
+            currentPage: transferCurrentPage++,
+            pageSize: 10
+          };
+          // 可转让 列表
+          bondController.getTransfersList(options, function(result) {
+            var html = '';
+            var list = result;
+            if (list.length > 0) {
+              dataCount += list.length;
+
+              $.each(list, function(index, item) {
+                html +=
+                  '<div class="canTransfer-wrappers"><div class="investmentDetails-list">' +
+                  '<div class="investmentDetails-title zhixiang">' + item.bidTitle + '<span>' + item.expireDateStr + '</span></div>' +
+                  '<div class="expected-rate"><p>' + item.yearRate + (!!item.subsidyRate ? '<span class="yieldPlus">+' + item.subsidyRate + '</span>' : '') + '<i>%</i></p>历史年化收益率</div>' +
+                  '<div class="matching-wrapper"><ul class="clearfix">' +
+                  '<li class="border-right"><span>' + item.canTranferMoney + '</span>持有金额(元)</li>' +
+                  '<li><span>' + item.prospective + '</span>预期收益(元)</li>' +
+                  '</ul></div><div class="transfer-wrapper"><ul><li style="width:100%;">' + //<li><a class="contract-btn" data-orderid="' + item.orderId + '" href="javascript:void(0)">合同</a></li>
+                  '<a class="transfer-btn" href="javasript:void(0)" data-cantranfermoney="' + item.canTranferMoney + '" data-yearrate="' + item.yearRate + '" data-orderid="' + item.orderId + '" data-bidid="' + item.bidId + '">立即转让</a></li></ul></div></div></div>';
+              });
+              $('#transferWrapper').append(html);
+              swiper && swiper.update();
+              $('#transferLoadMore').show().one('click', function() {
+                loadMore(mySwiper);
+              }).fadeIn(600);
+            } else {
+              transferNoMoreData = true;
+              $('#transferLoadMore').html('没有更多数据啦～');
+            }
+            if (dataCount <= 0) {
+              $('#transferWrapper').addClass('no-records');
+              $("#transferWrapper .no-data-msg").show();
+            }
+          });
+
+          //合同
+          $("#transferWrapper").on("click", "a.contract-btn", function() {
+            var _self = this;
+            var options = {
+              orderId: $(_self).data('orderid')
+            };
+            bondController.getDownLoadContract(options, function(result) {});
+
+          });
+
+        }
+
+        function transferingLoadMore(swiper) {
+          if (transferingNoMoreData) {
+            return;
+          }
+          var options = {
+            currentPage: transferingCurrentPage++,
+            pageSize: 10
+          };
+
+          // 转让中 列表
+          bondController.getTransferingsList(options, function(result) {
+            var html = '';
+            var list = result;
+            if (list.length > 0) {
+              dataCount += list.length;
+              $.each(list, function(index, item) {
+                html +=
+                  '<div class="inTransfer-wrappers"><div class="investmentDetails-list">' +
+                  '<div class="investmentDetails-title zhixiang">' + item.bidTitle + '<span>' + item.deploydateStr + '</span></div>' +
+                  '<div class="expected-rate"><p>' + item.yearRate + (!!item.subsidyRate ? '<span class="yieldPlus">+' + item.subsidyRate + '</span>' : '') + '<i>%</i></p>历史年化收益率' +
+                  '<img class="zhaunrang" src="weixin/images/icons/zhuanrangzhong@3x.png"/></div><div class="matching-wrapper"><ul class="clearfix">' +
+                  '<li class="border-right"><span>' + item.transferMoney + '</span>转让金额(元)</li>' +
+                  '<li><span>' + (item.money - item.factorage) + '</span>实际回款(元)</li></ul></div></div></div>';
+              });
+              $('#transferingWrapper').append(html);
+              swiper && swiper.update();
+              $('#transferingLoadMore').show().one('click', function() {
+                transferingLoadMore(mySwiper);
+              }).fadeIn(600);
+            } else {
+              transferingNoMoreData = true;
+              $('#transferingLoadMore').html('没有更多数据啦～');
+            }
+            if (dataCount <= 0) {
+              $('#transferingWrapper').addClass('no-records');
+              $("#transferingWrapper .no-data-msg").show();
+            }
+          });
+
+        }
+
+        //已转让列表
+        function transferedLoadMore(swiper) {
+          if (transferedNoMoreData) {
+            return;
+          }
+          var options = {
+            currentPage: transferedCurrentPage++,
+            pageSize: 10
+          };
+
+          // 已转让 列表
+          bondController.getTransferedsList(options, function(result) {
+            var html = '';
+            var list = result;
+            if (list.length > 0) {
+              dataCount += list.length;
+              $.each(list, function(index, item) {
+                html +=
+                  '<div class="beenTransferred-wrapper"><div class="investmentDetails-list">' +
+                  '<div class="investmentDetails-title zhixiang">' + item.bidTitle + '<span>' + item.succDateStr + '</span></div>' +
+                  '<div class="expected-rate"><p>' + item.yearRate + (!!item.subsidyRate ? '<span class="yieldPlus">+' + item.subsidyRate + '</span>' : '') + '<i>%</i></p>历史年化收益率' +
+                  '<img class="already-zhaunrang" src="weixin/images/icons/zhuanrang@3x.png"/></div><div class="matching-wrapper"><ul class="clearfix">' +
+                  '<li class="border-right"><span>' + item.investMoney + '</span>转让金额(元)</li>' +
+                  '<li class="border-right"><span>' + item.factorage + '</span>手续费(元)</li>' +
+                  '<li><span>' + item.redemption + '</span>实际回款(元)</li></ul></div></div></div>';
+              });
+              $('#transferedWrapper').append(html);
+              swiper && swiper.update();
+              $('#transferedLoadMore').show().one('click', function() {
+                transferedLoadMore(mySwiper);
+              }).fadeIn(600);
+            } else {
+              transferedNoMoreData = true;
+              $('#transferedLoadMore').html('没有更多数据啦～');
+            }
+            if (dataCount <= 0) {
+              $('#transferedWrapper').addClass('no-records');
+              $("#transferedWrapper .no-data-msg").show();
+            }
+          });
+
+        }
+
+        loadMore(mySwiper);
+        transferingLoadMore(mySwiper);
+        transferedLoadMore(mySwiper);
+
+        //立即转让
+        $("#transferWrapper").on("click", "a.transfer-btn", function() {
+          var _self = this;
+          closed = false;
+          td.yearRate = $(this).data("yearrate");
+          td.tranferMoney = $(this).data("cantranfermoney");
+          td.orderId = $(this).data("orderid");
+          td.bidId = $(this).data('bidid');
+
+          bondController.getFactorace(td, function(result) {
+            td.factorage = result.factorage;
+            $("#moneyReceived").html(result.moneyReceived);
+            $("#tranferMoney").html(td.tranferMoney);
+            $("#factorage").html(result.factorage);
+            $('#realMoney').html(td.tranferMoney - result.factorage);
+            $(".immediate-assignment").css('display', 'block');
+            $(".immediate-assignment-wrapper").animate({
+              left: 0
+            }, 250);
+          });
+        });
+
+        //关闭
+        $("#close-btn").on("click", function() {
+          $(".immediate-assignment-wrapper").animate({
+            left: '110%'
+          }, 250, 'linear', function() {
+            $(".immediate-assignment").fadeOut(300);
+            $("#moneyReceived").html("0.00");
+            $("#tranferMoney").html("0.00");
+            $("#factorage").html("0.00");
+            $('#indicatorText').html('确保资金交易安全 请输入授权码');
+          });
+        });
+
+        //确认
+        $("#confirm-btn").on("click", function() {
+          $("#investCodeModel").fadeIn(500);
+        });
+
+        $(".invest-code-wrapper").bind("click", function(event) {
+          event.stopPropagation();
+        });
+
+        //获取动态码
+
+        $('#codeGroup').on('click', function() {
+          if (hasSendCode) {
+            $('#buyCode').focus();
+          } else {
+            WebView.msgAlert({
+              msg: '请先获取授权验证码'
+            }).show();
+          }
+        });
+
+        var codes = $('#codeGroup span');
+        $('#buyCode').on('keyup', function(e) {
+          var v = this.value.split('');
+          codes.html('&nbsp;');
+          $.each(v, function(idx, item) {
+            $(codes[idx]).html(item);
+          });
+          if (v.length >= 6) {
+            $(this).blur();
+            $(this).attr('disabled', 'disabled');
+            td.code = $(this).val();
+            // 6位支付码输入完毕执行购买
+            transfer();
+          }
+        });
+
+        $("#investCodeModel").on("click", closeCodeModel);
+        //关闭动态码弹层
+        function closeCodeModel() {
+          $('#indicator').hide(0);
+          $("#investCodeModel").hide();
+          $("#indicatorText").html("确保资金交易安全 请输入授权码").removeAttr("style");
+          codes.html("&nbsp;");
+          $("#buyCode").val("");
+        }
+
+        //立即转让
+        function transfer() {
+          $("#investCodeModel").off("click");
+          $('#indicator').show(0);
+          $('#loading').show(0);
+          $('#loaded').hide(0);
+          $('#loadedMark').hide(0);
+          $('#indicatorText').html('转让处理中...').css('color', '#f9364e');
+          bondController.transfer(td, function(res) {
+            if (res.getStatus()) {
+              $('#loading').hide(0);
+              $('#loaded').show(0);
+              setTimeout(function() {
+                $('#indicatorText').html('转让成功，数据即将更新...').css('color', '#f9364e');
+                $('#buyCode').val('').removeAttr('disabled');
+                setTimeout(function() {
+                  window.location.reload();
+                }, 1000);
+              }, 1400);
+            } else {
+              $("#investCodeModel").on("click", closeCodeModel);
+              $('#indicator').hide(0);
+              $('#loading').hide(0);
+              codes.html('&nbsp;');
+              $('#indicatorText').html(res.getMsg()).css('color', '#f9364e');
+              $('#buyCode').val('').removeAttr('disabled');
+            }
+          });
+        }
+
+        function failPay(res) {
+          var __t = setTimeout(function() {
+            clearTimeout(__t);
+            investing = false;
+            codes.html('&nbsp;');
+            $('#buyCode').removeAttr('disabled');
+            $('#indicator').hide(0);
+            $('#loadedMark').hide(0);
+            $('#indicatorText').html(res.getMsg());
+            $('#buyCode').val('');
+          }, 1400);
+        }
+
+        $('#confirmCode').one('click', getPayCode);
+
+        // 获取支付码
+        function getPayCode() {
+          var count = 30;
+          $('#confirmCode').html(count-- + '秒后重新获取支付码');
+          var _t = setInterval(function() {
+            $('#confirmCode').html(count-- + '秒后重新获取支付码');
+            if (count < 0) {
+              count = 30;
+              clearInterval(_t);
+              $('#confirmCode').html('获取支付码');
+              $('#confirmCode').one('click', getPayCode);
+            }
+          }, 1000);
+
+          $('#indicator').show(0);
+          $('#loadedMark').hide(0);
+          $('#indicatorText').html('验证码发送中...').css('color', '#f9364e');
+
+          investController.getPayCode(function(res) {
+            hasSendCode = true;
+            if (!closed) {
+              $('#loading').hide(0);
+              $('#loaded').show(0);
+              user = userController.getLoginUserFromLocalStorage();
+              setTimeout(function() {
+                if (user) {
+                  $('#indicatorText').html('授权码已发送至手机' + util.replacePhoneNumberUseAsterisk(user.getTelphone())).css('color', '#f9364e');
+                }
+              }, 1400);
+            }
+          });
+        };
+
+        $('#loaded')[0].addEventListener("webkitAnimationEnd", function() {
+          $('#loadedMark').show(0);
+        }, false);
+
+      });
+    };
+  </script>
+
+  <style>
+    .transfer-wrapper a {
+      display: inline-block;
+      width: 80%;
+      line-height: 30px;
+      margin: 10px 0;
+      color: #FA364E;
+      background: #fff;
+      border: 1px solid #FA364E;
+      border-radius: 20px;
+    }
+    /*.transfer-wrapper .transfer-btn {
+			background-color: #FA364E;
+			color: #fff;
+		}*/
+    
+    .swiper-slide,
+    .bond-wrapper {
+      height: 100%!important;
+      overflow-y: scroll;
+      -webkit-overflow-scrolling: touch;
+    }
+  </style>
+
+</head>
+
+<body class="transfer-page gray-bg">
+  <header class="header-nav">
+    <ul id="bidinfo_tab" class="bidinfo-tab clearfix">
+      <li class="bidinfo-tab-item active">可转让</li>
+      <li class="bidinfo-tab-item">转让中</li>
+      <li class="bidinfo-tab-item">已转让</li>
+    </ul>
+  </header>
+  <div class="transfer-page-wrapper">
+    <div class="swiper-container" id="swiperContainer">
+      <div id="swiper_wrapper" class="swiper-wrapper">
+        <div class="swiper-slide">
+          <div class="transfer-container">
+            <div id="transferWrapper" class="bond-wrapper">
+              <div class="no-data-msg">暂时还没有消息</div>
+            </div>
+            <div id="transferLoadMore" class="load-more">加载更多</div>
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="transfering-container">
+            <div id="transferingWrapper" class="bond-wrapper">
+              <div class="no-data-msg">暂时还没有消息</div>
+            </div>
+            <div id="transferingLoadMore" class="load-more">加载更多</div>
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="transfered-container">
+            <div id="transferedWrapper" class="bond-wrapper">
+              <div class="no-data-msg">暂时还没有消息</div>
+            </div>
+            <div id="transferedLoadMore" class="load-more">加载更多</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--立即转让-->
+  <div class="immediate-assignment">
+    <div class="immediate-assignment-wrapper">
+      <div class="actual-return">
+        <div id="moneyReceived" class="color-red">100000.00</div>
+        实际回款本金(元)
+      </div>
+      <div class="recharge-group">
+        <span>转让余额(元)</span>
+        <span id="tranferMoney" class="recharge">0.00</span>
+      </div>
+      <div class="recharge-group">
+        <span>提前退出费(元)</span>
+        <span id="factorage" class="recharge">0.00</span>
+      </div>
+      <div class="recharge-group">
+        <span>实际回款(元)</span>
+        <span id="realMoney" class="recharge">0.00</span>
+      </div>
+      <div class="transfer-confirm"><button id="close-btn">关闭</button><button id="confirm-btn">确认</button></div>
+    </div>
+  </div>
+  <!--动态码-->
+  <div id="investCodeModel" class="invest-code">
+    <div class="invest-code-wrapper">
+      <h4 class="invest-code-title">验证动态码</h4>
+      <div class="invest-code-content">
+        <div class="invest-code-notice">
+          <svg id="indicator" style="display: none" class="indicator-wrapper" viewbox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg">
+						<circle id="loading" class="indicator-animate" cx="10" cy="10" r="8" fill="transparent" stroke="#f9364e" stroke-width="1"
+						 class="frozeed-assets-circle" stroke-dashoffset="7.7654816" stroke-dasharray="42.5 7.7654816"></circle>
+						<circle id="loaded" class="indicator-animate-loaded" cx="10" cy="10" r="8" fill="transparent" stroke="#f9364e" stroke-width="1"
+						 class="frozeed-assets-circle" stroke-linecap="round" stroke-dashoffset="0" stroke-dasharray="42.5 7.7654816">
+						</circle>
+						<polyline id="loadedMark" class="indicator-animate-loaded-mark" points="5.8,8.8 10,13.5 18,5" stroke-linecap="round" fill="transparent"
+						 stroke="#f9364e" stroke-width="1" stroke-dasharray="0 17.9979633" />
+					</svg>
+          <span id="indicatorText" class="indicator-text">确保资金交易安全 请输入授权码</span></div>
+        <div id="investCodeTip" class="invest-code-tip">请输入6位动态授权码</div>
+        <div class="hidden-input-clip">
+          <input type="tel" id="buyCode" maxlength="6" unselectable="on" name="login_code" style="width: 10000px;text-align: right;" />
+        </div>
+        <div id="codeGroup" class="code-group">
+          <span class="code-item">&nbsp;</span>
+          <span class="code-item">&nbsp;</span>
+          <span class="code-item">&nbsp;</span>
+          <span class="code-item">&nbsp;</span>
+          <span class="code-item">&nbsp;</span>
+          <span class="code-item">&nbsp;</span>
+        </div>
+        <a id="confirmCode" class="confirm-code" href="javascript:void(0);">获取授权码</a>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

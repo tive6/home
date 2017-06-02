@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="keywords" content="八斗金服">
+  <meta name="description" content="八斗金服">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+  <title>焦点详情</title>
+  <link rel="stylesheet" type="text/css" href="weixin/css/wechat.css" />
+  <script src="weixin/js/require.js" data-main="weixin/js/main" defer="defer" async="async" type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript">
+    window.onload = function () {
+      require.config({
+        paths: {
+          'jquery': [
+            '//cdn.bootcss.com/jquery/1.12.4/jquery.min',
+            'lib/jquery/1.12.4/jquery.min'
+          ],
+          'config': 'settings',
+          'util': 'common/util',
+          'appController': 'controller/appController'
+        }
+      });
+      require(['jquery', 'config', 'util', 'appController'], function ($, config, util, appController) {
+        detailUrl = util.replaceResUrlOrigin(util.getSearchField('dp'));
+        $('#iframeHandler').append($('<iframe src="' + detailUrl + '" frameBorder="0"></iframe>'));
+      });
+    };
+  </script>
+</head>
+
+<body>
+  <div id="iframeHandler" class="iframe-handler"></div>
+</body>
+
+</html>

@@ -1,0 +1,10 @@
+@font-face {
+  font-family: 'siyuan';
+  src: url('//at.alicdn.com/t/usji66n2c8xjq0k9.eot');
+  /* IE9*/
+  src: url('//at.alicdn.com/t/usji66n2c8xjq0k9.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('//at.alicdn.com/t/usji66n2c8xjq0k9.woff') format('woff'), /* chrome、firefox */
+  url('//at.alicdn.com/t/usji66n2c8xjq0k9.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+  url('//at.alicdn.com/t/usji66n2c8xjq0k9.svg#思源黑体-极细') format('svg');
+  /* iOS 4.1- */
+}
