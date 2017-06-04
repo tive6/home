@@ -82,6 +82,33 @@ console.log('zmnaer'.split(''));// ['z','m','n','a','e','r']
 console.log('zmnaer'.split('m'));// ['z','naer']
 ```
 
+* splice——删除、替换、添加
+
+```
+var arr = ['aa','bb',11,22];
+1、删除
+arr.splice(0,1);console.log(arr);// ['bb',11,22]
+arr.splice(0,2);console.log(arr);// [11,22]
+2、替换
+arr.splice(0,1,'aaa');console.log(arr);// ['aaa','bb',11,22]
+arr.splice(0,2,'aaa');console.log(arr);// ['aaa',11,22]
+3、添加
+arr.splice(0,0,'edg');console.log(arr);// ['edg','aa','bb',11,22]
+arr.splice(1,0,'aabb');console.log(arr);// ['aa','aabb',11,22]
+/* 添加多个 */
+arr.splice(1,0,'aabb','abc');console.log(arr);// ['aa','aabb','abc',11,22]
+```
+
+* reverse——颠倒(数组)
+
+```
+var arr = [1,2,3]
+arr.reverse();
+console.log(arr);// [3,2,1]
+/* 字符串 */
+var str = 'abcdef';
+console.log(str.split('').reverse().join(''));// 'fedcba'
+```
 
 
 

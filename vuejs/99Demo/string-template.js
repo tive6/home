@@ -6,4 +6,5 @@ var data = {
     age:24,
     school:'武生院'
 };
+
 console.log(`${data.name}今年${data.age},毕业于${data.school}`);
