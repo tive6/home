@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src=""></script>
+</head>
+<body>
+
+
+<h3 id="text"></h3>
+
+
+<script src="jquery.js"></script>
+<script>
+
+    window.onload = function(){
+        'use strict';
+        var obj = {
+            s:'Tom'
+        };
+
+        var data = {
+            name:obj.s,
+            age:24,
+            school:'武生院'
+        };
+        var ss = `${data.name}今年${data.age},毕业于${data.school}`;
+        console.log(ss);
+
+        $('#text').text(ss);
+
+
+    }
+
+
+</script>
+</body>
+</html>
