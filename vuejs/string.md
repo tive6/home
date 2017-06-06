@@ -16,6 +16,7 @@ console.log(str.charAt());// z
 console.log(str.charAt(0));// z
 console.log(str.charAt(11));// (空)
 console.log(str.charAt(-1));// (空)
+/* 传值为索引： 返回索引对应的值；传值为str，返回索引下标*/
 /*不写值，默认为0，大于字符串最大长度和取负数都返回值为空*/
 ```
 
