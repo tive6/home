@@ -18,4 +18,10 @@ npm run build
 npm run build --report
 ```
 
+# 文件说明
+
+* data.json——接口假数据
+* server.js——express + http 搭建一个微型服务器，
+
+
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
