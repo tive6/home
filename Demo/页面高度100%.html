@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+    }
+    .container{
+      min-width: 1180px;
+    }
+    .header{
+      height: 150px;
+      background: #05C8B6;
+    }
+    .footer{
+      height: 250px;
+      background: #ffa6af;
+    }
+    .main{
+      height: 400px;
+      background: #bb8afc;
+    }
+    .outer{
+      min-width: 1180px;
+    }
+    h1{
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <h1>Header</h1>
+  </div>
+  <div class="main">
+    <h1>Main</h1>
+    <div class="outer">
+      <h1>Outer</h1>
+    </div>
+  </div>
+  <div class="footer">
+    <h1>Footer</h1>
+  </div>
+</div>
+
+
+<script src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script>
+
+  window.onload = function(){
+
+    var hOther = $('.header').height()+$('.footer').height();
+    getH();
+    $(window).resize(getH);
+    function getH(){
+      var mHeight = $(window).height() - hOther;
+      if(mHeight>400){
+        $('.main').css('height',mHeight+'px');
+      }else{
+        $('.main').css('height','400px');
+      }
+    }
+  }
+
+
+</script>
+</body>
+</html>

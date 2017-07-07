@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+    }
+    html{
+      height: 100%;
+    }
+    .step-container{
+      width: 1100px;
+      margin: 0 auto;
+      padding: 20px 0;
+      color: #00B1FB;
+      overflow: hidden;
+    }
+    .step{
+      float: left;
+      display: inline-block;
+      border: 1px solid #00B1FB;
+      border-left: none;
+      border-right: none;
+      line-height: 42px;
+      position: relative;
+    }
+    .step-list1{
+      border: none;
+      line-height: 44px;
+      padding: 0 70px 0 40px;
+      color: #fff;
+      background: #00B1FB;
+    }
+    .step-list2,
+    .step-list3,
+    .step-list4{
+      padding: 0 65px 0 44px;
+    }
+    .step-list5{
+      border-right: 1px solid #00B1FB;
+      padding: 0 30px 0 42px;
+    }
+    .step-list1:after,
+    .step-list2:before,
+    .step-list2:after,
+    .step-list3:before,
+    .step-list3:after,
+    .step-list4:before,
+    .step-list4:after,
+    .step-list5:before{
+      content: '';
+      position: absolute;
+      z-index: 10;
+      display: inline-block;
+    }
+    .step-list5:before,
+    .step-list2:before,
+    .step-list3:before,
+    .step-list4:before{
+      border: 21px solid transparent;
+      border-left: 21px solid #fff;
+      left: -1px;
+    }
+    .step-list1:after{
+      border: 22px solid #fff;
+      border-left: 22px solid #00B1FB;
+      top: 0;
+      right: 0;
+    }
+    .step-list2:after,
+    .step-list3:after,
+    .step-list4:after{
+      border: 21px solid transparent;
+      border-left: 21px solid #fff;
+      top: 0;
+      right: 2px;
+    }
+    .step-jiao-left,
+    .step-jiao-right{
+      position: absolute;
+      display: inline-block;
+      border: 21px solid #fff;
+    }
+    .step-jiao-left{
+      top: 0;
+      left: 0;
+      border-left: 22px solid #00B1FB;
+    }
+    .step-jiao-right{
+      right: 0;
+      top: -1px;
+      border: 22px solid #fff;
+      border-left: 22px solid #00B1FB;
+    }
+    .step-list1 .step-jiao-right{
+      top: 0;
+    }
+  </style>
+</head>
+<body>
+
+
+<div class="step-container">
+  <div class="step step-list1">Step1:注册</div>
+  <div class="step step-list2"><span class="step-jiao-left"></span>Step2:实名认证<span class="step-jiao-right"></span></div>
+  <div class="step step-list3"><span class="step-jiao-left"></span>Step3:开通银行存管账户<span class="step-jiao-right"></span></div>
+  <div class="step step-list4"><span class="step-jiao-left"></span>Step4:充值<span class="step-jiao-right"></span></div>
+  <div class="step step-list5"><span class="step-jiao-left"></span>Step5:出借享收益</div>
+</div>
+
+
+<script></script>
+</body>
+</html>
