@@ -1,3 +1,0 @@
-require([
-  'Shake', 'activityService', 'activityController'
-]);

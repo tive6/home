@@ -1,0 +1,50 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>ajax</title>
+</head>
+<body>
+
+  <div>
+    <button id="btn">获取</button>
+    <h2 id="text"></h2>
+  </div>
+
+  <script src="ajax.js"></script>
+
+  <script>
+
+  window.onload = function(){
+
+    var oBtn = getEle("btn");
+    var oText = getEle("text");
+    console.log(oText)
+
+    function getEle(obj){
+      var o = document.getElementById(obj);
+      return o;
+    }
+
+    // ajax(mrthod,url,data,success,error)
+
+    oBtn.onclick = function(){
+    ajax("GET",'new.txt','',
+      function(res){
+        console.log(res);
+        oText.innerHTML = res;
+      },function(){
+    
+      })
+    }
+
+
+  }
+
+  
+
+  </script>
+
+</body>
+</html>

@@ -19,6 +19,10 @@ export default [
     },
     {
         path:'/',
+        redirect:Goods
+    },
+    {
+        path:'/',
         redirect:'/goods'
     },
     {

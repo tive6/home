@@ -1,10 +1,10 @@
-function ajax(mrthod,url,data,success,error){
+function ajax(method,url,data,success,error){
 
     var xhr = null;
 
     function createXHR(){
         
-        if(XMLHttpRequest()){
+        if(XMLHttpRequest){
             xhr = new XMLHttpRequest();
             createXHR = function(){
                 return XMLHttpRequest();  //直接返回一个懒函数，这样不必在往下走
@@ -42,3 +42,12 @@ function ajax(mrthod,url,data,success,error){
     }
 
 }
+
+var success = function(res){
+    return res;
+}
+
+var error = function(msg){
+    return msg;
+}
+
